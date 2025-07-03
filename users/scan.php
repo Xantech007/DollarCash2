@@ -1,7 +1,6 @@
 <?php
 session_start();
 include('inc/header.php');
-include('inc/navbar.php');
 include('inc/sidebar.php');
 ?>
 
