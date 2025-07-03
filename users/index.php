@@ -80,6 +80,13 @@ include('inc/sidebar.php');
             border-radius: 5px;
             margin-left: 5px;
         }
+        .copiable {
+            cursor: pointer;
+            color: #007bff;
+        }
+        .copiable:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -87,8 +94,8 @@ include('inc/sidebar.php');
         <!-- Cash Balance Card -->
         <div class="card">
             <div class="card-title">Cash balance</div>
-            <div class="card-amount">$<?php echo $balance ?: '1,226.00'; ?></div>
-            <div class="card-detail">Account +$430 Routing +329</div>
+            <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '1,226.00'); ?></div>
+            <div class="card-detail">Account +$<?php echo htmlspecialchars($account_change ?? '430'); ?> Routing +<?php echo htmlspecialchars($routing ?? '329'); ?></div>
         </div>
 
         <!-- Action Buttons -->
@@ -97,10 +104,10 @@ include('inc/sidebar.php');
             <button class="btn btn-withdraw">Withdraw</button>
         </div>
 
-        <!-- Paychecks Card -->
+        <!-- CashTag Card -->
         <div class="card">
-            <div class="card-title">Paychecks <span class="verified">✓</span></div>
-            <div class="card-amount">$340 this month</div>
+            <div class="card-title">CashTag:</div>
+            <div class="card-amount"><span class="copiable" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? 'copiable cashtag'); ?>')"><?php echo htmlspecialchars($cashtag ?? 'copiable cashtag'); ?></span></div>
         </div>
 
         <!-- Save & Invest Section -->
@@ -108,18 +115,18 @@ include('inc/sidebar.php');
             <div class="card-title">Save & Invest</div>
             <!-- Savings Card -->
             <div class="card-title">Savings</div>
-            <div class="card-amount">$<?php echo $bonus ?: '2,451.00'; ?></div>
+            <div class="card-amount">$<?php echo htmlspecialchars($bonus ?? '2,451.00'); ?></div>
             <div class="card-detail">
                 <div class="progress">
-                    <span>$249.00 to goal</span>
+                    <span>$<?php echo htmlspecialchars($savings_to_goal ?? '249.00'); ?> to goal</span>
                     <div class="progress-circle"></div>
                 </div>
             </div>
             <!-- Bitcoin Card -->
             <div class="card-title">Bitcoin</div>
-            <div class="card-amount">$8.05</div>
+            <div class="card-amount">$<?php echo htmlspecialchars($bitcoin_value ?? '8.05'); ?></div>
             <div class="card-detail">
-                <span>+18% today</span>
+                <span><?php echo htmlspecialchars($bitcoin_change ?? '+18%'); ?> today</span>
                 <div class="bitcoin-graph"></div>
             </div>
         </div>
@@ -131,7 +138,13 @@ include('inc/sidebar.php');
     </div>
 
     <script>
-        // Simple button interactivity (optional)
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard: ' + text);
+            });
+        }
+
+        // Simple button interactivity
         document.querySelectorAll('.btn').forEach(button => {
             button.addEventListener('click', () => alert(`Action: ${button.textContent}`));
         });
