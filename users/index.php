@@ -81,16 +81,17 @@ include('inc/sidebar.php');
             margin-left: 5px;
         }
         .copy-btn {
-            background: #007bff;
-            color: white;
             border: none;
+            outline: none;
+            color: #012970;
+            background: #f7f7f7;
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
             margin-left: 10px;
         }
         .copy-btn:hover {
-            background: #0056b3;
+            background: #e0e0e0;
         }
     </style>
 </head>
@@ -113,7 +114,7 @@ include('inc/sidebar.php');
         <div class="card">
             <div class="card-title">Available CashTag(s):</div>
             <div class="card-amount"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>
-                <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')">Copy</button>
+                <button class="copy-btn" id="copyButton"><i class="bi bi-front"></i></button>
             </div>
         </div>
 
@@ -129,10 +130,18 @@ include('inc/sidebar.php');
     </div>
 
     <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard: ' + text);
-            });
+        let input = document.querySelector("input#text") || document.querySelector(".card-amount");
+        let inputbutton = document.querySelector("#copyButton");
+
+        inputbutton.addEventListener('click', copytext);
+
+        function copytext() {
+            input.select();
+            document.execCommand('copy');
+            inputbutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                inputbutton.innerHTML = '<i class="bi bi-front"></i>';
+            }, 2000); // Revert to original icon after 2 seconds
         }
     </script>
 </body>
