@@ -86,12 +86,17 @@ include('inc/sidebar.php');
             color: #012970;
             background: #f7f7f7;
             border-radius: 5px;
-            padding: 5px 10px;
+            padding: 2px 5px; /* Reduced padding */
             cursor: pointer;
             margin-left: 10px;
+            font-size: 10px; /* Smaller text */
         }
         .copy-btn:hover {
             background: #e0e0e0;
+        }
+        .copy-btn i {
+            font-size: 10px; /* Smaller icon */
+            vertical-align: middle;
         }
     </style>
 </head>
