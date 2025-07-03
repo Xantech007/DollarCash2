@@ -59,7 +59,7 @@ include('inc/sidebar.php');
             cursor: pointer;
             margin: 0 5px;
         }
-        .btn-add { background: #007bff; color: white; }
+        .btn-scan { background: #007bff; color: white; }
         .btn-withdraw { background: #6c757d; color: white; }
         .verified { color: #28a745; font-size: 12px; }
         .progress {
@@ -83,9 +83,22 @@ include('inc/sidebar.php');
         .copiable {
             cursor: pointer;
             color: #007bff;
+            margin-right: 10px;
         }
         .copiable:hover {
             text-decoration: underline;
+        }
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-btn:hover {
+            background: #5a6268;
         }
     </style>
 </head>
@@ -100,21 +113,38 @@ include('inc/sidebar.php');
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn btn-add">Add money</button>
+            <button class="btn btn-scan">Scan</button>
             <button class="btn btn-withdraw">Withdraw</button>
         </div>
 
-        <!-- CashTag Card -->
+        <!-- Available CashTag Card -->
         <div class="card">
-            <div class="card-title">CashTag:</div>
-            <div class="card-amount"><span class="copiable" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? 'copiable cashtag'); ?>')"><?php echo htmlspecialchars($cashtag ?? 'copiable cashtag'); ?></span></div>
+            <div class="card-title">Available CashTag:</div>
+            <div class="card-amount">
+                <span class="copiable" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?></span>
+                <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')">Copy</button>
+            </div>
         </div>
 
         <!-- Save & Invest Section -->
         <div class="card">
             <div class="card-title">Save & Invest</div>
-            <div class="card-amount">Hello <?php echo htmlspecialchars($name ?? 'User'); ?></div>
-            <div class="card-detail">Scan CashTags to Redeem Funds into Your Account</div>
+            <!-- Savings Card -->
+            <div class="card-title">Savings</div>
+            <div class="card-amount">$<?php echo htmlspecialchars($bonus ?? '2,451.00'); ?></div>
+            <div class="card-detail">
+                <div class="progress">
+                    <span>$<?php echo htmlspecialchars($savings_to_goal ?? '249.00'); ?> to goal</span>
+                    <div class="progress-circle"></div>
+                </div>
+            </div>
+            <!-- Bitcoin Card -->
+            <div class="card-title">Bitcoin</div>
+            <div class="card-amount">$<?php echo htmlspecialchars($bitcoin_value ?? '8.05'); ?></div>
+            <div class="card-detail">
+                <span><?php echo htmlspecialchars($bitcoin_change ?? '+18%'); ?> today</span>
+                <div class="bitcoin-graph"></div>
+            </div>
         </div>
 
         <!-- Explore Button -->
