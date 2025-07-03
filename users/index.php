@@ -18,7 +18,7 @@ include('inc/sidebar.php');
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 100vh; /* Fill the entire viewport height */
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             padding: 10px;
@@ -26,12 +26,12 @@ include('inc/sidebar.php');
         }
 
         .container {
-            flex: 1;
+            flex: 1; /* Expand to fill available space */
             max-width: 400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: center; /* Center content vertically; remove if you want it at the top */
         }
 
         .card {
@@ -128,20 +128,22 @@ include('inc/sidebar.php');
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #f8f9fa;
+            background-color: #f8f9fa; /* Match the image's footer color */
             z-index: 1000;
             text-align: center;
             padding: 10px 0;
+            font-size: 12px;
+            color: #757575;
         }
 
         body {
-            padding-bottom: 60px;
+            padding-bottom: 60px; /* Prevent content from being hidden under the footer */
         }
 
         @media (max-width: 576px) {
             .footer {
                 padding: 5px 0;
-                font-size: 14px;
+                font-size: 10px;
             }
             .container {
                 padding: 0 10px;
@@ -154,7 +156,7 @@ include('inc/sidebar.php');
         <!-- Cash Balance Card -->
         <div class="card">
             <div class="card-title">Cash balance</div>
-            <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '1,226.00'); ?></div>
+            <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '0.00'); ?></div>
             <div class="card-detail">Account +$<?php echo htmlspecialchars($account_change ?? '430'); ?> Routing +<?php echo htmlspecialchars($routing ?? '329'); ?></div>
         </div>
 
@@ -174,7 +176,7 @@ include('inc/sidebar.php');
 
         <!-- New Section -->
         <div class="card">
-            <div class="card-title">Hello <?php echo htmlspecialchars($name ?? 'User'); ?> Scan CashTags to Redeem Funds into Your Account</div>
+            <div class="card-title">Hello <?php echo htmlspecialchars($name ?? 'George Richie'); ?> Scan CashTags to Redeem Funds into Your Account</div>
         </div>
 
         <!-- Explore Button -->
