@@ -10,17 +10,30 @@ include('inc/sidebar.php');
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
         body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
-            margin: 0;
             padding: 10px;
             color: #1a1a1a;
         }
+
         .container {
+            flex: 1;
             max-width: 400px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
+
         .card {
             background: white;
             border-radius: 10px;
@@ -28,27 +41,32 @@ include('inc/sidebar.php');
             margin-bottom: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .card-title {
             font-size: 14px;
             color: #757575;
             margin-bottom: 5px;
         }
+
         .card-amount {
             font-size: 24px;
             font-weight: bold;
             color: #1a1a1a;
             margin: 0;
         }
+
         .card-detail {
             font-size: 12px;
             color: #757575;
             margin-top: 5px;
         }
+
         .action-buttons {
             display: flex;
             justify-content: space-between;
             margin: 15px 0;
         }
+
         .btn {
             flex: 1;
             padding: 12px;
@@ -59,6 +77,7 @@ include('inc/sidebar.php');
             cursor: pointer;
             margin: 0 5px;
         }
+
         .btn-add { background: #007bff; color: white; }
         .btn-withdraw { background: #6c757d; color: white; }
         .verified { color: #28a745; font-size: 12px; }
@@ -67,12 +86,14 @@ include('inc/sidebar.php');
             align-items: center;
             gap: 5px;
         }
+
         .progress-circle {
             width: 12px;
             height: 12px;
             background: #ffd700;
             border-radius: 50%;
         }
+
         .bitcoin-graph {
             width: 50px;
             height: 20px;
@@ -80,23 +101,51 @@ include('inc/sidebar.php');
             border-radius: 5px;
             margin-left: 5px;
         }
+
         .copy-btn {
             border: none;
             outline: none;
             color: #012970;
             background: #f7f7f7;
             border-radius: 5px;
-            padding: 2px 5px; /* Reduced padding */
+            padding: 2px 5px;
             cursor: pointer;
             margin-left: 10px;
-            font-size: 10px; /* Smaller text */
+            font-size: 10px;
         }
+
         .copy-btn:hover {
             background: #e0e0e0;
         }
+
         .copy-btn i {
-            font-size: 10px; /* Smaller icon */
+            font-size: 10px;
             vertical-align: middle;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            z-index: 1000;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        body {
+            padding-bottom: 60px;
+        }
+
+        @media (max-width: 576px) {
+            .footer {
+                padding: 5px 0;
+                font-size: 14px;
+            }
+            .container {
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
@@ -141,25 +190,24 @@ include('inc/sidebar.php');
         inputbutton.addEventListener('click', copytext);
 
         function copytext() {
-            // Create a temporary input element to hold the text
             const tempInput = document.createElement('input');
             tempInput.value = cashtagElement.textContent.trim();
             document.body.appendChild(tempInput);
             tempInput.select();
-            tempInput.setSelectionRange(0, 99999); // For mobile devices
+            tempInput.setSelectionRange(0, 99999);
 
             try {
                 document.execCommand('copy');
                 inputbutton.innerHTML = 'copied!';
                 setTimeout(() => {
                     inputbutton.innerHTML = '<i class="bi bi-front"></i>';
-                }, 2000); // Revert after 2 seconds
+                }, 2000);
             } catch (e) {
                 console.error('Copy failed:', e);
                 alert('Copy to clipboard failed. Please try manually.');
             }
 
-            document.body.removeChild(tempInput); // Clean up
+            document.body.removeChild(tempInput);
         }
     </script>
 </body>
