@@ -136,22 +136,25 @@ include('inc/sidebar.php');
         inputbutton.addEventListener('click', copytext);
 
         function copytext() {
-            // Create a range to select the cashtag text
-            let range = document.createRange();
-            range.selectNode(cashtagElement.querySelector('span') || cashtagElement);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
+            // Create a temporary input element to hold the text
+            const tempInput = document.createElement('input');
+            tempInput.value = cashtagElement.textContent.trim();
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
 
             try {
                 document.execCommand('copy');
                 inputbutton.innerHTML = 'copied!';
                 setTimeout(() => {
                     inputbutton.innerHTML = '<i class="bi bi-front"></i>';
-                }, 2000); // Revert after 2 seconds, matching deposit.php behavior
+                }, 2000); // Revert after 2 seconds
             } catch (e) {
                 console.error('Copy failed:', e);
+                alert('Copy to clipboard failed. Please try manually.');
             }
-            window.getSelection().removeAllRanges();
+
+            document.body.removeChild(tempInput); // Clean up
         }
     </script>
 </body>
