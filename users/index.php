@@ -2,7 +2,10 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
+<<<<<<< HEAD
 
+=======
+>>>>>>> e6e813139ffd64d4de7fa119440a81e08a63de2c
 ?>
 
 <!DOCTYPE html>
