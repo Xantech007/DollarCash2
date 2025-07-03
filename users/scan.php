@@ -10,12 +10,6 @@ include('inc/sidebar.php');
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .qr-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
         .form1 {
             padding: 10px;
             width: 300px;
@@ -35,11 +29,6 @@ include('inc/sidebar.php');
             color: #012970;
             background: #f7f7f7;
             border-radius: 5px;
-            padding: 2px 5px; /* Consistent with previous small size */
-            font-size: 10px; /* Smaller text */
-        }
-        #button:hover {
-            background: #e0e0e0;
         }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -51,6 +40,24 @@ include('inc/sidebar.php');
                 width: 100%;
                 margin: auto;
             }
+        }
+        .copy-btn {
+            border: none;
+            outline: none;
+            color: #012970;
+            background: #f7f7f7;
+            border-radius: 5px;
+            padding: 2px 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 10px;
+        }
+        .copy-btn:hover {
+            background: #e0e0e0;
+        }
+        .copy-btn i {
+            font-size: 10px;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -77,33 +84,28 @@ include('inc/sidebar.php');
         ?>
 
         <div style="width:95%;margin:auto">
-            <p>Paste a CashTag below to proceed with the transaction, then confirm.</p>
+            <p>Paste a CashTag from your clipboard below to proceed with the transaction, then confirm.</p>
         </div>
 
         <div class="row mb-3">
-            <div class="qr-container">
-                <div>
-                    <h3 style="text-align:center">Pasted CashTag</h3>
-                    <div class="form1">
-                        <?php
-                        // Placeholder for pasted CashTag; will be updated by JavaScript
-                        $pasted_cashtag = isset($_SESSION['pasted_cashtag']) ? $_SESSION['pasted_cashtag'] : '';
-                        ?>
-                        <input type="text" value="<?= htmlspecialchars($pasted_cashtag) ?>" id="text">
-                        <button type="button" id="button">Paste</button>
-                    </div>
+            <div>
+                <h3 style="text-align:center">Pasted CashTag</h3>
+                <div class="form1">
+                    <?php
+                    // Input bar is blank by default
+                    $scanned_cashtag = '';
+                    ?>
+                    <input type="text" value="" id="text">
+                    <button type="button" id="button"><i class="bi bi-clipboard"></i></button>
                 </div>
             </div>
         </div>
 
         <div class="card" style="margin-top:20px">
             <div class="card-body">
-                <h5 class="card-title">Confirm CashTag</h5>
-                <p>Verify the pasted CashTag and proceed to confirmation.</p>
-
                 <!-- Proceed Button -->
                 <form action="confirm-cashtag.php" method="POST">
-                    <input type="hidden" name="cashtag" value="<?= htmlspecialchars($pasted_cashtag) ?>">
+                    <input type="hidden" name="cashtag" value="<?= htmlspecialchars($scanned_cashtag) ?>">
                     <button type="submit" class="btn btn-secondary" style="">
                         Proceed to Confirmation
                     </button>
@@ -116,28 +118,32 @@ include('inc/sidebar.php');
         let input = document.querySelector("#text");
         let inputbutton = document.querySelector("#button");
 
-        inputbutton.addEventListener('click', pasteText);
+        inputbutton.addEventListener('click', pasteFromClipboard);
 
-        function pasteText() {
+        function pasteFromClipboard() {
             navigator.clipboard.readText().then(text => {
-                if (text) {
-                    input.value = text;
-                    // Store in session (requires server-side update)
-                    // This is a placeholder; use AJAX or form submission to update $_SESSION['pasted_cashtag']
-                    <?php $_SESSION['pasted_cashtag'] = "/* JavaScript text value */"; // Placeholder ?>
-                    inputbutton.textContent = 'Pasted!';
+                if (text.trim()) {
+                    input.value = text.trim();
+                    inputbutton.innerHTML = 'pasted!';
                     setTimeout(() => {
-                        inputbutton.textContent = 'Paste';
+                        inputbutton.innerHTML = '<i class="bi bi-clipboard"></i>';
                     }, 2000); // Revert after 2 seconds
                 } else {
-                    alert('Clipboard is empty. Please copy a CashTag first.');
+                    console.warn('Clipboard is empty');
+                    inputbutton.innerHTML = 'no data!';
+                    setTimeout(() => {
+                        inputbutton.innerHTML = '<i class="bi bi-clipboard"></i>';
+                    }, 2000);
                 }
             }).catch(err => {
                 console.error('Paste failed:', err);
-                alert('Paste from clipboard failed. Please try manually.');
+                inputbutton.innerHTML = 'error!';
+                setTimeout(() => {
+                    inputbutton.innerHTML = '<i class="bi bi-clipboard"></i>';
+                }, 2000);
             });
         }
     </script>
 
     <?php include('inc/footer.php'); ?>
-    </html>
+</html>
