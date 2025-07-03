@@ -82,4 +82,53 @@ include('inc/sidebar.php');
 </main><!-- End #main -->
 
 <?php include('inc/footer.php'); ?>
+
+<!-- Inline CSS for Layout -->
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    #main {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        z-index: 1000;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    body {
+        padding-bottom: 60px; /* Adjust based on footer height */
+    }
+
+    @media (max-width: 576px) {
+        .footer {
+            padding: 5px 0;
+            font-size: 14px;
+        }
+    }
+</style>
 </html>
