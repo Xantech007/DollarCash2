@@ -59,7 +59,7 @@ include('inc/sidebar.php');
             cursor: pointer;
             margin: 0 5px;
         }
-        .btn-scan { background: #007bff; color: white; }
+        .btn-add { background: #007bff; color: white; }
         .btn-withdraw { background: #6c757d; color: white; }
         .verified { color: #28a745; font-size: 12px; }
         .progress {
@@ -80,25 +80,17 @@ include('inc/sidebar.php');
             border-radius: 5px;
             margin-left: 5px;
         }
-        .copiable {
-            cursor: pointer;
-            color: #007bff;
-            margin-right: 10px;
-        }
-        .copiable:hover {
-            text-decoration: underline;
-        }
         .copy-btn {
-            background: #6c757d;
+            background: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
-            font-size: 12px;
+            margin-left: 10px;
         }
         .copy-btn:hover {
-            background: #5a6268;
+            background: #0056b3;
         }
     </style>
 </head>
@@ -113,15 +105,14 @@ include('inc/sidebar.php');
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn btn-scan">Scan</button>
+            <button class="btn btn-add">Scan</button>
             <button class="btn btn-withdraw">Withdraw</button>
         </div>
 
-        <!-- Available CashTag Card -->
+        <!-- Available CashTag(s) Card -->
         <div class="card">
-            <div class="card-title">Available CashTag:</div>
-            <div class="card-amount">
-                <span class="copiable" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?></span>
+            <div class="card-title">Available CashTag(s):</div>
+            <div class="card-amount"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>
                 <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')">Copy</button>
             </div>
         </div>
