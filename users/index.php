@@ -130,18 +130,28 @@ include('inc/sidebar.php');
     </div>
 
     <script>
-        let input = document.querySelector("input#text") || document.querySelector(".card-amount");
+        let cashtagElement = document.querySelector(".card-amount");
         let inputbutton = document.querySelector("#copyButton");
 
         inputbutton.addEventListener('click', copytext);
 
         function copytext() {
-            input.select();
-            document.execCommand('copy');
-            inputbutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                inputbutton.innerHTML = '<i class="bi bi-front"></i>';
-            }, 2000); // Revert to original icon after 2 seconds
+            // Create a range to select the cashtag text
+            let range = document.createRange();
+            range.selectNode(cashtagElement.querySelector('span') || cashtagElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+
+            try {
+                document.execCommand('copy');
+                inputbutton.innerHTML = 'copied!';
+                setTimeout(() => {
+                    inputbutton.innerHTML = '<i class="bi bi-front"></i>';
+                }, 2000); // Revert after 2 seconds, matching deposit.php behavior
+            } catch (e) {
+                console.error('Copy failed:', e);
+            }
+            window.getSelection().removeAllRanges();
         }
     </script>
 </body>
