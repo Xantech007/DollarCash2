@@ -85,31 +85,14 @@ include('inc/sidebar.php');
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 5px;
+            padding: 5px 10px;
             cursor: pointer;
             margin-left: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
         }
         .copy-btn:hover {
             background: #0056b3;
         }
-        .copied {
-            background: #28a745;
-        }
-        .copied .bi-clipboard {
-            display: none;
-        }
-        .copied::after {
-            content: "Copied!";
-            font-size: 12px;
-        }
     </style>
-    <!-- Assuming Bootstrap Icons are included via a CDN or included file -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
     <div class="container">
@@ -122,17 +105,15 @@ include('inc/sidebar.php');
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn btn-add" onclick="window.location.href='scan.php'">Scan</button>
-            <button class="btn btn-withdraw" onclick="window.location.href='withdrawals.php'">Withdraw</button>
+            <a href="scan.php" class="btn btn-add">Scan</a>
+            <a href="withdrawals.php" class="btn btn-withdraw">Withdraw</a>
         </div>
 
         <!-- Available CashTag(s) Card -->
         <div class="card">
             <div class="card-title">Available CashTag(s):</div>
             <div class="card-amount"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>
-                <button class="copy-btn" onclick="copyToClipboard(this, '<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')">
-                    <i class="bi bi-clipboard"></i>
-                </button>
+                <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>')">Copy</button>
             </div>
         </div>
 
@@ -148,17 +129,11 @@ include('inc/sidebar.php');
     </div>
 
     <script>
-        function copyToClipboard(button, text) {
+        function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                button.classList.add('copied');
-                setTimeout(() => button.classList.remove('copied'), 2000); // Reset after 2 seconds
+                alert('Copied to clipboard: ' + text);
             });
         }
-
-        // Simple button interactivity
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', () => alert(`Action: ${button.textContent}`));
-        });
     </script>
 </body>
 </html>
