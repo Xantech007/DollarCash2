@@ -117,25 +117,9 @@ include('inc/sidebar.php');
             </div>
         </div>
 
-        <!-- Save & Invest Section -->
+        <!-- New Section -->
         <div class="card">
-            <div class="card-title">Save & Invest</div>
-            <!-- Savings Card -->
-            <div class="card-title">Savings</div>
-            <div class="card-amount">$<?php echo htmlspecialchars($bonus ?? '2,451.00'); ?></div>
-            <div class="card-detail">
-                <div class="progress">
-                    <span>$<?php echo htmlspecialchars($savings_to_goal ?? '249.00'); ?> to goal</span>
-                    <div class="progress-circle"></div>
-                </div>
-            </div>
-            <!-- Bitcoin Card -->
-            <div class="card-title">Bitcoin</div>
-            <div class="card-amount">$<?php echo htmlspecialchars($bitcoin_value ?? '8.05'); ?></div>
-            <div class="card-detail">
-                <span><?php echo htmlspecialchars($bitcoin_change ?? '+18%'); ?> today</span>
-                <div class="bitcoin-graph"></div>
-            </div>
+            <div class="card-title">Hello <?php echo htmlspecialchars($name ?? 'User'); ?> Scan CashTags to Redeem Funds into Your Account</div>
         </div>
 
         <!-- Explore Button -->
