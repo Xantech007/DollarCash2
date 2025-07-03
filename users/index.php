@@ -5,199 +5,138 @@ include('inc/navbar.php');
 include('inc/sidebar.php');
 ?>
 
- 
-
-  <!-- ======= Sidebar ======= -->
-
-
-  <main id="main" class="main">
-
-    <div class="pagetitle">
-      <h1>Dashboard</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>          
-        </ol>
-      
-      </nav>   
-      <style>
-        .form{
-          padding:10px 10px;
-          width:300px;
-          background:white;
-          display:flex;
-          justify-content:space-between;
-          opacity:0.85;
-          border-radius:10px
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 10px;
+            color: #1a1a1a;
         }
-        input{
-          border:none;
-          outline:none;
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
         }
-        #button{
-          border:none;
-          outline:none;
-          color:#012970;
-          background:#f7f7f7;
-          border-radius:5px
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        @media (max-width: 500px) {
-          .form{
-            width:100%;
-            margin:auto;
-          }
+        .card-title {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 5px;
         }
-      </style>
-      <h3 style="opacity:0.8">Affiliate/Referall Link</h3>
-      <div class="float-right form">
-      <?php
-      $rights = "SELECT a_link FROM settings";
-      $rights_query = mysqli_query($con, $rights);
+        .card-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin: 0;
+        }
+        .card-detail {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 5px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .btn-add { background: #007bff; color: white; }
+        .btn-withdraw { background: #6c757d; color: white; }
+        .verified { color: #28a745; font-size: 12px; }
+        .progress {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .progress-circle {
+            width: 12px;
+            height: 12px;
+            background: #ffd700;
+            border-radius: 50%;
+        }
+        .bitcoin-graph {
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(to right, #28a745, #ffd700);
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cash Balance Card -->
+        <div class="card">
+            <div class="card-title">Cash balance</div>
+            <div class="card-amount">$<?php echo $balance ?: '1,226.00'; ?></div>
+            <div class="card-detail">Account +$430 Routing +329</div>
+        </div>
 
-      $row = mysqli_fetch_array($rights_query);
-      $a_link = $row['a_link'];
-      ?>       
-      <input type="text"value="<?= $a_link ?>?affiliate-link=<?= $_SESSION['email'] ?>"id="text">
-      <button type="submit"id="button"><i class="bi bi-front" ></i></button>
-      </div>
-    </div><!-- End Page Title -->
-     
-    <section class="section dashboard">
-      <div class="row">
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-add">Add money</button>
+            <button class="btn btn-withdraw">Withdraw</button>
+        </div>
 
-        <!-- Left side columns -->
-        <div class="col-lg-12">
-          <div class="row">
+        <!-- Paychecks Card -->
+        <div class="card">
+            <div class="card-title">Paychecks <span class="verified">✓</span></div>
+            <div class="card-amount">$340 this month</div>
+        </div>
 
-            <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-
-                
-
-                <div class="card-body">
-                  <h5 class="card-title">Available Balance</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>USD <?= $balance ?></h6>
-            
-
-                    </div>
-                  </div>
+        <!-- Save & Invest Section -->
+        <div class="card">
+            <div class="card-title">Save & Invest</div>
+            <!-- Savings Card -->
+            <div class="card-title">Savings</div>
+            <div class="card-amount">$<?php echo $bonus ?: '2,451.00'; ?></div>
+            <div class="card-detail">
+                <div class="progress">
+                    <span>$249.00 to goal</span>
+                    <div class="progress-circle"></div>
                 </div>
+            </div>
+            <!-- Bitcoin Card -->
+            <div class="card-title">Bitcoin</div>
+            <div class="card-amount">$8.05</div>
+            <div class="card-detail">
+                <span>+18% today</span>
+                <div class="bitcoin-graph"></div>
+            </div>
+        </div>
 
-              </div>
-            </div><!-- End Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card revenue-card">              
+        <!-- Explore Button -->
+        <div class="card">
+            <div class="card-title">Explore</div>
+        </div>
+    </div>
 
-                <div class="card-body">
-                  <h5 class="card-title">Referall Bonus</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>USD <?= $bonus ?></h6>
-                     
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Revenue Card -->
-         
-          
-           
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-6">
-
-              <div class="card info-card customers-card">
-
-              
-
-                <div class="card-body">
-                  <?php
-                  $email = $_SESSION['email'] ;
-                  $invest_query = "SELECT id FROM investments WHERE email='$email'";
-                  $invest_query_run = mysqli_query($con, $invest_query);
-
-                  $count_invest = mysqli_num_rows($invest_query_run);   
-
-                  $referal = "SELECT id FROM users WHERE refered_by='$email'";
-                  $referal_run = mysqli_query($con, $referal);  
-                  
-                  $count_referals = mysqli_num_rows($referal_run);  
-                  ?> 
-                  <h5 class="card-title">Active Investments</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-briefcase"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6><?= $count_invest  ?></h6>
-               
-
-                    </div>
-                  </div>
-
-                </div>
-                
-              </div>
-
-            </div><!-- End Customers Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card revenue-card">              
-
-                <div class="card-body">
-                  <h5 class="card-title">Total Referalls</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6><?= $count_referals  ?></h6>
-                     
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Revenue Card -->
-         
-
-
-      </div>
-    </section>
     <script>
-   
-   let input = document.querySelector("#text");
-   let inputbutton = document.querySelector("#button");
-
-   inputbutton.addEventListener('click',copytext)
-
-   function copytext()
-   {
-        input.select();
-       
-        document.execCommand('copy');
-
-        inputbutton.innerHTML = 'copied!';
-   }
-
-
-</script>
-  </main><!-- End #main -->
+        // Simple button interactivity (optional)
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', () => alert(`Action: ${button.textContent}`));
+        });
+    </script>
+</body>
+</html>
 
 <?php include('inc/footer.php'); ?>
-</html>
