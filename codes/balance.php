@@ -13,21 +13,13 @@ if (!isset($_SESSION['auth'])) {
     exit(0);
 }
 
-// Check CSRF token
-if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    $_SESSION['error'] = "Invalid CSRF token.";
-    error_log("balance.php - Invalid CSRF token");
-    header("Location: ../users/scan-results.php");
-    exit(0);
-}
-
 // Check if the form is submitted
 if (isset($_POST['add_balance']) && isset($_POST['id'])) {
     $package_id = mysqli_real_escape_string($con, $_POST['id']);
     $email = mysqli_real_escape_string($con, $_SESSION['email']);
 
     // Fetch user_id from email
-    $user_query = "SELECT id FROM users WHERE email = '$email' LIMIT 1";
+    $user_query = "SELECT id FROM users WHERE emailmodo = '$email' LIMIT 1";
     $user_query_run = mysqli_query($con, $user_query);
     if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
         $user_data = mysqli_fetch_assoc($user_query_run);
