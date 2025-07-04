@@ -23,12 +23,15 @@ $user_balance = null;
 $amount = null;
 $currency = null;
 
-// Get user_id, name, and balance from email
-$email = mysqli_real_escape_string($con, $_SESSION['email']);
-$user_query = "SELECT id, name, balance FROM users WHERE email = '$email' LIMIT 1";
-$user_query_run = mysqli_query($con, $user_query);
-if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
-    $user_data = mysqli_fetch_assoc($user_query_run);
+// Get user_id, name, and balance from email using prepared statement
+$email = $_SESSION['email'];
+$user_query = "SELECT id, name, balance FROM users WHERE email = ? LIMIT 1";
+$stmt = $con->prepare($user_query);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$user_query_run = $stmt->get_result();
+if ($user_query_run && $user_query_run->num_rows > 0) {
+    $user_data = $user_query_run->fetch_assoc();
     $user_id = $user_data['id'];
     $user_name = $user_data['name'];
     $user_balance = $user_data['balance'];
@@ -38,10 +41,11 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
     header("Location: ../signin.php");
     exit(0);
 }
+$stmt->close();
 
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check for verification method (from verify.php or hidden input)
+    // Check for verification method
     if (!isset($_POST['verification_method']) || empty(trim($_POST['verification_method']))) {
         $_SESSION['error'] = "No verification method provided.";
         error_log("verify-complete.php - No verification method provided, redirecting to verify.php");
@@ -64,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle form submission for verify_payment
     if (isset($_POST['verify_payment'])) {
-        $amount = mysqli_real_escape_string($con, $_POST['amount']);
-        $name = mysqli_real_escape_string($con, $user_name);
+        $amount = $_POST['amount'];
+        $name = $user_name;
         $created_at = date('Y-m-d H:i:s');
         $updated_at = $created_at;
         $upload_path = null;
@@ -104,16 +108,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit(0);
         }
 
-        // Insert into deposits table
-        $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
-                         VALUES ('$amount', " . ($upload_path ? "'$upload_path'" : "NULL") . ", '$name', '$created_at', '$updated_at')";
-        if (mysqli_query($con, $insert_query)) {
-            $_SESSION['success'] = "Verification request submitted successfully.";
-            error_log("verify-complete.php - Verification request submitted" . ($upload_path ? " with payment proof: $upload_path" : " without payment proof"));
+        // Insert into deposits table using prepared statement
+        $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $con->prepare($insert_query);
+        $stmt->bind_param("dssss", $amount, $upload_path, $name, $created_at, $updated_at);
+        if ($stmt->execute()) {
+            // Update verify column in users table to 1
+            $update_query = "UPDATE users SET verify = 1 WHERE id = ?";
+            $update_stmt = $con->prepare($update_query);
+            $update_stmt->bind_param("i", $user_id);
+            if ($update_stmt->execute()) {
+                $_SESSION['success'] = "Verify Request Submitted";
+                error_log("verify-complete.php - Verification request submitted and verify column set to 1 for user_id: $user_id");
+            } else {
+                $_SESSION['error'] = "Failed to update verification status.";
+                error_log("verify-complete.php - Update verify column error: " . $update_stmt->error);
+            }
+            $update_stmt->close();
         } else {
             $_SESSION['error'] = "Failed to save verification request to database.";
-            error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
+            error_log("verify-complete.php - Insert query error: " . $stmt->error);
         }
+        $stmt->close();
     }
 } else {
     $_SESSION['error'] = "Invalid request method.";
@@ -122,16 +138,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit(0);
 }
 
-// Fetch amount from packages where max_a matches user balance
-$package_query = "SELECT amount, max_a FROM packages WHERE max_a = '$user_balance' LIMIT 1";
-$package_query_run = mysqli_query($con, $package_query);
-if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
-    $package_data = mysqli_fetch_assoc($package_query_run);
+// Fetch amount from packages where max_a matches user balance using prepared statement
+$package_query = "SELECT amount, max_a FROM packages WHERE max_a = ? LIMIT 1";
+$stmt = $con->prepare($package_query);
+$stmt->bind_param("d", $user_balance);
+$stmt->execute();
+$package_query_run = $stmt->get_result();
+if ($package_query_run && $package_query_run->num_rows > 0) {
+    $package_data = $package_query_run->fetch_assoc();
     $amount = $package_data['amount'];
 } else {
     $_SESSION['error'] = "No package found matching your balance.";
     error_log("verify-complete.php - No package found for balance: $user_balance");
 }
+$stmt->close();
 ?>
 
 <main id="main" class="main">
@@ -152,29 +172,17 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['success']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn btn-primary mt-2" onclick="window.location.href='withdrawals.php'">OK</button>
         </div>
-        <script>
-            console.log("Redirecting to users-profile.php in 3 seconds...");
-            setTimeout(() => {
-                window.location.href = '../users/users-profile.php';
-            }, 3000);
-        </script>
-    <?php }
-    unset($_SESSION['success']);
-    if (isset($_SESSION['error'])) { ?>
+        <?php unset($_SESSION['success']); ?>
+    <?php } elseif (isset($_SESSION['error'])) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['error']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn btn-primary mt-2" onclick="window.location.href='withdrawals.php'">OK</button>
         </div>
-        <script>
-            console.log("Redirecting to users-profile.php in 3 seconds due to error...");
-            setTimeout(() => {
-                window.location.href = '../users/users-profile.php';
-            }, 3000);
-        </script>
-    <?php }
-    unset($_SESSION['error']);
-    ?>
+        <?php unset($_SESSION['error']); ?>
+    <?php } ?>
 
     <?php if ($verification_method === "Local Bank Deposit/Transfer" && $amount !== null) { ?>
         <div class="container text-center">
@@ -186,16 +194,18 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                         </div>
                         <div class="card-body mt-2">
                             <?php
-                            // Fetch bank details from payment_details table
+                            // Fetch bank details from payment_details table using prepared statement
                             $query = "SELECT currency, network, momo_name, momo_number 
                                       FROM payment_details 
                                       WHERE network IS NOT NULL 
-                                      AND momo_number IS NOT NULL 
                                       AND momo_name IS NOT NULL 
+                                      AND momo_number IS NOT NULL 
                                       LIMIT 1";
-                            $query_run = mysqli_query($con, $query);
-                            if ($query_run && mysqli_num_rows($query_run) > 0) {
-                                $data = mysqli_fetch_assoc($query_run);
+                            $stmt = $con->prepare($query);
+                            $stmt->execute();
+                            $query_run = $stmt->get_result();
+                            if ($query_run && $query_run->num_rows > 0) {
+                                $data = $query_run->fetch_assoc();
                                 $currency = $data['currency'];
                             ?>
                                 <div class="mt-3">
@@ -220,6 +230,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                                 <?php
                                 error_log("verify-complete.php - No payment details found in payment_details table");
                             }
+                            $stmt->close();
                             ?>
                         </div>
                     </div>
