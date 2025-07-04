@@ -13,7 +13,6 @@ include('inc/navbar.php');
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index">Home</a></li>
-          <li class="breadcrumb-item">Users</li>
           <li class="breadcrumb-item active">Profile</li>
         </ol>
       </nav>
@@ -93,11 +92,6 @@ include('inc/navbar.php');
                   </div>
 
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Bitcoin Wallet</div>
-                    <div class="col-lg-9 col-md-8"><?= $btc_wallet ?></div>
-                  </div>
-
-                  <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
                     <div class="col-lg-9 col-md-8"><?= $_SESSION['email'] ?></div>
                   </div>
@@ -148,13 +142,6 @@ include('inc/navbar.php');
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="address" type="text" class="form-control" id="Address" value="<?= $address ?>">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Bitcoin Wallet</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="btc_wallet" type="text" class="form-control" id="Phone" value="<?= $btc_wallet ?>">
                       </div>
                     </div>
 
