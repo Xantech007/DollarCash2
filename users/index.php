@@ -2,6 +2,31 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
+include('inc/config.php'); // Assuming this file contains your database connection ($con)
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['error'] = "Please log in to view your dashboard.";
+    header("Location: login.php"); // Redirect to your login page
+    exit();
+}
+
+// Fetch user data (balance and name)
+$user_id = $_SESSION['user_id'];
+$query = "SELECT name, balance FROM users WHERE id = ?";
+$stmt = mysqli_prepare($con, $query);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$user = mysqli_fetch_assoc($result);
+mysqli_stmt_close($stmt);
+
+// Set variables for display
+$name = $user['name'] ?? 'User';
+$balance = $user['balance'] ?? '0.00';
+$cashtag = '@CashTag$' . $user_id; // Example: Generate unique cashtag based on user ID
+$account_change = '430'; // Placeholder; replace with actual logic if needed
+$routing = '329'; // Placeholder; replace with actual logic if needed
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +42,7 @@ include('inc/navbar.php');
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Fill the entire viewport height */
+            min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             padding: 10px;
@@ -25,12 +50,12 @@ include('inc/navbar.php');
         }
 
         .container {
-            flex: 1; /* Expand to fill available space */
+            flex: 1;
             max-width: 400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center content vertically; remove if you want it at the top */
+            justify-content: center;
         }
 
         .card {
@@ -127,7 +152,7 @@ include('inc/navbar.php');
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #f8f9fa; /* Match the image's footer color */
+            background-color: #f8f9fa;
             z-index: 1000;
             text-align: center;
             padding: 10px 0;
@@ -136,7 +161,7 @@ include('inc/navbar.php');
         }
 
         body {
-            padding-bottom: 60px; /* Prevent content from being hidden under the footer */
+            padding-bottom: 60px;
         }
 
         @media (max-width: 576px) {
@@ -152,11 +177,29 @@ include('inc/navbar.php');
 </head>
 <body>
     <div class="container">
+        <!-- Success/Error Messages -->
+        <?php
+        if (isset($_SESSION['success'])) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['success']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php }
+        unset($_SESSION['success']);
+        if (isset($_SESSION['error'])) { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['error']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php }
+        unset($_SESSION['error']);
+        ?>
+
         <!-- Cash Balance Card -->
         <div class="card">
             <div class="card-title">Cash balance</div>
-            <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '0.00'); ?></div>
-            
+            <div class="card-amount">$<?= htmlspecialchars(number_format($balance, 2)) ?></div>
+            <div class="card-detail">Account +$<?= htmlspecialchars($account_change) ?> Routing +<?= htmlspecialchars($routing) ?></div>
         </div>
 
         <!-- Action Buttons -->
@@ -168,14 +211,14 @@ include('inc/navbar.php');
         <!-- Available CashTag(s) Card -->
         <div class="card">
             <div class="card-title">Available CashTag(s):</div>
-            <div class="card-amount"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>
+            <div class="card-amount"><?= htmlspecialchars($cashtag) ?>
                 <button class="copy-btn" id="copyButton"><i class="bi bi-front"></i></button>
             </div>
         </div>
 
         <!-- New Section -->
         <div class="card">
-            <div class="card-title">Hello <?php echo htmlspecialchars($name ?? 'George Richie'); ?> Scan CashTags to Redeem Funds into Your Account</div>
+            <div class="card-title">Hello <?= htmlspecialchars($name) ?>! Scan CashTags to Redeem Funds into Your Account</div>
         </div>
 
         <!-- Explore Button -->
