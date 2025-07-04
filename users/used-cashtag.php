@@ -45,13 +45,13 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
         </nav>
     </div><!-- End Page Title -->
 
-    <div class="card shadow-sm">
+    <div class="card">
         <div class="card-body">
             <h5 class="card-title">Your CashTag History</h5>
-            <!-- Styled Table -->
+            <!-- Plain Table -->
             <div class="table-responsive">
-                <table class="table table-hover table-striped table-bordered">
-                    <thead class="table-dark">
+                <table class="table table-bordered">
+                    <thead>
                         <tr>
                             <th scope="col">CashTag</th>
                             <th scope="col">Used On</th>
@@ -67,59 +67,21 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
                         if (mysqli_num_rows($query_run) > 0) {
                             foreach ($query_run as $data) { ?>
                                 <tr>
-                                    <td class="fw-bold"><?= htmlspecialchars($data['cashtag']) ?></td>
+                                    <td><?= htmlspecialchars($data['cashtag']) ?></td>
                                     <td><?= date('d-M-Y H:i:s', strtotime($data['created_at'])) ?></td>
                                 </tr>
                             <?php }
                         } else { ?>
                             <tr>
-                                <td colspan="2" class="text-center text-muted">You have no used CashTags.</td>
+                                <td colspan="2" class="text-center">You have no used CashTags.</td>
                             </tr>
                         <?php } ?>
                     </tbody>
                 </table>
             </div>
-            <!-- End Styled Table -->
+            <!-- End Plain Table -->
         </div>
     </div>
 </main>
 
 <?php include('inc/footer.php'); ?>
-
-<!-- Inline CSS for Additional Styling -->
-<style>
-    .card {
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #333;
-    }
-    .table {
-        background-color: #fff;
-        border-radius: 8px;
-    }
-    .table th {
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    .table td {
-        vertical-align: middle;
-    }
-    .table-hover tbody tr:hover {
-        background-color: #f1f3f5;
-        transition: background-color 0.2s ease;
-    }
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #f8f9fa;
-    }
-    .table-bordered {
-        border: 1px solid #dee2e6;
-    }
-    .text-muted {
-        font-style: italic;
-    }
-    </style>
