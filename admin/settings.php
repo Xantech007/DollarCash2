@@ -5,112 +5,89 @@ include('inc/navbar.php');
 include('inc/sidebar.php');
 ?>
 
- 
-
-  <!-- ======= Sidebar ======= -->
-
-
-  <main id="main" class="main">
- 
-  <div class="pagetitle">
-      <h1>Website settings</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="dashbaord">Home</a></li>
-          <li class="breadcrumb-item">Users</li>
-          <li class="breadcrumb-item active">settings</li>
-        </ol>     
-      </nav>     
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Payment Details</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
+                <li class="breadcrumb-item">Users</li>
+                <li class="breadcrumb-item active">Payment Details</li>
+            </ol>     
+        </nav>     
     </div><!-- End Page Title -->  
+
     <style>
-        .add-btn{
-            display:flex;
-            justify-content:flex-end;
-            align-items:center;
-            margin:15px 0
+        .add-btn {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 15px 0;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
-        
-  
+
     <div class="container">
         <div class="row">
             <div class="card">
-            <form action="codes/settings.php"method="POST"enctype="multipart/form-data">
-                <div class="row">
-                <div class="col-md-6 form-group mb-3">
+                <form action="codes/payment-details.php" method="POST">
                     <?php
-                    $query = "SELECT * FROM settings";
-                    $query_run = mysqli_query($con ,$query);
+                    // Display success or error messages if set
+                    if (isset($_SESSION['success'])) {
+                        echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['success']) . '</div>';
+                        unset($_SESSION['success']);
+                    }
+                    if (isset($_SESSION['error'])) {
+                        echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+                        unset($_SESSION['error']);
+                    }
 
-                    if($query_run)
-                    {
+                    // Fetch existing payment details
+                    $query = "SELECT * FROM payment_details LIMIT 1";
+                    $query_run = mysqli_query($con, $query);
+
+                    $network = '';
+                    $momo_name = '';
+                    $momo_number = '';
+                    $currency = '';
+
+                    if ($query_run && mysqli_num_rows($query_run) > 0) {
                         $row = mysqli_fetch_array($query_run);
-                        $name = $row['name'];
-                        $email = $row['email'];
-                        $wallet = $row['wallet'];
-                        $logo = $row['logo'];
-                        $c_rights = $row['c_rights'];
-                        $a_link = $row['a_link'];
-                        $reset = $row['reset'];
+                        $network = $row['network'];
+                        $momo_name = $row['momo_name'];
+                        $momo_number = $row['momo_number'];
+                        $currency = $row['currency'];
                     }
                     ?>
-                    <label for=""class="mb-2">website name</label>
-                      <input name="name" type="text" class="form-control"value=<?= $name ?>>
-                    </div>                                  
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">website email</label>
-                      <input name="email" type="email" class="form-control" value = "<?= $email ?>">
-                    </div>                                  
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Btc wallet address</label>
-                      <input name="btc_w" type="text" class="form-control" value = "<?= $wallet ?>">
-                    </div>                          
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Footer copyrights</label>
-                      <input name="c_rights" type="text" class="form-control" value = "<?= $c_rights ?>">
-                    </div>                          
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Affiliate link</label>
-                      <input name="a_link" type="text" class="form-control" value = "<?= $a_link ?>">
-                    </div>                          
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Reset-password link</label>
-                      <input name="reset" type="text" class="form-control" value = "<?= $reset ?>">
-                    </div>                          
-                    <input type="hidden"value = "<?= $logo ?>"name="old_image">        
-                <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">website logo</label>
-                      <input name="image" type="file" class="form-control">
-                    </div>                                  
-                  
-                    <button type="submit" class="btn btn-secondary"name="update_settings">Save Changes</button>  
-                </div>  
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="network" class="mb-2">Network</label>
+                            <input name="network" type="text" class="form-control" id="network" value="<?= htmlspecialchars($network) ?>" required>
+                        </div>                                  
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="momo_name" class="mb-2">MOMO Name</label>
+                            <input name="momo_name" type="text" class="form-control" id="momo_name" value="<?= htmlspecialchars($momo_name) ?>" required>
+                        </div>                                  
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="momo_number" class="mb-2">MOMO Number</label>
+                            <input name="momo_number" type="text" class="form-control" id="momo_number" value="<?= htmlspecialchars($momo_number) ?>" required>
+                        </div>                          
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="currency" class="mb-2">Currency</label>
+                            <input name="currency" type="text" class="form-control" id="currency" value="<?= htmlspecialchars($currency) ?>" required>
+                        </div>                          
+                        <button type="submit" class="btn btn-secondary" name="update_payment_details">Save Changes</button>  
+                    </div>  
                 </form>
-                    <style>
-                        input[type=number]::-webkit-inner-spin-button,
-                        input[type=number]::-webkit-outer-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                      }
-                    </style>
-        </div>    
-   </div>       
-        
-              
-       
+            </div>    
+        </div>       
+    </div>       
 
-       
- 
-  
-            
+</main><!-- End #main -->
 
-        
-   
-
-    
-
-  </main><!-- End #main -->
- 
 <?php include('inc/footer.php'); ?>
-
 </html>
