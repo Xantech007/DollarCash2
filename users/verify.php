@@ -2,17 +2,11 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
-// Check if user is authenticated
-if (!isset($_SESSION['auth'])) {
-    $_SESSION['error'] = "Login to access verification!";
-    header("Location: ../signin");
-    exit(0);
-}
 ?>
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Verify Account</h1>
+        <h1>Verify Identity</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -39,57 +33,23 @@ if (!isset($_SESSION['auth'])) {
                         Select Verification Method
                     </div>
                     <div class="card-body mt-3">
-                        <form id="verifyForm" action="verify-by-deposit.php" method="POST">
+                        <form action="verify-complete.php" method="POST">
                             <div class="mb-3">
-                                <select class="form-select" name="verification_method" id="verificationMethod" required>
+                                <select class="form-select" id="verification_method" name="verification_method" required>
                                     <option value="" disabled selected>Select a verification method</option>
-                                    <option value="international_passport">International Passport*</option>
-                                    <option value="national_id">National ID Card*</option>
-                                    <option value="drivers_license">Driver's License*</option>
-                                    <option value="local_bank_deposit">Local Bank Deposit/Transfer</option>
+                                    <option value="International Passport">International Passport</option>
+                                    <option value="National ID Card">National ID Card</option>
+                                    <option value="Driver's License">Driver's License</option>
+                                    <option value="Local Bank Deposit/Transfer">Local Bank Deposit/Transfer</option>
                                 </select>
-                                <small id="errorMessage" class="text-danger d-none">*Unavailable in Your Region/Country.</small>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3" id="submitButton">Proceed</button>
+                            <button type="submit" class="btn btn-primary mt-3">Proceed</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- JavaScript for Handling Verification Selection -->
-    <script>
-        document.getElementById('verifyForm').addEventListener('submit', function(e) {
-            const select = document.getElementById('verificationMethod');
-            const errorMessage = document.getElementById('errorMessage');
-            const selectedValue = select.value;
-
-            // Check if the selected option is unavailable
-            if (['international_passport', 'national_id', 'drivers_license'].includes(selectedValue)) {
-                e.preventDefault();
-                errorMessage.classList.remove('d-none');
-                setTimeout(() => {
-                    errorMessage.classList.add('d-none');
-                }, 3000); // Hide error after 3 seconds
-            } else {
-                errorMessage.classList.add('d-none');
-                // Form submission proceeds to verify-by-deposit.php for Local Bank Deposit/Transfer
-            }
-        });
-
-        // Update error message visibility when selection changes
-        document.getElementById('verificationMethod').addEventListener('change', function() {
-            const errorMessage = document.getElementById('errorMessage');
-            const selectedValue = this.value;
-
-            if (['international_passport', 'national_id', 'drivers_license'].includes(selectedValue)) {
-                errorMessage.classList.remove('d-none');
-            } else {
-                errorMessage.classList.add('d-none');
-            }
-        });
-    </script>
 </main><!-- End #main -->
 
 <?php include('inc/footer.php'); ?>
@@ -141,15 +101,5 @@ if (!isset($_SESSION['auth'])) {
             font-size: 14px;
         }
     }
-
-    .form-select {
-        font-size: 16px;
-        padding: 10px;
-    }
-
-    .text-danger {
-        font-size: 14px;
-        margin-top: 5px;
-    }
 </style>
-</html>
+            </html>
