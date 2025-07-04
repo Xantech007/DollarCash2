@@ -12,16 +12,26 @@ include('inc/navbar.php');
         <?php
         $email = $_SESSION['email'];
 
-        $query = "SELECT balance, verify FROM users WHERE email='$email'";
-        $query_run = mysqli_query($con, $query);
+        // Fetch balance and verify status using prepared statement
+        $query = "SELECT balance, verify FROM users WHERE email = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $query_run = $stmt->get_result();
         
-        if ($query_run) {
-            $row = mysqli_fetch_array($query_run);
+        if ($query_run && $query_run->num_rows > 0) {
+            $row = $query_run->fetch_assoc();
             $balance = $row['balance'];
             $verify = $row['verify'] ?? 0; // Default to 0 if not set
+        } else {
+            $balance = 0;
+            $verify = 0;
+            $_SESSION['error'] = "User not found.";
+            error_log("withdrawals.php - User not found for email: $email");
         }
+        $stmt->close();
         ?>
-        <h1>Available Balance: $<?= $balance ?></h1>
+        <h1>Available Balance: $<?= htmlspecialchars($balance) ?></h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -30,22 +40,30 @@ include('inc/navbar.php');
             </ol>
         </nav>
     </div><!-- End Page Title -->   
+
+    <!-- Error/Success Messages -->
     <?php  
-    if (isset($_SESSION['error'])) { ?>
+    if ($verify == 1) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <?= $_SESSION['error'] ?>
+            Account Verification Under Review
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>               
+    <?php } elseif (isset($_SESSION['error'])) { ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['error']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>               
     <?php } 
     unset($_SESSION['error']);
     if (isset($_SESSION['success'])) { ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?= $_SESSION['success'] ?>
+            <?= htmlspecialchars($_SESSION['success']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>               
     <?php } 
     unset($_SESSION['success']);
     ?> 
+
     <style> 
         .form1 {
             padding: 10px 10px;
@@ -78,7 +96,7 @@ include('inc/navbar.php');
                 margin: auto;
             }
         }
-        /* Added styles for Verify Account button */
+        /* Styles for Verify Account button */
         .action-buttons {
             display: flex;
             justify-content: space-between;
@@ -106,7 +124,7 @@ include('inc/navbar.php');
             <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
 
             <!-- Basic Modal -->
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered" <?php if ($verify == 1) echo 'disabled'; ?>>
                 Request Withdrawal
             </button>
             <div class="modal fade" id="verticalycentered" tabindex="-1">
@@ -136,8 +154,8 @@ include('inc/navbar.php');
                                         <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
                                         <span>MOMO Number</span>
                                     </div>
-                                    <input type="hidden" value="<?= $_SESSION['email'] ?>" name="email">                                            
-                                    <input type="hidden" value="<?= $balance ?>" name="balance">                                            
+                                    <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">                                            
+                                    <input type="hidden" value="<?= htmlspecialchars($balance) ?>" name="balance">                                            
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -184,11 +202,13 @@ include('inc/navbar.php');
                     </thead>
                     <tbody>
                         <?php
-                        $email = $_SESSION['email'];
-                        $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email='$email'";
-                        $query_run = mysqli_query($con, $query);
-                        if (mysqli_num_rows($query_run) > 0) { 
-                            foreach ($query_run as $data) { ?>
+                        $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email = ?";
+                        $stmt = $con->prepare($query);
+                        $stmt->bind_param("s", $email);
+                        $stmt->execute();
+                        $query_run = $stmt->get_result();
+                        if ($query_run->num_rows > 0) { 
+                            while ($data = $query_run->fetch_assoc()) { ?>
                                 <tr>                                       
                                     <td>$<?= htmlspecialchars($data['amount']) ?></td>
                                     <td><?= htmlspecialchars($data['network']) ?></td>
@@ -207,6 +227,7 @@ include('inc/navbar.php');
                                 </tr>
                             <?php }        
                         }
+                        $stmt->close();
                         ?>
                     </tbody>
                 </table>
@@ -238,5 +259,4 @@ include('inc/navbar.php');
 </script> 
 
 <?php include('inc/footer.php'); ?>
-
-</html>
+                    </html>
