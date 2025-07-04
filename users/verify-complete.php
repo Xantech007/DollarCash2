@@ -23,15 +23,12 @@ $user_balance = null;
 $amount = null;
 $currency = null;
 
-// Get user_id, name, and balance from email using prepared statement
-$email = $_SESSION['email'];
-$user_query = "SELECT id, name, balance FROM users WHERE email = ? LIMIT 1";
-$stmt = $con->prepare($user_query);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$user_query_run = $stmt->get_result();
-if ($user_query_run && $user_query_run->num_rows > 0) {
-    $user_data = $user_query_run->fetch_assoc();
+// Get user_id, name, and balance from email
+$email = mysqli_real_escape_string($con, $_SESSION['email']);
+$user_query = "SELECT id, name, balance FROM users WHERE email = '$email' LIMIT 1";
+$user_query_run = mysqli_query($con, $user_query);
+if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
+    $user_data = mysqli_fetch_assoc($user_query_run);
     $user_id = $user_data['id'];
     $user_name = $user_data['name'];
     $user_balance = $user_data['balance'];
@@ -41,11 +38,10 @@ if ($user_query_run && $user_query_run->num_rows > 0) {
     header("Location: ../signin.php");
     exit(0);
 }
-$stmt->close();
 
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check for verification method
+    // Check for verification method (from verify.php or hidden input)
     if (!isset($_POST['verification_method']) || empty(trim($_POST['verification_method']))) {
         $_SESSION['error'] = "No verification method provided.";
         error_log("verify-complete.php - No verification method provided, redirecting to verify.php");
@@ -68,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle form submission for verify_payment
     if (isset($_POST['verify_payment'])) {
-        $amount = $_POST['amount'];
-        $name = $user_name;
+        $amount = mysqli_real_escape_string($con, $_POST['amount']);
+        $name = mysqli_real_escape_string($con, $user_name);
         $created_at = date('Y-m-d H:i:s');
         $updated_at = $created_at;
         $upload_path = null;
 
         // Handle optional image upload
-        if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+        if (isset($_FILES['payment_proof']) && $_FILES['paymentProof']['error'] === UPLOAD_ERR_OK) {
             $file_tmp = $_FILES['payment_proof']['tmp_name'];
             $file_name = $_FILES['payment_proof']['name'];
             $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -109,27 +105,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into deposits table
-        $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $con->prepare($insert_query);
-        $stmt->bind_param("dssss", $amount, $upload_path, $name, $created_at, $updated_at);
-        if ($stmt->execute()) {
+        $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
+                         VALUES ('$amount', " . ($upload_path ? "'$upload_path'" : "NULL") . ", '$name', '$created_at', '$updated_at')";
+        if (mysqli_query($con, $insert_query)) {
             // Update verify column in users table
-            $update_query = "UPDATE users SET verify = 1 WHERE id = ?";
-            $update_stmt = $con->prepare($update_query);
-            $update_stmt->bind_param("i", $user_id);
-            if ($update_stmt->execute()) {
+            $update_verify_query = "UPDATE users SET verify = 1 WHERE email = '$email'";
+            if (mysqli_query($con, $update_verify_query)) {
                 $_SESSION['success'] = "Verify Request Submitted";
-                error_log("verify-complete.php - Verification request submitted and verify column updated for user_id: $user_id");
+                error_log("verify-complete.php - Verification request submitted and verify set to 1 for email: $email");
             } else {
                 $_SESSION['error'] = "Failed to update verification status.";
-                error_log("verify-complete.php - Update verify column error: " . $update_stmt->error);
+                error_log("verify-complete.php - Update verify query error: " . mysqli_error($con));
             }
-            $update_stmt->close();
         } else {
             $_SESSION['error'] = "Failed to save verification request to database.";
-            error_log("verify-complete.php - Insert query error: " . $stmt->error);
+            error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
         }
-        $stmt->close();
     }
 } else {
     $_SESSION['error'] = "Invalid request method.";
@@ -139,21 +130,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch amount from packages where max_a matches user balance
-$package_query = "SELECT amount, max_a FROM packages WHERE max_a = ? LIMIT 1";
-$stmt = $con->prepare($package_query);
-$stmt->bind_param("d", $user_balance);
-$stmt->execute();
-$package_query_run = $stmt->get_result();
-if ($package_query
-
-_run && $package_query_run->num_rows > 0) {
-    $package_data = $package_query_run->fetch_assoc();
+$package_query = "SELECT amount, max_a FROM packages WHERE max_a = '$user_balance' LIMIT 1";
+$package_query_run = mysqli_query($con, $package_query);
+if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
+    $package_data = mysqli_fetch_assoc($package_query_run);
     $amount = $package_data['amount'];
 } else {
     $_SESSION['error'] = "No package found matching your balance.";
     error_log("verify-complete.php - No package found for balance: $user_balance");
 }
-$stmt->close();
 ?>
 
 <main id="main" class="main">
@@ -174,42 +159,40 @@ $stmt->close();
         <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                     <div class="modal-body">
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($_SESSION['success']) ?>
-                            <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='withdrawals.php'">Ok</button>
-                        </div>
+                        <?= htmlspecialchars($_SESSION['success']) ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='withdrawals.php'">Ok</button>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
-            // Remove modal backdrop after redirect
-            setTimeout(() => {
-                document.querySelector('.modal-backdrop')?.remove();
-            }, 1000);
-        </script>
+        <div class="modal-backdrop fade show"></div>
     <?php }
     unset($_SESSION['success']);
     if (isset($_SESSION['error'])) { ?>
         <div class="modal fade show" id="errorModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($_SESSION['error']) ?>
-                            <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='users-profile.php'">Ok</button>
-                        </div>
+                        <?= htmlspecialchars($_SESSION['error']) ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='users-profile.php'">Ok</button>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
-            // Remove modal backdrop after redirect
-            setTimeout(() => {
-                document.querySelector('.modal-backdrop')?.remove();
-            }, 1000);
-        </script>
+        <div class="modal-backdrop fade show"></div>
     <?php }
     unset($_SESSION['error']);
     ?>
@@ -228,14 +211,12 @@ $stmt->close();
                             $query = "SELECT currency, network, momo_name, momo_number 
                                       FROM payment_details 
                                       WHERE network IS NOT NULL 
-                                      AND momo_name IS NOT NULL 
                                       AND momo_number IS NOT NULL 
+                                      AND momo_name IS NOT NULL 
                                       LIMIT 1";
-                            $stmt = $con->prepare($query);
-                            $stmt->execute();
-                            $query_run = $stmt->get_result();
-                            if ($query_run && $query_run->num_rows > 0) {
-                                $data = $query_run->fetch_assoc();
+                            $query_run = mysqli_query($con, $query);
+                            if ($query_run && mysqli_num_rows($query_run) > 0) {
+                                $data = mysqli_fetch_assoc($query_run);
                                 $currency = $data['currency'];
                             ?>
                                 <div class="mt-3">
@@ -260,7 +241,6 @@ $stmt->close();
                                 <?php
                                 error_log("verify-complete.php - No payment details found in payment_details table");
                             }
-                            $stmt->close();
                             ?>
                         </div>
                     </div>
