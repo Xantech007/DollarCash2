@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ensure only Local Bank Deposit/Transfer proceeds
     if ($verification_method !== "Local Bank Deposit/Transfer") {
         $_SESSION['error'] = "Invalid verification method selected.";
-        error_log("verify-complete.php - Invalid verification method: $verification_method, redirecting to verify.php");
+        error_log("verify-complete.php - Unavailable in Your Country, Try Another Method.: $verification_method, redirecting to verify.php");
         header("Location: verify.php");
         exit(0);
     }
