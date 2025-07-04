@@ -51,7 +51,7 @@ include('inc/sidebar.php');
                 <div class="row">
                     <?php
                     // Query packages for current cashtag
-                    $query = "SELECT * FROM packages WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' ORDER BY created_at DESC";
+                    $query = "SELECT id, name, cashtag, max_a, amount, dashboard FROM packages WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' ORDER BY created_at DESC";
                     $query_run = mysqli_query($con, $query);
                     
                     if ($query_run && mysqli_num_rows($query_run) > 0) {
@@ -65,7 +65,8 @@ include('inc/sidebar.php');
                                     <div class="card-body mt-2">
                                         <div class="mt-3">
                                             <h6>CashTag: <?php echo htmlspecialchars($data['cashtag']); ?></h6>
-                                            <h6>Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
+                                            <h6>Max Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
+                                            <h6>Charges: $<?php echo htmlspecialchars(number_format($data['amount'], 2)); ?></h6>
                                             <h6>Show on Dashboard: 
                                                 <span class="dashboard-status <?php echo $data['dashboard'] == 'enabled' ? '' : 'disabled'; ?>">
                                                     <?php echo $data['dashboard'] == 'enabled' ? '✔' : '✗'; ?>
