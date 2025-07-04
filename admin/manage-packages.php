@@ -51,11 +51,11 @@ include('inc/sidebar.php');
                             <?= $data['name'] ?>                      
                         </div>
                              <div class="card-body mt-2">
-                            <h4><?= $data['duration'] ?></h4>
-                            <h5 class="text-muted"><?= $data['percent'] ?>% return</h5> 
+                            
+                            
                             <div class="mt-3">
-                                <h6 class="mb-3">minimum: $<?= $data['min_a'] ?> </h6>                       
-                                <h6>maixmum: $<?= $data['max_a'] ?> </h6>
+                                                       
+                                <h6>Amount: $<?= $data['max_a'] ?> </h6>
                             </div>
                             <div class="mt-3">                          
                                 <form action="../codes/packages.php"method="POST">
