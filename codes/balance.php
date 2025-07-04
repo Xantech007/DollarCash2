@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../inc/config.php'); // Assuming this file contains your database connection ($con)
+include('../config/dbcon.php'); // Assuming this file contains your database connection ($con)
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
