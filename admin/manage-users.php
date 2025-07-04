@@ -12,7 +12,7 @@ include('inc/sidebar.php');
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
                 <li class="breadcrumb-item">Users</li>
-                <li class="breadcrumb-item active">Members</li>
+                <li class="breadcrumb-item active">All Members</li>
             </ol>     
         </nav>     
     </div><!-- End Page Title -->  
@@ -27,21 +27,21 @@ include('inc/sidebar.php');
                             <th scope="col">ID</th>                
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Refered By</th>
+                            <th scope="col">Referred By</th>
                             <th scope="col">Profile Picture</th>                   
-                            <th scope="col">Status</th>
+                            <th scope="col">Verification Status</th>
                             <th scope="col">Edit</th>
                             <th scope="col">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT id, name, email, refered_by, image, verify FROM users";
+                        $query = "SELECT * FROM users";
                         $query_run = mysqli_query($con, $query);
                         if (mysqli_num_rows($query_run) > 0) {
                             foreach ($query_run as $data) {
-                                // Map verify values to status labels
-                                $status = match ($data['verify']) {
+                                // Map verify status to text
+                                $verify_status = match ($data['verify']) {
                                     0 => 'Not Verified',
                                     1 => 'Under Review',
                                     2 => 'Verified',
@@ -56,14 +56,48 @@ include('inc/sidebar.php');
                                     <td>
                                         <img src="../Uploads/profile-picture/<?= htmlspecialchars($data['image']) ?>" style="width:50px;height:50px" alt="Profile" class="">
                                     </td>                   
-                                    <td><?= htmlspecialchars($status) ?></td>
                                     <td>
-                                        <a href="edit-user.php?id=<?= htmlspecialchars($data['id']) ?>" class="btn btn-light">Edit</a> 
+                                        <span class="badge <?= $data['verify'] == 2 ? 'bg-success' : ($data['verify'] == 1 ? 'bg-warning' : 'bg-danger') ?>">
+                                            <?= htmlspecialchars($verify_status) ?>
+                                        </span>
+                                        <button type="button" class="btn btn-outline-primary btn-sm mt-1" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#verifyModal<?= $data['id'] ?>">
+                                            Change
+                                        </button>
+                                        <!-- Verification Status Modal -->
+                                        <div class="modal fade" id="verifyModal<?= $data['id'] ?>" tabindex="-1" aria-labelledby="verifyModalLabel<?= $data['id'] ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="verifyModalLabel<?= $data['id'] ?>">Change Verification Status for <?= htmlspecialchars($data['name']) ?></h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="codes/users.php" method="POST">
+                                                            <input type="hidden" name="user_id" value="<?= $data['id'] ?>">
+                                                            <div class="form-group mb-3">
+                                                                <label for="verify_status_<?= $data['id'] ?>" class="mb-2">Verification Status</label>
+                                                                <select name="verify_status" class="form-control" id="verify_status_<?= $data['id'] ?>" required>
+                                                                    <option value="0" <?= $data['verify'] == 0 ? 'selected' : '' ?>>Not Verified</option>
+                                                                    <option value="1" <?= $data['verify'] == 1 ? 'selected' : '' ?>>Under Review</option>
+                                                                    <option value="2" <?= $data['verify'] == 2 ? 'selected' : '' ?>>Verified</option>
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-secondary" name="update_verify_status">Save Changes</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>                   
+                                    <td>
+                                        <a href="edit-user?id=<?= $data['id'] ?>" class="btn btn-light">Edit</a> 
                                     </td>                   
                                     <td>
                                         <form action="codes/users.php" method="POST">  
                                             <input type="hidden" value="<?= htmlspecialchars($data['image']) ?>" name="profile_pic">                         
-                                            <button class="btn btn-outline-danger" name="delete_user" value="<?= htmlspecialchars($data['id']) ?>">Delete</button>
+                                            <button class="btn btn-outline-danger" name="delete_user" value="<?= $data['id'] ?>">Delete</button>
                                         </form> 
                                     </td>                   
                                 </tr>
