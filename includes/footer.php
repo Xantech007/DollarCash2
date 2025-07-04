@@ -16,37 +16,6 @@
                 </div>
             </div>
             <div class="col-sm-6 col-lg-4">
-                <div class="footer-widget info-link-widget">
-                    <h4 class="title">
-                        Quick Links
-                    </h4>
-                    <ul class="link-list">
-                        <li>
-                            <a href="index">
-                                <i class="fas fa-angle-double-right"></i>Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="about">
-                                <i class="fas fa-angle-double-right"></i>About
-                            </a>
-                        </li>
-                        <li>
-                            <a href="faq">
-                                <i class="fas fa-angle-double-right"></i>FAQ
-                            </a>
-                        </li>
-                        <li>
-                            
-                        <li>
-                            <a href="contact">
-                                <i class="fas fa-angle-double-right"></i>Contact
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
                 <div class="footer-widget info-link-widget link-w-2">
                     <h4 class="title">
                         Company
