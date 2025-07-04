@@ -8,14 +8,14 @@ if(isset($_POST['withdraw']))
     $amount = mysqli_real_escape_string($con,$_POST['amount']);
     $balance = mysqli_real_escape_string($con,$_POST['balance']);
     
-    if($amount >= 100)
+    if($amount >= 50) // Changed from 100 to 50
     {
         if($balance >= $amount)
         {
            $query = "INSERT INTO withdrawals(email,amount) VALUES ('$email','$amount')";
            $query_run = mysqli_query($con, $query);
     
-           if($query)
+           if($query_run) // Fixed variable name from $query to $query_run
            {
             $new_balance = $balance - $amount;
     
@@ -40,12 +40,12 @@ if(isset($_POST['withdraw']))
     }
     else
     {
-        $_SESSION['warning'] = "Minimum withdrawal is set at $100";
+        $_SESSION['warning'] = "Minimum withdrawal is set at $50"; // Updated message
         header("Location: ../users/withdrawals");
         exit(0);
     }
-
 }
+
 if(isset($_POST['delete']))
 {
    $id = $_POST['delete'];  
@@ -65,6 +65,4 @@ if(isset($_POST['delete']))
         header("Location: ../users/withdrawals");
         exit(0);
     }
-  
 }
-
