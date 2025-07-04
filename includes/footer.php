@@ -10,9 +10,7 @@
                         <img src="uploads/logo/<?= $logo_image  ?>" alt=""style="width:250px">
                     </div>
                     <div class="about-content">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor nemo error sit voluptatem consectetur repellat.
-                        </p>
+                        
                     </div>
                 
                 </div>
@@ -24,27 +22,24 @@
                     </h4>
                     <ul class="link-list">
                         <li>
-                            <a href="#">
+                            <a href="index">
                                 <i class="fas fa-angle-double-right"></i>Home
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="about">
                                 <i class="fas fa-angle-double-right"></i>About
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="faq">
                                 <i class="fas fa-angle-double-right"></i>FAQ
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i>investors
-                            </a>
-                        </li>
+                            
                         <li>
-                            <a href="#">
+                            <a href="contact">
                                 <i class="fas fa-angle-double-right"></i>Contact
                             </a>
                         </li>
