@@ -7,11 +7,10 @@ include('inc/navbar.php');
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Scan Input</h1>
+        <h1>Scan CashTag</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
-                <li class="breadcrumb-item">Tools</li>
                 <li class="breadcrumb-item active">Scan</li>
             </ol>
         </nav>
@@ -32,10 +31,10 @@ include('inc/navbar.php');
             <div class="col-md-6">
                 <div class="card text-center">
                     <div class="card-header">
-                        Scan Input
+                        Input CashTag to Scan
                     </div>
                     <div class="card-body mt-3">
-                        <form action="scan-action.php" method="POST">
+                        <form action="scan-results.php" method="POST">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" id="text" name="scan_input" placeholder="Paste or type your input here">
                                 <button type="button" class="btn btn-outline-secondary" id="button"><i class="bi bi-clipboard"></i></button>
