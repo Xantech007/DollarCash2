@@ -13,7 +13,7 @@ include('inc/sidebar.php');
   <main id="main" class="main">
  
   <div class="pagetitle">
-      <h1>Manage Investment Plans</h1>
+      <h1>Manage Packages</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="dashbaord">Home</a></li>
@@ -48,9 +48,9 @@ include('inc/sidebar.php');
                     {
                         $row = mysqli_fetch_array($query_run);
                         $name = $row['name'];
-                        $duration = $row['duration'];
-                        $percent = $row['percent'];
-                        $min = $row['min_a'];
+                        
+                        
+                        
                         $max = $row['max_a'];
                         $id = $row['id'];
                         $status = $row['status'];
@@ -62,20 +62,11 @@ include('inc/sidebar.php');
                     <label for=""class="mb-2">Package name</label>
                       <input name="name" type="text" class="form-control"required value="<?= $name ?>">
                     </div>                                  
+                    
+                    
+                    
                     <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Package duration</label>
-                      <input name="duration" type="text" class="form-control"required  value="<?= $duration ?>">
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Percentage return</label>
-                      <input name="percent" type="number" class="form-control"required value="<?= $percent ?>" >
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">minimum amount</label>
-                      <input name="min_amount" type="number" class="form-control"required value="<?= $min ?>" >
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Maximum amount</label>
+                    <label for=""class="mb-2">Amount</label>
                       <input name="max_amount" type="number" class="form-control"required value="<?= $max ?>">
                     </div> 
                     <div class="col-md-6 form-group mb-3">
