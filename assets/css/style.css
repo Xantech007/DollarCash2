@@ -614,12 +614,10 @@ select:focus {
   padding-top: 100px;
   overflow: hidden;
   position: relative;
-  background-image: none;
-  background-color: #04091e; /* Optional: matches the gradient's dark tone */
-  background-size: cover;
+  background-image:linear-gradient(rgba(4,9,30,0.96),rgba(4,9,30,0.96)),url(../images/bitcoin3.jpg);
+  background-size:cover;
   background-repeat: no-repeat;
-  background-position: center;
-  }
+  background-position:center;
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
