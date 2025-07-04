@@ -1,8 +1,8 @@
 <?php
 session_start();
 include('../config/dbcon.php'); // Updated database connection path
-include('../inc/header.php');
-include('../inc/navbar.php');
+include('inc/header.php');
+include('inc/navbar.php');
 ?>
 
 <main id="main" class="main">
@@ -86,4 +86,4 @@ include('../inc/navbar.php');
   </div>
 </main>
 
-<?php include('../inc/footer.php'); ?>
+<?php include('inc/footer.php'); ?>
