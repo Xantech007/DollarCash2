@@ -12,7 +12,7 @@ include('inc/sidebar.php');
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
                 <li class="breadcrumb-item">Users</li>
-                <li class="breadcrumb-item active">packages</li>
+                <li class="breadcrumb-item active">Packages</li>
             </ol>     
         </nav>     
     </div>
@@ -22,7 +22,14 @@ include('inc/sidebar.php');
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 15px 0
+            margin: 15px 0;
+        }
+        .dashboard-status {
+            font-size: 1.2em;
+            color: #28a745; /* Green for enabled */
+        }
+        .dashboard-status.disabled {
+            color: #dc3545; /* Red for disabled */
         }
     </style>
 
@@ -59,6 +66,11 @@ include('inc/sidebar.php');
                                         <div class="mt-3">
                                             <h6>CashTag: <?php echo htmlspecialchars($data['cashtag']); ?></h6>
                                             <h6>Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
+                                            <h6>Show on Dashboard: 
+                                                <span class="dashboard-status <?php echo $data['dashboard'] == 'enabled' ? '' : 'disabled'; ?>">
+                                                    <?php echo $data['dashboard'] == 'enabled' ? '✔' : '✗'; ?>
+                                                </span>
+                                            </h6>
                                         </div>
                                         <div class="mt-3">                          
                                             <form action="../codes/packages.php" method="POST">
@@ -86,4 +98,4 @@ include('inc/sidebar.php');
 </main>
 
 <?php include('inc/footer.php'); ?>
-         </html>
+    </html>
