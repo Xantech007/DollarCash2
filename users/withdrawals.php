@@ -1,7 +1,39 @@
 <?php
 session_start();
+include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
+
+// Check if user is logged in
+if (!isset($_SESSION['auth'])) {
+    $_SESSION['error'] = "Please log in to access this page.";
+    header("Location: ../signin.php");
+    exit(0);
+}
+
+// Get user balance and verify status
+$email = $_SESSION['email'];
+$query = "SELECT balance, verify FROM users WHERE email = ?";
+$stmt = $con->prepare($query);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$query_run = $stmt->get_result();
+if ($query_run && $query_run->num_rows > 0) {
+    $row = $query_run->fetch_assoc();
+    $balance = $row['balance'];
+    $verify = $row['verify'] ?? 0;
+} else {
+    $_SESSION['error'] = "User not found.";
+    header("Location: ../signin.php");
+    exit(0);
+}
+$stmt->close();
+
+// Redirect to verify.php if verify is 0
+if ($verify == 0) {
+    header("Location: verify.php");
+    exit(0);
+}
 ?>
 
 <!-- ======= Sidebar ======= -->
@@ -9,28 +41,6 @@ include('inc/navbar.php');
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <?php
-        $email = $_SESSION['email'];
-
-        // Fetch balance and verify status using prepared statement
-        $query = "SELECT balance, verify FROM users WHERE email = ?";
-        $stmt = $con->prepare($query);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $query_run = $stmt->get_result();
-        
-        if ($query_run && $query_run->num_rows > 0) {
-            $row = $query_run->fetch_assoc();
-            $balance = $row['balance'];
-            $verify = $row['verify'] ?? 0; // Default to 0 if not set
-        } else {
-            $balance = 0;
-            $verify = 0;
-            $_SESSION['error'] = "User not found.";
-            error_log("withdrawals.php - User not found for email: $email");
-        }
-        $stmt->close();
-        ?>
         <h1>Available Balance: $<?= htmlspecialchars($balance) ?></h1>
         <nav>
             <ol class="breadcrumb">
@@ -41,14 +51,9 @@ include('inc/navbar.php');
         </nav>
     </div><!-- End Page Title -->   
 
-    <!-- Error/Success Messages -->
+    <!-- Success/Error Messages -->
     <?php  
-    if ($verify == 1) { ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            Account Verification Under Review
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>               
-    <?php } elseif (isset($_SESSION['error'])) { ?>
+    if (isset($_SESSION['error'])) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['error']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -62,12 +67,31 @@ include('inc/navbar.php');
         </div>               
     <?php } 
     unset($_SESSION['success']);
-    ?> 
-
+    // Show verification under review message if verify is 1
+    if ($verify == 1) { ?>
+        <div class="modal fade show" id="verifyReviewModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Verification Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Account Verification Under Review</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    <?php } ?>
+    
     <style> 
         .form1 {
             padding: 10px 10px;
-            width: 300px;
+            width滴        width: 300px;
             background: white;
             display: flex;
             justify-content: space-between;
@@ -124,7 +148,7 @@ include('inc/navbar.php');
             <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
 
             <!-- Basic Modal -->
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered" <?php if ($verify == 1) echo 'disabled'; ?>>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
                 Request Withdrawal
             </button>
             <div class="modal fade" id="verticalycentered" tabindex="-1">
@@ -202,6 +226,7 @@ include('inc/navbar.php');
                     </thead>
                     <tbody>
                         <?php
+                        $email = $_SESSION['email'];
                         $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email = ?";
                         $stmt = $con->prepare($query);
                         $stmt->bind_param("s", $email);
@@ -237,11 +262,11 @@ include('inc/navbar.php');
     </div>
 
     <!-- Verify Account Button -->
-    <?php if ($verify == 0): ?>
+    <?php if ($verify == 0) { ?>
         <div class="action-buttons">
             <a href="verify.php" class="btn btn-verify">Verify Account</a>
         </div>
-    <?php endif; ?>
+    <?php } ?>
 
 </main><!-- End #main -->
 
@@ -259,4 +284,5 @@ include('inc/navbar.php');
 </script> 
 
 <?php include('inc/footer.php'); ?>
-</html>
+
+                </html>
