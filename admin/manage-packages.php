@@ -13,7 +13,7 @@ include('inc/sidebar.php');
   <main id="main" class="main">
  
   <div class="pagetitle">
-      <h1>Manage Investment Plans</h1>
+      <h1>Manage Packages</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
