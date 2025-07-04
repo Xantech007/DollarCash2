@@ -16,12 +16,32 @@ include('inc/navbar.php');
     </nav>
   </div><!-- End Page Title -->
 
+  <!-- Success/Error Messages -->
   <?php
-  if (isset($_SESSION['error'])) { ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <?= $_SESSION['error'] ?>
+  if (isset($_SESSION['success'])) { ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <?= htmlspecialchars($_SESSION['success']) ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <script>
+      // Redirect to ../users/index.php after 3 seconds
+      setTimeout(() => {
+        window.location.href = '../users/index.php';
+      }, 3000);
+    </script>
+  <?php }
+  unset($_SESSION['success']);
+  if (isset($_SESSION['error'])) { ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <?= htmlspecialchars($_SESSION['error']) ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <script>
+      // Redirect to ../users/index.php after 3 seconds
+      setTimeout(() => {
+        window.location.href = '../users/index.php';
+      }, 3000);
+    </script>
   <?php }
   unset($_SESSION['error']);
   ?>
@@ -44,7 +64,7 @@ include('inc/navbar.php');
                 </div>
                 <div class="mt-3">
                   <form action="../codes/balance.php" method="POST">
-                    <input type="hidden" name="package_id" value="<?= $data['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $data['id'] ?>">
                     <button type="submit" name="add_balance" class="btn btn-outline-secondary mt-3">Add Balance</button>
                   </form>
                 </div>
