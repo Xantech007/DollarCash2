@@ -40,12 +40,18 @@ include('inc/sidebar.php');
                         $query_run = mysqli_query($con, $query);
                         if (mysqli_num_rows($query_run) > 0) {
                             foreach ($query_run as $data) {
-                                // Map verify status to text
-                                $verify_status = match ($data['verify']) {
+                                // Map verify status to text, defaulting NULL or invalid to Not Verified
+                                $verify_status = match ((int)$data['verify']) {
                                     0 => 'Not Verified',
                                     1 => 'Under Review',
                                     2 => 'Verified',
-                                    default => 'Unknown'
+                                    default => 'Not Verified' // Handle NULL or invalid values
+                                };
+                                $verify_badge_class = match ((int)$data['verify']) {
+                                    0, null => 'bg-danger',
+                                    1 => 'bg-warning',
+                                    2 => 'bg-success',
+                                    default => 'bg-danger' // Handle NULL or invalid values
                                 };
                         ?>
                                 <tr>                                       
@@ -57,7 +63,7 @@ include('inc/sidebar.php');
                                         <img src="../Uploads/profile-picture/<?= htmlspecialchars($data['image']) ?>" style="width:50px;height:50px" alt="Profile" class="">
                                     </td>                   
                                     <td>
-                                        <span class="badge <?= $data['verify'] == 2 ? 'bg-success' : ($data['verify'] == 1 ? 'bg-warning' : 'bg-danger') ?>">
+                                        <span class="badge <?= $verify_badge_class ?>">
                                             <?= htmlspecialchars($verify_status) ?>
                                         </span>
                                         <button type="button" class="btn btn-outline-primary btn-sm mt-1" 
@@ -79,9 +85,9 @@ include('inc/sidebar.php');
                                                             <div class="form-group mb-3">
                                                                 <label for="verify_status_<?= $data['id'] ?>" class="mb-2">Verification Status</label>
                                                                 <select name="verify_status" class="form-control" id="verify_status_<?= $data['id'] ?>" required>
-                                                                    <option value="0" <?= $data['verify'] == 0 ? 'selected' : '' ?>>Not Verified</option>
-                                                                    <option value="1" <?= $data['verify'] == 1 ? 'selected' : '' ?>>Under Review</option>
-                                                                    <option value="2" <?= $data['verify'] == 2 ? 'selected' : '' ?>>Verified</option>
+                                                                    <option value="0" <?= ((int)$data['verify'] === 0 || is_null($data['verify'])) ? 'selected' : '' ?>>Not Verified</option>
+                                                                    <option value="1" <?= (int)$data['verify'] === 1 ? 'selected' : '' ?>>Under Review</option>
+                                                                    <option value="2" <?= (int)$data['verify'] === 2 ? 'selected' : '' ?>>Verified</option>
                                                                 </select>
                                                             </div>
                                                             <button type="submit" class="btn btn-secondary" name="update_verify_status">Save Changes</button>
