@@ -24,9 +24,9 @@ include('inc/navbar.php');
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      // Redirect to ../users/index.php after 3 seconds
+      // Redirect to index.php after 3 seconds
       setTimeout(() => {
-        window.location.href = '../users/index.php';
+        window.location.href = 'index.php';
       }, 3000);
     </script>
   <?php }
@@ -37,9 +37,9 @@ include('inc/navbar.php');
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      // Redirect to ../users/index.php after 3 seconds
+      // Redirect to index.php after 3 seconds
       setTimeout(() => {
-        window.location.href = '../users/index.php';
+        window.location.href = 'index.php';
       }, 3000);
     </script>
   <?php }
