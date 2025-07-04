@@ -13,7 +13,7 @@ include('inc/sidebar.php');
   <main id="main" class="main">
  
   <div class="pagetitle">
-      <h1>Manage Investment Plans</h1>
+      <h1>Manage Packages</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="dashbaord">Home</a></li>
@@ -41,20 +41,11 @@ include('inc/sidebar.php');
                     <label for=""class="mb-2">Package name</label>
                       <input name="name" type="text" class="form-control"required>
                     </div>                                  
+                    
+                    
+                    
                     <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Package duration</label>
-                      <input name="duration" type="text" class="form-control"required >
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Percentage return</label>
-                      <input name="percent" type="number" class="form-control"required >
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">minimum amount</label>
-                      <input name="min_amount" type="number" class="form-control"required >
-                    </div> 
-                    <div class="col-md-6 form-group mb-3">
-                    <label for=""class="mb-2">Maximum amount</label>
+                    <label for=""class="mb-2">Amount</label>
                       <input name="max_amount" type="number" class="form-control"required >
                     </div> 
                     <div class="col-md-6 form-group mb-3">
