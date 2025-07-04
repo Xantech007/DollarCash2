@@ -2,12 +2,14 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
+
 ?>
 
-<main id="main" class="main">
+  <main id="main" class="main">
 
     <div class="pagetitle">
       <h1>Profile</h1>
+     
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -25,7 +27,7 @@ include('inc/navbar.php');
             <?= $_SESSION['success'] ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
-          <?php } unset($_SESSION['success'])
+          <?php }	unset($_SESSION['success'])
           ?>
           <?php  
           if(isset($_SESSION['error']))
@@ -34,7 +36,7 @@ include('inc/navbar.php');
             <?= $_SESSION['error']  ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>               
-          <?php } unset($_SESSION['error'])
+          <?php }	unset($_SESSION['error'])
           ?>
       <div class="row">
         <div class="col-xl-4">
@@ -42,7 +44,7 @@ include('inc/navbar.php');
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="../Uploads/profile-picture/<?= $image ?>" alt="Profile" class="rounded-circle">
+              <img src="../uploads/profile-picture/<?= $image ?>" alt="Profile" class="rounded-circle">
               <h2><?= $name ?></h2>             
             </div>
           </div>
@@ -64,17 +66,21 @@ include('inc/navbar.php');
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                 </li>
 
+                
+
               </ul>
               <div class="tab-content pt-2">
 
                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                 
+
                   <h5 class="card-title">Profile Details</h5>
 
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Name</div>
+                    <div class="col-lg-3 col-md-4 label ">Name</div>
                     <div class="col-lg-9 col-md-8"><?= $name ?></div>
                   </div>          
+
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Country</div>
@@ -87,13 +93,8 @@ include('inc/navbar.php');
                   </div>
 
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Bank Name</div>
-                    <div class="col-lg-9 col-md-8"><?= $bank_name ?></div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Account Number</div>
-                    <div class="col-lg-9 col-md-8"><?= $account_number ?></div>
+                    <div class="col-lg-3 col-md-4 label">Bitcoin Wallet</div>
+                    <div class="col-lg-9 col-md-8"><?= $btc_wallet ?></div>
                   </div>
 
                   <div class="row">
@@ -106,12 +107,12 @@ include('inc/navbar.php');
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form action="../codes/user-profile.php" method="POST" enctype="multipart/form-data">            
-                    <input type="hidden" value="<?= $image ?>" name="old_image">
+                  <form action="../codes/user-profile.php"method="POST" enctype="multipart/form-data">            
+                    <input type="hidden"value="<?= $image ?>"name="old_image">
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Picture</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="../Uploads/profile-picture/<?= $image ?>" alt="Profile">
+                        <img src="../uploads/profile-picture/<?= $image ?>" alt="Profile">
                         <style>
                           ::-webkit-file-upload-button{                         
                           outline:none;
@@ -129,7 +130,7 @@ include('inc/navbar.php');
                         }
                         </style>
                         <div class="pt-2">
-                         <input type="file" name="image">
+                         <input type="file"name="image" >
                         </div>
                       </div>
                     </div>
@@ -141,6 +142,8 @@ include('inc/navbar.php');
                       </div>
                     </div>
 
+                  
+
                     <div class="row mb-3">
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
@@ -149,35 +152,28 @@ include('inc/navbar.php');
                     </div>
 
                     <div class="row mb-3">
-                      <label for="BankName" class="col-md-4 col-lg-3 col-form-label">Bank Name</label>
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Bitcoin Wallet</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="bank_name" type="text" class="form-control" id="BankName" value="<?= $bank_name ?>">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="AccountNumber" class="col-md-4 col-lg-3 col-form-label">Account Number</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="account_number" type="text" class="form-control" id="AccountNumber" value="<?= $account_number ?>">
+                        <input name="btc_wallet" type="text" class="form-control" id="Phone" value="<?= $btc_wallet ?>">
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="<?= $_SESSION['email'] ?>" readonly>
+                        <input name="email" type="email" class="form-control" id="Email" value="<?= $_SESSION['email'] ?>"readonly>
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="country" type="text" class="form-control" id="Country" value="<?= $country ?>" readonly>
+                        <input name="country" type="text" class="form-control" id="Country" value="<?= $country ?>"readonly>
                       </div>
                     </div>
 
                     <div class="text-center">
-                      <button type="submit" class="btn btn-secondary" name="update-profile">Save Changes</button>
+                      <button type="submit" class="btn btn-secondary"name="update-profile">Save Changes</button>
                     </div>
                   </form><!-- End Profile Edit Form -->
 
@@ -185,7 +181,11 @@ include('inc/navbar.php');
 
                 <div class="tab-pane fade pt-3" id="profile-settings">
 
+                 
+
                 </div>
+
+              
 
               </div><!-- End Bordered Tabs -->
 
@@ -196,6 +196,6 @@ include('inc/navbar.php');
       </div>
     </section>
 
-</main><!-- End #main -->
+  </main><!-- End #main -->
 
-<?php include('inc/footer.php'); ?>
+ <?php include('inc/footer.php'); ?>
