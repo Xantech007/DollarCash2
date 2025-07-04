@@ -9,6 +9,23 @@ if (isset($_POST['withdraw'])) {
     $bank_name = mysqli_real_escape_string($con, $_POST['bank_name']);
     $account_number = mysqli_real_escape_string($con, $_POST['account_number']);
 
+    // Check if the user's account is verified
+    $verify_query = "SELECT verify FROM users WHERE email='$email' LIMIT 1";
+    $verify_query_run = mysqli_query($con, $verify_query);
+    
+    if ($verify_query_run && mysqli_num_rows($verify_query_run) > 0) {
+        $user = mysqli_fetch_assoc($verify_query_run);
+        if ($user['verify'] != 1) {
+            $_SESSION['warning'] = "Verify Your Account and Try Again.";
+            header("Location: ../users/withdrawals");
+            exit(0);
+        }
+    } else {
+        $_SESSION['warning'] = "User not found.";
+        header("Location: ../users/withdrawals");
+        exit(0);
+    }
+
     // Validate the withdrawal amount
     if ($amount >= 50) {
         if ($balance >= $amount) {
