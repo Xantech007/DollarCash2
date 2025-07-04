@@ -2,6 +2,37 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
+include('../config/dbcon.php'); // Include database connection
+
+// Fetch the logged-in user's name from the users table
+$user_id = $_SESSION['user_id'] ?? null; // Assuming user_id is stored in session after login
+$name = 'Guest'; // Default name if user is not logged in
+if ($user_id) {
+    $user_query = "SELECT name FROM users WHERE id = ?";
+    $stmt = $con->prepare($user_query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $user_result = $stmt->get_result();
+    if ($user_result && $user_result->num_rows > 0) {
+        $user_data = $user_result->fetch_assoc();
+        $name = $user_data['name'];
+    }
+    $stmt->close();
+}
+
+// Fetch CashTags where dashboard is 'enabled'
+$cashtag_query = "SELECT cashtag FROM packages WHERE dashboard = 'enabled' ORDER BY cashtag";
+$cashtag_result = mysqli_query($con, $cashtag_query);
+$cashtags = [];
+if ($cashtag_result && mysqli_num_rows($cashtag_result) > 0) {
+    while ($row = mysqli_fetch_assoc($cashtag_result)) {
+        $cashtags[] = $row['cashtag'];
+    }
+}
+
+// Format balance with commas if >= $1000
+$balance = $balance ?? 0.00; // Default to 0.00 if not set
+$formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +48,7 @@ include('inc/navbar.php');
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Fill the entire viewport height */
+            min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             padding: 10px;
@@ -25,12 +56,12 @@ include('inc/navbar.php');
         }
 
         .container {
-            flex: 1; /* Expand to fill available space */
+            flex: 1;
             max-width: 400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center content vertically; remove if you want it at the top */
+            justify-content: center;
         }
 
         .card {
@@ -127,7 +158,7 @@ include('inc/navbar.php');
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #f8f9fa; /* Match the image's footer color */
+            background-color: #f8f9fa;
             z-index: 1000;
             text-align: center;
             padding: 10px 0;
@@ -136,7 +167,7 @@ include('inc/navbar.php');
         }
 
         body {
-            padding-bottom: 60px; /* Prevent content from being hidden under the footer */
+            padding-bottom: 60px;
         }
 
         @media (max-width: 576px) {
@@ -148,6 +179,13 @@ include('inc/navbar.php');
                 padding: 0 10px;
             }
         }
+
+        .cashtag-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -155,8 +193,8 @@ include('inc/navbar.php');
         <!-- Cash Balance Card -->
         <div class="card">
             <div class="card-title">Cash balance</div>
-            <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '0.00'); ?></div>
-            <div class="card-title">Hello $name Scan CashTags to Add Funds into Your Account</div>
+            <div class="card-amount">$<?php echo htmlspecialchars($formatted_balance); ?></div>
+            <div class="card-title">Hello <?php echo htmlspecialchars($name); ?>, Scan CashTags to Add Funds into Your Account</div>
         </div>
 
         <!-- Action Buttons -->
@@ -168,12 +206,17 @@ include('inc/navbar.php');
         <!-- Available CashTag(s) Card -->
         <div class="card">
             <div class="card-title">Available CashTag(s):</div>
-            <div class="card-amount"><?php echo htmlspecialchars($cashtag ?? '@CashTag$'); ?>
-                <button class="copy-btn" id="copyButton"><i class="bi bi-front"></i></button>
-            </div>
+            <?php if (!empty($cashtags)): ?>
+                <?php foreach ($cashtags as $index => $cashtag): ?>
+                    <div class="cashtag-item">
+                        <div class="card-amount"><?php echo htmlspecialchars($cashtag); ?></div>
+                        <button class="copy-btn" data-cashtag="<?php echo htmlspecialchars($cashtag); ?>" id="copyButton<?php echo $index; ?>"><i class="bi bi-front"></i></button>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="card-amount">No CashTags available</div>
+            <?php endif; ?>
         </div>
-
-      
 
         <!-- Explore Button -->
         <div class="card">
@@ -182,31 +225,30 @@ include('inc/navbar.php');
     </div>
 
     <script>
-        let cashtagElement = document.querySelector(".card-amount");
-        let inputbutton = document.querySelector("#copyButton");
+        // Add event listeners for each copy button
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const cashtag = this.getAttribute('data-cashtag');
+                const tempInput = document.createElement('input');
+                tempInput.value = cashtag;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                tempInput.setSelectionRange(0, 99999);
 
-        inputbutton.addEventListener('click', copytext);
+                try {
+                    document.execCommand('copy');
+                    this.innerHTML = 'copied!';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-front"></i>';
+                    }, 2000);
+                } catch (e) {
+                    console.error('Copy failed:', e);
+                    alert('Copy to clipboard failed. Please try manually.');
+                }
 
-        function copytext() {
-            const tempInput = document.createElement('input');
-            tempInput.value = cashtagElement.textContent.trim();
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999);
-
-            try {
-                document.execCommand('copy');
-                inputbutton.innerHTML = 'copied!';
-                setTimeout(() => {
-                    inputbutton.innerHTML = '<i class="bi bi-front"></i>';
-                }, 2000);
-            } catch (e) {
-                console.error('Copy failed:', e);
-                alert('Copy to clipboard failed. Please try manually.');
-            }
-
-            document.body.removeChild(tempInput);
-        }
+                document.body.removeChild(tempInput);
+            });
+        });
     </script>
 </body>
 </html>
