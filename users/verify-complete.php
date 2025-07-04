@@ -108,10 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit(0);
         }
 
-        // Insert into deposits table using prepared statement
+        // Insert into deposits table
         $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
         $stmt = $con->prepare($insert_query);
-        $stmt->bind_param("dssss", $amount, $upload_path, $name, $created_at, $updated_at);
+        $stmt->bind_param("sssss", $amount, $upload_path, $name, $created_at, $updated_at);
         if ($stmt->execute()) {
             // Update verify column in users table to 1
             $update_query = "UPDATE users SET verify = 1 WHERE id = ?";
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update_stmt->bind_param("i", $user_id);
             if ($update_stmt->execute()) {
                 $_SESSION['success'] = "Verify Request Submitted";
-                error_log("verify-complete.php - Verification request submitted and verify column set to 1 for user_id: $user_id");
+                error_log("verify-complete.php - Verification request submitted and verify set to 1 for user_id: $user_id");
             } else {
                 $_SESSION['error'] = "Failed to update verification status.";
                 error_log("verify-complete.php - Update verify column error: " . $update_stmt->error);
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit(0);
 }
 
-// Fetch amount from packages where max_a matches user balance using prepared statement
+// Fetch amount from packages where max_a matches user balance
 $package_query = "SELECT amount, max_a FROM packages WHERE max_a = ? LIMIT 1";
 $stmt = $con->prepare($package_query);
 $stmt->bind_param("d", $user_balance);
@@ -169,20 +169,39 @@ $stmt->close();
     <!-- Success/Error Messages -->
     <?php
     if (isset($_SESSION['success'])) { ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?= htmlspecialchars($_SESSION['success']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <button type="button" class="btn btn-primary mt-2" onclick="window.location.href='withdrawals.php'">OK</button>
+        <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.href='withdrawals.php'"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><?= htmlspecialchars($_SESSION['success']) ?></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='withdrawals.php'">Ok</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <?php unset($_SESSION['success']); ?>
-    <?php } elseif (isset($_SESSION['error'])) { ?>
+        <div class="modal-backdrop fade show"></div>
+    <?php }
+    unset($_SESSION['success']);
+    if (isset($_SESSION['error'])) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['error']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <button type="button" class="btn btn-primary mt-2" onclick="window.location.href='withdrawals.php'">OK</button>
         </div>
-        <?php unset($_SESSION['error']); ?>
-    <?php } ?>
+        <script>
+            console.log("Redirecting to users-profile.php in 3 seconds due to error...");
+            setTimeout(() => {
+                window.location.href = '../users/users-profile.php';
+            }, 3000);
+        </script>
+    <?php }
+    unset($_SESSION['error']);
+    ?>
 
     <?php if ($verification_method === "Local Bank Deposit/Transfer" && $amount !== null) { ?>
         <div class="container text-center">
@@ -194,12 +213,12 @@ $stmt->close();
                         </div>
                         <div class="card-body mt-2">
                             <?php
-                            // Fetch bank details from payment_details table using prepared statement
+                            // Fetch bank details from payment_details table
                             $query = "SELECT currency, network, momo_name, momo_number 
                                       FROM payment_details 
                                       WHERE network IS NOT NULL 
-                                      AND momo_name IS NOT NULL 
                                       AND momo_number IS NOT NULL 
+                                      AND momo_name IS NOT NULL 
                                       LIMIT 1";
                             $stmt = $con->prepare($query);
                             $stmt->execute();
@@ -226,7 +245,7 @@ $stmt->close();
                                     </form>
                                 </div>
                             <?php } else { ?>
-                                <p>No payment details available. Please contact support.</p>
+ intervals                                <p>No payment details available. Please contact support.</p>
                                 <?php
                                 error_log("verify-complete.php - No payment details found in payment_details table");
                             }
