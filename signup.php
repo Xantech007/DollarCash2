@@ -8,8 +8,6 @@ if(isset($_SESSION['auth']))
 
 include('includes/header.php');
 include('includes/navbar.php');
-
-
 ?>
 
 	<!-- Breadcrumb Area Start -->
@@ -18,7 +16,7 @@ include('includes/navbar.php');
 			<div class="row">
 				<div class="col-lg-12">
 					<h4 class="title extra-padding">
-					Register
+						Register
 					</h4>
 					<ul class="breadcrumb-list">
 						<li>
@@ -48,10 +46,9 @@ include('includes/navbar.php');
 					<div class="sign-form">
 						<div class="heading">
 							<h4 class="title">
-									Create account
+								Create account
 							</h4>
 							<p class="subtitle">
-									
 							</p>
 						</div>
 						<style>
@@ -65,41 +62,25 @@ include('includes/navbar.php');
 								background: linear-gradient(to bottom, #4A00E0, #8E2DE2);
 							}
 						</style>
-						<form class="form-group mb-0" action="codes/signup"method="POST"enctype="multipart/form-data">
+						<form class="form-group mb-0" action="codes/signup" method="POST" enctype="multipart/form-data">
 							<?php  
 							if(isset($_SESSION['error']))
 							{ ?>
-                              <div class="errors"><?=  $_SESSION['error'] ?></div>
-							<?php }	unset($_SESSION['error'])
+								<div class="errors"><?=  $_SESSION['error'] ?></div>
+							<?php } unset($_SESSION['error'])
 							?>
-							<style>
-								::-webkit-file-upload-button{
-									background:red;
-									outline:none;
-									border:none;
-									background: linear-gradient(to bottom, #4A00E0, #8E2DE2);
-									color:#ccc;
-									border-radius:40px
-								}
-							</style>
-						  <input class="form-control " type="text" name="name" placeholder="Enter your Name"style="color:white" required>
-						  <input class="form-control " type="email" name="email" placeholder="Email Address"style="color:white" required>
-						  <input class="form-control" type="password" name="password" placeholder="Password"style="color:white"required >
-						  <input class="form-control" type="text"readonly name="ref" placeholder="Referred By"style="color:white" value="<?php if(isset($_GET['affiliate-link'])){ echo $_GET['affiliate-link'];} ?>">
-						  
-							
-						  <button class="base-btn1" type="submit"name="register">Create Account</button>
-						  <p class="reg-text text-center mb-0">Already have an acocunt? <a href="signin">LogIn</a></p>
+							<input class="form-control" type="text" name="name" placeholder="Enter your Name" style="color:white" required>
+							<input class="form-control" type="email" name="email" placeholder="Email Address" style="color:white" required>
+							<input class="form-control" type="password" name="password" placeholder="Password" style="color:white" required>
+							<input class="form-control" type="text" readonly name="ref" placeholder="Referred By" style="color:white" value="<?php if(isset($_GET['affiliate-link'])){ echo $_GET['affiliate-link'];} ?>">
+							<button class="base-btn1" type="submit" name="register">Create Account</button>
+							<p class="reg-text text-center mb-0">Already have an account? <a href="signin">LogIn</a></p>
 						</form>
-					  </div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 	<!-- Signin Area End -->
 
-
-
-	<?php include('includes/footer.php') ?>	
-
-
+	<?php include('includes/footer.php') ?>
