@@ -2,9 +2,9 @@
  <header id="header" class="header fixed-top d-flex align-items-center">
 
 <div class="d-flex align-items-center justify-content-between">
-  <a href="index.php" class="logo d-flex align-items-center">  
+  <a href="dashboard.php" class="logo d-flex align-items-center">  
  
-    <img src="../uploads/logo/logo1.png" alt="">
+    <img src="../uploads/logo/logo.png" alt="">
     
  
   </a>
