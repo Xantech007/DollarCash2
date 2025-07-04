@@ -4,6 +4,14 @@ include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
 
+// Check if user is logged in
+if (!isset($_SESSION['auth'])) {
+    $_SESSION['error'] = "Please log in to access this page.";
+    error_log("scan-results.php - User not logged in, redirecting to signin.php");
+    header("Location: ../signin.php");
+    exit(0);
+}
+
 // Debugging: Log session data
 error_log("scan-results.php - Session: " . print_r($_SESSION, true));
 ?>
