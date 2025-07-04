@@ -113,32 +113,7 @@ include('inc/sidebar.php');
 
               </div>
             </div><!-- End Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card revenue-card">              
-
-                <div class="card-body">
-                <?php
-                  $total_inv = "SELECT id FROM investments WHERE status='0'";
-                  $total_inv_query = mysqli_query($con, $total_inv);
-                  
-                  $count_investments = mysqli_num_rows($total_inv_query);
-                  ?>
-                  <h5 class="card-title">Active Investments</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-briefcase-fill"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6><?=  $count_investments?></h6>
-                     
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Revenue Card -->
+            
             <!-- Customers Card -->
             <div class="col-xxl-4 col-xl-12">
 
@@ -153,7 +128,7 @@ include('inc/sidebar.php');
                   
                   $count_packages = mysqli_num_rows($total_pac_query);
                   ?>
-                  <h5 class="card-title">Investment Plans</h5>
+                  <h5 class="card-title">Packages</h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
