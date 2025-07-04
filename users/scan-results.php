@@ -17,7 +17,7 @@ include('inc/navbar.php');
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index">Home</a></li>
-          <li class="breadcrumb-item">Users</li>
+          <li class="breadcrumb-item">Scan</li>
           <li class="breadcrumb-item active">Results</li>
         </ol>
       </nav>
