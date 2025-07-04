@@ -13,7 +13,6 @@ if(isset($_POST['update-profile']))
 
     $old_filename = $_POST['old_image'];
     $update_filename = "";
-
     $image = $_FILES['image']['name'];
     $image_size = $_FILES['image']['size']; 
 
@@ -21,7 +20,6 @@ if(isset($_POST['update-profile']))
     {   
         $image_ext = pathinfo($image, PATHINFO_EXTENSION);
         $img_ext_to_lc = strtolower($image_ext);
-
         $allowed = array('jpg','png','jpeg');
 
         if(in_array($img_ext_to_lc, $allowed))
@@ -29,7 +27,6 @@ if(isset($_POST['update-profile']))
             if($image_size < 2500000) 
             {  
                 $filename = time(). '.' .$image_ext;
-                //new image name    
                 $update_filename = $filename;   
 
                 $query = "UPDATE users SET name='$name',country='$country',address='$address',email='$email',bank_name='$bank_name',account_number='$account_number',image='$update_filename' WHERE email='$email' LIMIT 1";
@@ -50,21 +47,21 @@ if(isset($_POST['update-profile']))
             }
             else
             {               
-                $_SESSION['error'] = "Image size should not exceed 2mb!";
+                $_SESSION['error'] = "Image size should not exceed 2MB!";
                 header("Location: ../users/users-profile");
                 exit(0);
             }
         }   
         else
         {
-            $_SESSION['error'] = "You cannot upload file of this type!";
+            $_SESSION['error'] = "You cannot upload files of this type!";
             header("Location: ../users/users-profile");
             exit(0);
         }
     }
     else
     {  
-        //old image name
+        // Keep old image name
         $update_filename = $old_filename;
         $query = "UPDATE users SET name='$name',country='$country',address='$address',email='$email',bank_name='$bank_name',account_number='$account_number',image='$update_filename' WHERE email='$email' LIMIT 1";
         $query_run = mysqli_query($con, $query);
