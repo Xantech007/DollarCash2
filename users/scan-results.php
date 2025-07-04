@@ -94,14 +94,8 @@ if ($usage_query_run) {
   if (isset($_SESSION['success'])) { ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       <?= htmlspecialchars($_SESSION['success']) ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="window.location.href='../users/index.php';"></button>
     </div>
-    <script>
-      console.log("Redirecting to index.php in 3 seconds...");
-      setTimeout(() => {
-        window.location.href = '../users/index.php';
-      }, 3000);
-    </script>
   <?php }
   unset($_SESSION['success']);
   if (isset($_SESSION['error'])) { ?>
@@ -132,7 +126,7 @@ if ($usage_query_run) {
               <div class="card text-center">
                 <div class="card-header">
                   <?= htmlspecialchars($data['name']) ?>
-                Kauf</div>
+                </div>
                 <div class="card-body mt-2">
                   <div class="mt-3">
                     <h6>Amount: $<?= htmlspecialchars(number_format($data['max_a'], 2)) ?></h6>
