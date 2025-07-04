@@ -1,8 +1,19 @@
 <?php
 session_start();
-include('../config/dbcon.php'); // Updated database connection path
+include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
+
+// Debug: Log session data
+error_log("scan-results.php - Session ID: " . session_id());
+error_log("scan-results.php - User ID: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not set'));
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['error'] = "Please log in to view scan results.";
+    header("Location: ../login.php"); // Adjust to your login page
+    exit();
+}
 ?>
 
 <main id="main" class="main">
@@ -15,7 +26,7 @@ include('inc/navbar.php');
         <li class="breadcrumb-item active">Results</li>
       </ol>
     </nav>
-  </div><!-- End Page Title -->
+  </div>
 
   <!-- Success/Error Messages -->
   <?php
@@ -25,7 +36,7 @@ include('inc/navbar.php');
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      // Redirect to ../users/index.php after 3 seconds
+      console.log("Redirecting to index.php...");
       setTimeout(() => {
         window.location.href = '../users/index.php';
       }, 3000);
@@ -38,7 +49,7 @@ include('inc/navbar.php');
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      // Redirect to ../users/index.php after 3 seconds
+      console.log("Redirecting to index.php...");
       setTimeout(() => {
         window.location.href = '../users/index.php';
       }, 3000);
@@ -79,7 +90,8 @@ include('inc/navbar.php');
           echo '<p>No active packages found.</p>';
         }
       } else {
-        $_SESSION['error'] = "Failed to fetch packages. Please try again.";
+        $_SESSION['error'] = "Failed to fetch packages: " . mysqli_error($con);
+        error_log("scan-results.php - Query error: " . mysqli_error($con));
       }
       ?>
     </div>
