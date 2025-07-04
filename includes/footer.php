@@ -16,41 +16,6 @@
                 </div>
             </div>
             <div class="col-sm-6 col-lg-4">
-                <div class="footer-widget info-link-widget link-w-2">
-                    <h4 class="title">
-                        Company
-                    </h4>
-                    <ul class="link-list">
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i> Terms
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i> Privacy
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i>Security
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i>Support
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-angle-double-right"></i>Careers
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="copy-bg">
         <div class="container">
             <div class="row">
