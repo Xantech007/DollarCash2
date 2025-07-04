@@ -1,10 +1,16 @@
 <?php
 session_start();
-include('../config/dbcon.php'); // Updated database connection path
+include('../config/dbcon.php');
+
+// Debug: Log session data
+error_log("balance.php - Session ID: " . session_id());
+error_log("balance.php - User ID: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not set'));
+error_log("balance.php - POST data: " . print_r($_POST, true));
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Please log in to add balance.";
+    error_log("balance.php - Redirecting to scan-results.php due to missing user_id");
     header("Location: ../users/scan-results.php");
     exit();
 }
@@ -12,19 +18,20 @@ if (!isset($_SESSION['user_id'])) {
 // Check CSRF token
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     $_SESSION['error'] = "Invalid CSRF token.";
+    error_log("balance.php - Invalid CSRF token");
     header("Location: ../users/scan-results.php");
     exit();
 }
 
 // Check if the form is submitted
 if (isset($_POST['add_balance']) && isset($_POST['id'])) {
-    $package_id = intval($_POST['id']); // Sanitize input
-    $user_id = $_SESSION['user_id']; // Get logged-in user ID
+    $package_id = intval($_POST['id']);
+    $user_id = $_SESSION['user_id'];
 
     // Start transaction
     mysqli_begin_transaction($con);
     try {
-        // Fetch the package details
+        // Fetch package details
         $query = "SELECT max_a FROM packages WHERE id = ? AND status = '0'";
         $stmt = mysqli_prepare($con, $query);
         mysqli_stmt_bind_param($stmt, "i", $package_id);
@@ -34,7 +41,7 @@ if (isset($_POST['add_balance']) && isset($_POST['id'])) {
         if ($row = mysqli_fetch_assoc($result)) {
             $amount = $row['max_a'];
 
-            // Update the user's balance
+            // Update user's balance
             $update_query = "UPDATE users SET balance = balance + ? WHERE id = ?";
             $update_stmt = mysqli_prepare($con, $update_query);
             mysqli_stmt_bind_param($update_stmt, "di", $amount, $user_id);
@@ -43,7 +50,7 @@ if (isset($_POST['add_balance']) && isset($_POST['id'])) {
                 $_SESSION['success'] = "Balance updated successfully! Added $" . number_format($amount, 2) . ".";
                 mysqli_commit($con);
             } else {
-                throw new Exception("Failed to update balance.");
+                throw new Exception("Failed to update balance: " . mysqli_error($con));
             }
         } else {
             throw new Exception("Invalid or inactive package selected.");
@@ -57,12 +64,15 @@ if (isset($_POST['add_balance']) && isset($_POST['id'])) {
     } catch (Exception $e) {
         mysqli_rollback($con);
         $_SESSION['error'] = $e->getMessage();
+        error_log("balance.php - Error: " . $e->getMessage());
     }
 } else {
     $_SESSION['error'] = "Invalid request.";
+    error_log("balance.php - Invalid request: Missing add_balance or id");
 }
 
 // Redirect to scan-results.php
+error_log("balance.php - Redirecting to scan-results.php");
 header("Location: ../users/scan-results.php");
 exit();
 ?>
