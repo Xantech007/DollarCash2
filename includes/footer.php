@@ -2,20 +2,7 @@
     <!-- Footer Area Start -->
     <footer class="footer" id="footer">
 	
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-lg-4">
-                <div class="footer-widget about-widget">
-                    <div class="fotter-logo">
-                        <img src="uploads/logo/<?= $logo_image  ?>" alt=""style="width:250px">
-                    </div>
-                    <div class="about-content">
-                        
-                    </div>
-                
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
+
     <div class="copy-bg">
         <div class="container">
             <div class="row">
