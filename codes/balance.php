@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Please log in to add balance.";
     error_log("balance.php - User not logged in, redirecting to scan-results.php");
     header("Location: ../users/scan-results.php");
-    exit();
+    exit(0);
 }
 
 // Check CSRF token
@@ -18,55 +18,39 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_tok
     $_SESSION['error'] = "Invalid CSRF token.";
     error_log("balance.php - Invalid CSRF token");
     header("Location: ../users/scan-results.php");
-    exit();
+    exit(0);
 }
 
 // Check if the form is submitted
 if (isset($_POST['add_balance']) && isset($_POST['id'])) {
-    $package_id = intval($_POST['id']); // Sanitize input
-    $user_id = $_SESSION['user_id']; // Get logged-in user ID
+    $package_id = mysqli_real_escape_string($con, $_POST['id']);
+    $user_id = mysqli_real_escape_string($con, $_SESSION['user_id']);
 
     // Debugging: Log input data
     error_log("balance.php - Package ID: $package_id, User ID: $user_id");
 
-    // Start transaction
-    mysqli_begin_transaction($con);
-    try {
-        // Fetch the package details
-        $query = "SELECT max_a FROM packages WHERE id = ? AND status = '0'";
-        $stmt = mysqli_prepare($con, $query);
-        mysqli_stmt_bind_param($stmt, "i", $package_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+    // Fetch the package details
+    $query = "SELECT max_a FROM packages WHERE id='$package_id' AND status='0'";
+    $query_run = mysqli_query($con, $query);
 
-        if ($row = mysqli_fetch_assoc($result)) {
-            $amount = $row['max_a'];
+    if ($query_run && mysqli_num_rows($query_run) > 0) {
+        $row = mysqli_fetch_assoc($query_run);
+        $amount = $row['max_a'];
 
-            // Update the user's balance
-            $update_query = "UPDATE users SET balance = balance + ? WHERE id = ?";
-            $update_stmt = mysqli_prepare($con, $update_query);
-            mysqli_stmt_bind_param($update_stmt, "di", $amount, $user_id);
+        // Update the user's balance
+        $update_query = "UPDATE users SET balance = balance + '$amount' WHERE id='$user_id'";
+        $update_query_run = mysqli_query($con, $update_query);
 
-            if (mysqli_stmt_execute($update_stmt)) {
-                $_SESSION['success'] = "Balance updated successfully! Added $" . number_format($amount, 2) . ".";
-                error_log("balance.php - Balance updated: $amount for user $user_id");
-                mysqli_commit($con);
-            } else {
-                throw new Exception("Failed to update balance: " . mysqli_error($con));
-            }
+        if ($update_query_run) {
+            $_SESSION['success'] = "Balance updated successfully! Added $" . number_format($amount, 2) . ".";
+            error_log("balance.php - Balance updated: $amount for user $user_id");
         } else {
-            throw new Exception("Invalid or inactive package selected.");
+            $_SESSION['error'] = "Failed to update balance: " . mysqli_error($con);
+            error_log("balance.php - Update error: " . mysqli_error($con));
         }
-
-        // Close statements
-        mysqli_stmt_close($stmt);
-        if (isset($update_stmt)) {
-            mysqli_stmt_close($update_stmt);
-        }
-    } catch (Exception $e) {
-        mysqli_rollback($con);
-        $_SESSION['error'] = $e->getMessage();
-        error_log("balance.php - Error: " . $e->getMessage());
+    } else {
+        $_SESSION['error'] = "Invalid or inactive package selected.";
+        error_log("balance.php - Invalid package ID: $package_id");
     }
 } else {
     $_SESSION['error'] = "Invalid request.";
@@ -75,5 +59,5 @@ if (isset($_POST['add_balance']) && isset($_POST['id'])) {
 
 // Redirect to scan-results.php
 header("Location: ../users/scan-results.php");
-exit();
+exit(0);
 ?>
