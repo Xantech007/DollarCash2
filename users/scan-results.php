@@ -14,6 +14,34 @@ if (!isset($_SESSION['auth'])) {
 
 // Debugging: Log session data
 error_log("scan-results.php - Session: " . print_r($_SESSION, true));
+
+// Check if CashTag is submitted
+if (!isset($_POST['scan_input']) || empty(trim($_POST['scan_input']))) {
+    $_SESSION['error'] = "No CashTag provided.";
+    error_log("scan-results.php - No CashTag provided, redirecting to scan.php");
+    header("Location: scan.php");
+    exit(0);
+}
+
+// Validate CashTag
+$cashtag = mysqli_real_escape_string($con, trim($_POST['scan_input']));
+$cashtag_query = "SELECT COUNT(*) as count FROM packages WHERE cashtag = '$cashtag' AND status = '0'";
+$cashtag_query_run = mysqli_query($con, $cashtag_query);
+
+if ($cashtag_query_run) {
+    $cashtag_result = mysqli_fetch_assoc($cashtag_query_run);
+    if ($cashtag_result['count'] == 0) {
+        $_SESSION['error'] = "Invalid CashTag.";
+        error_log("scan-results.php - Invalid CashTag: $cashtag, redirecting to scan.php");
+        header("Location: scan.php");
+        exit(0);
+    }
+} else {
+    $_SESSION['error'] = "Error validating CashTag. Please try again.";
+    error_log("scan-results.php - CashTag query error: " . mysqli_error($con));
+    header("Location: scan.php");
+    exit(0);
+}
 ?>
 
 <main id="main" class="main">
@@ -61,7 +89,8 @@ error_log("scan-results.php - Session: " . print_r($_SESSION, true));
   <div class="container text-center">
     <div class="row">
       <?php
-      $query = "SELECT * FROM packages WHERE status = '0' ORDER BY created_at DESC";
+      // Fetch packages for the valid CashTag
+      $query = "SELECT * FROM packages WHERE cashtag = '$cashtag' AND status = '0' ORDER BY created_at DESC";
       $query_run = mysqli_query($con, $query);
       if ($query_run) {
         if (mysqli_num_rows($query_run) > 0) {
@@ -71,7 +100,7 @@ error_log("scan-results.php - Session: " . print_r($_SESSION, true));
                 <div class="card-header">
                   <?= htmlspecialchars($data['name']) ?>
                 </div>
-                <div class="card BODY mt-2">
+                <div class="card-body mt-2">
                   <div class="mt-3">
                     <h6>Amount: $<?= htmlspecialchars(number_format($data['max_a'], 2)) ?></h6>
                   </div>
@@ -86,11 +115,13 @@ error_log("scan-results.php - Session: " . print_r($_SESSION, true));
             </div>
           <?php }
         } else {
-          echo '<p>No active packages found.</p>';
+          echo '<p>No active packages found for this CashTag.</p>';
         }
       } else {
         $_SESSION['error'] = "Failed to fetch packages. Please try again.";
-        error_log("scan-results.php - Query error: " . mysqli_error($con));
+        error_log("scan-results.php - Package query error: " . mysqli_error($con));
+        header("Location: scan.php");
+        exit(0);
       }
       ?>
     </div>
