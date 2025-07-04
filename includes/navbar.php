@@ -31,16 +31,9 @@
 									<a class="nav-link" href="about">About
 											<div class="mr-hover-effect"></div></a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link " href="investment-plans">Investments
-											<div class="mr-hover-effect"></div></a>
-								</li>
+								
 								<li class="nav-item">
 									<a class="nav-link " href="faq">FAQ
-											<div class="mr-hover-effect"></div></a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link  " href="team">Investors
 											<div class="mr-hover-effect"></div></a>
 								</li>
 								
