@@ -47,9 +47,10 @@ include('inc/sidebar.php');
                             $row = mysqli_fetch_array($query_run);
                             $name = $row['name'];
                             $cashtag = $row['cashtag'];
-                            $max = $row['max_a'];
+                            $max = $row['max_a']; // Note: This seems to be a typo; should it be 'max_amount'?
                             $id = $row['id'];
                             $status = $row['status'];
+                            $dashboard = $row['dashboard']; // Fetch the dashboard value
                         }
                     }
                     ?>
@@ -69,6 +70,10 @@ include('inc/sidebar.php');
                         <div class="col-md-6 form-group mb-3">
                             <label for="status" class="mb-2">Status</label>
                             <input name="status" <?php echo $status == '1' ? 'checked' : ''; ?> type="checkbox">
+                        </div> 
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="dashboard" class="mb-2">Show on Dashboard</label>
+                            <input name="dashboard" <?php echo $dashboard == 'enabled' ? 'checked' : ''; ?> type="checkbox" id="dashboard">
                         </div> 
                         <button type="submit" class="btn btn-secondary" name="edit_package" value="<?php echo $id; ?>">Update Package</button>  
                     </div>  
