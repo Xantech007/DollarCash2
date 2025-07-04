@@ -9,12 +9,13 @@ if (!isset($_SESSION['auth'])) {
     exit(0);
 }
 
-// Fetch the logged-in user's name and balance from the users table
+// Fetch the logged-in user's name, balance, and verify status from the users table
 $email = $_SESSION['email'] ?? null; // Use email from session (seen in profile.php)
 $name = 'Guest'; // Default name
 $balance = 0.00; // Default balance
+$verify = 0; // Default verify status
 if ($email) {
-    $user_query = "SELECT name, balance FROM users WHERE email = ?";
+    $user_query = "SELECT name, balance, verify FROM users WHERE email = ?";
     $stmt = $con->prepare($user_query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -23,6 +24,7 @@ if ($email) {
         $user_data = $user_result->fetch_assoc();
         $name = $user_data['name'];
         $balance = $user_data['balance'] ?? 0.00;
+        $verify = $user_data['verify'] ?? 0;
     }
     $stmt->close();
 }
@@ -112,11 +114,15 @@ $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : ''
             border-radius: 5px;
             cursor: pointer;
             margin: 0 5px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
         }
 
-        .btn-add { background: #007bff; color: white; }
-        .btn-withdraw { background: #6c757d; color: white; }
-        .btn-used-cashtags { background: #28a745; color: white; } /* Green for Used CashTags */
+        .btn-add { background: #007bff; }
+        .btn-withdraw { background: #6c757d; }
+        .btn-used-cashtags { background: #28a745; }
+        .btn-verify { background: #ffc107; } /* Yellow for Verify Account */
         .verified { color: #28a745; font-size: 12px; }
         .progress {
             display: flex;
@@ -225,12 +231,17 @@ $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : ''
             <?php endif; ?>
         </div>
 
-        <!-- Used CashTags Button -->
+        <!-- Used CashTags and Verify Account Buttons -->
         <div class="action-buttons">
             <a href="used-cashtag.php" class="btn btn-used-cashtags">View Used CashTags</a>
         </div>
+        <?php if ($verify == 0): ?>
+            <div class="action-buttons">
+                <a href="verify.php" class="btn btn-verify">Verify Account</a>
+            </div>
+        <?php endif; ?>
 
-        <!-- Explore Button -->
+        <!-- Explore Card -->
         <div class="card">
             <div class="card-title">Explore</div>
         </div>
@@ -248,7 +259,7 @@ $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : ''
                 tempInput.setSelectionRange(0, 99999);
 
                 try {
-                    document.execCommand('copy');
+                    document.execCommand('copy');
                     this.innerHTML = 'copied!';
                     setTimeout(() => {
                         this.innerHTML = '<i class="bi bi-front"></i>';
