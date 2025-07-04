@@ -42,25 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit(0);
     }
 
-    $verification_method = mysqli_real_escape_string($con, trim($_POST['verification_method']));
-    error_log("verify-complete.php - Verification method received: $verification_method");
+    // Normalize verification_method (trim and standardize case for comparison)
+    $verification_method = trim($_POST['verification_method']);
+    error_log("verify-complete.php - Received verification method: '$verification_method'");
 
-    // Check if verification method is unavailable
+    // Check if verification method is unavailable in the country
     $unavailable_methods = ["International Passport", "National ID Card", "Driver's License"];
-    if (in_array($verification_method, $unavailable_methods)) {
+    if (in_array($verification_method, $unavailable_methods, true)) {
         $_SESSION['error'] = "Unavailable in Your Country, Try Another Method.";
-        error_log("verify-complete.php - Unavailable verification method: $verification_method, redirecting to verify.php");
+        error_log("verify-complete.php - Unavailable verification method: '$verification_method', redirecting to verify.php");
         header("Location: verify.php");
         exit(0);
     }
-
-    // Ensure only Local Bank Deposit/Transfer proceeds
-    if ($verification_method !== "Local Bank Deposit/Transfer") {
-        $_SESSION['error'] = "Invalid verification method selected.";
-        error_log("verify-complete.php - Unavailable in Your Country, Try Another Method.: $verification_method, redirecting to verify.php");
-        header("Location: verify.php");
-        exit(0);
-    }
+} else {
+    $_SESSION['error'] = "Invalid request method.";
+    error_log("verify-complete.php - Invalid request method, redirecting to verify.php");
+    header("Location: verify.php");
+    exit(0);
 }
 ?>
 
