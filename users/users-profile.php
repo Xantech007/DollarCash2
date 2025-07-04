@@ -17,33 +17,36 @@ include('inc/navbar.php');
     </div><!-- End Page Title -->
 
     <section class="section profile">
-        <?php  
-        if(isset($_SESSION['success']))
-        { ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <?php  
+          if(isset($_SESSION['success']))
+          { ?>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= $_SESSION['success'] ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php } unset($_SESSION['success']) ?>
-        <?php  
-        if(isset($_SESSION['error']))
-        { ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          </div>
+          <?php } unset($_SESSION['success']) ?>
+          <?php  
+          if(isset($_SESSION['error']))
+          { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= $_SESSION['error'] ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>               
-        <?php } unset($_SESSION['error']) ?>
-
+          </div>               
+          <?php } unset($_SESSION['error']) ?>
       <div class="row">
         <div class="col-xl-4">
+
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <img src="../Uploads/profile-picture/<?= $image ?>" alt="Profile" class="rounded-circle">
               <h2><?= $name ?></h2>             
             </div>
           </div>
+
         </div>
 
         <div class="col-xl-8">
+
           <div class="card">
             <div class="card-body pt-3">
               <!-- Bordered Tabs -->
@@ -56,6 +59,7 @@ include('inc/navbar.php');
                 </li>
               </ul>
               <div class="tab-content pt-2">
+
                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                   <h5 class="card-title">Profile Details</h5>
                   <div class="row">
@@ -78,25 +82,55 @@ include('inc/navbar.php');
 
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
                   <!-- Profile Edit Form -->
-                  <form action="../codes/user-profile.php" method="POST">
+                  <form action="../codes/user-profile.php" method="POST" enctype="multipart/form-data">            
+                    <input type="hidden" value="<?= $image ?>" name="old_image">
+                    <div class="row mb-3">
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Picture</label>
+                      <div class="col-md-8 col-lg-9">
+                        <img src="../Uploads/profile-picture/<?= $image ?>" alt="Profile">
+                        <style>
+                          ::-webkit-file-upload-button{                         
+                            outline:none;
+                            border:none;
+                            background:#6c757d;
+                            color:#f7f7f7;
+                            border-radius:10px
+                          }
+                          .rounded-circle{
+                            width: 100px;
+                            height: 100px;
+                            object-fit: cover;
+                            border-radius: 10px;
+                            margin-right: 15px;
+                          }
+                        </style>
+                        <div class="pt-2">
+                         <input type="file" name="image">
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="row mb-3">
                       <label class="col-md-4 col-lg-3 col-form-label">Name</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="name" type="text" class="form-control" id="fullName" value="<?= $name ?>">
                       </div>
                     </div>
+
                     <div class="row mb-3">
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="address" type="text" class="form-control" id="Address" value="<?= $address ?>">
                       </div>
                     </div>
+
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="email" type="email" class="form-control" id="Email" value="<?= $_SESSION['email'] ?>" readonly>
                       </div>
                     </div>
+
                     <div class="row mb-3">
                       <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                       <div class="col-md-8 col-lg-9">
@@ -258,7 +292,7 @@ include('inc/navbar.php');
                           <option value="Namibia" <?php if ($country == 'Namibia') echo 'selected'; ?>>Namibia</option>
                           <option value="Nauru" <?php if ($country == 'Nauru') echo 'selected'; ?>>Nauru</option>
                           <option value="Nepal" <?php if ($country == 'Nepal') echo 'selected'; ?>>Nepal</option>
-                          <option value="Netherlands" <?php if ($country == 'Netherlands') echo 'selected'; ?>>Netherlands</option>
+                          <option value="Netherlands" <?php if ($\country == 'Netherlands') echo 'selected'; ?>>Netherlands</option>
                           <option value="New Caledonia" <?php if ($country == 'New Caledonia') echo 'selected'; ?>>New Caledonia</option>
                           <option value="New Zealand" <?php if ($country == 'New Zealand') echo 'selected'; ?>>New Zealand</option>
                           <option value="Nicaragua" <?php if ($country == 'Nicaragua') echo 'selected'; ?>>Nicaragua</option>
@@ -354,21 +388,26 @@ include('inc/navbar.php');
                         </select>
                       </div>
                     </div>
+
                     <div class="text-center">
                       <button type="submit" class="btn btn-secondary" name="update-profile">Save Changes</button>
                     </div>
                   </form><!-- End Profile Edit Form -->
+
                 </div>
 
                 <div class="tab-pane fade pt-3" id="profile-settings">
                 </div>
+
               </div><!-- End Bordered Tabs -->
+
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-  </main><!-- End #main -->
+</main><!-- End #main -->
 
- <?php include('inc/footer.php'); ?>
+<?php include('inc/footer.php'); ?>
