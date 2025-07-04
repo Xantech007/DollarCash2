@@ -13,12 +13,12 @@ include('inc/navbar.php');
   <main id="main" class="main">
  
   <div class="pagetitle">
-      <h1>Choose A Package</h1>
+      <h1>CashTag Found! Select Amount</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index">Home</a></li>
           <li class="breadcrumb-item">Users</li>
-          <li class="breadcrumb-item active">Investments plan</li>
+          <li class="breadcrumb-item active">Results</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->   
