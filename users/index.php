@@ -156,7 +156,7 @@ include('inc/navbar.php');
         <div class="card">
             <div class="card-title">Cash balance</div>
             <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '0.00'); ?></div>
-            
+            <div class="card-title">Hello $name Scan CashTags to Add Funds into Your Account</div>
         </div>
 
         <!-- Action Buttons -->
@@ -173,10 +173,7 @@ include('inc/navbar.php');
             </div>
         </div>
 
-        <!-- New Section -->
-        <div class="card">
-            <div class="card-title">Hello <?php echo htmlspecialchars($name ?? 'George Richie'); ?> Scan CashTags to Redeem Funds into Your Account</div>
-        </div>
+      
 
         <!-- Explore Button -->
         <div class="card">
