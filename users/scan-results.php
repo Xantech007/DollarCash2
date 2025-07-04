@@ -4,16 +4,8 @@ include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
 
-// Debug: Log session data
-error_log("scan-results.php - Session ID: " . session_id());
-error_log("scan-results.php - User ID: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not set'));
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    $_SESSION['error'] = "Please log in to view scan results.";
-    header("Location: ../login.php"); // Adjust to your login page
-    exit();
-}
+// Debugging: Log session data
+error_log("scan-results.php - Session: " . print_r($_SESSION, true));
 ?>
 
 <main id="main" class="main">
@@ -26,7 +18,7 @@ if (!isset($_SESSION['user_id'])) {
         <li class="breadcrumb-item active">Results</li>
       </ol>
     </nav>
-  </div>
+  </div><!-- End Page Title -->
 
   <!-- Success/Error Messages -->
   <?php
@@ -36,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      console.log("Redirecting to index.php...");
+      console.log("Redirecting to index.php in 3 seconds...");
       setTimeout(() => {
         window.location.href = '../users/index.php';
       }, 3000);
@@ -49,7 +41,7 @@ if (!isset($_SESSION['user_id'])) {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
-      console.log("Redirecting to index.php...");
+      console.log("Redirecting to index.php in 3 seconds due to error...");
       setTimeout(() => {
         window.location.href = '../users/index.php';
       }, 3000);
@@ -90,7 +82,7 @@ if (!isset($_SESSION['user_id'])) {
           echo '<p>No active packages found.</p>';
         }
       } else {
-        $_SESSION['error'] = "Failed to fetch packages: " . mysqli_error($con);
+        $_SESSION['error'] = "Failed to fetch packages. Please try again.";
         error_log("scan-results.php - Query error: " . mysqli_error($con));
       }
       ?>
