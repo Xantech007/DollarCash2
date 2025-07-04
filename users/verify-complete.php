@@ -39,8 +39,9 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
     exit(0);
 }
 
-// Handle POST request with verification method
+// Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check for verification method (from verify.php or hidden input)
     if (!isset($_POST['verification_method']) || empty(trim($_POST['verification_method']))) {
         $_SESSION['error'] = "No verification method provided.";
         error_log("verify-complete.php - No verification method provided, redirecting to verify.php");
@@ -60,6 +61,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: verify.php");
         exit(0);
     }
+
+    // Handle image upload and form submission for verify_payment
+    if (isset($_POST['verify_payment'])) {
+        if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+            $file_tmp = $_FILES['payment_proof']['tmp_name'];
+            $file_name = $_FILES['payment_proof']['name'];
+            $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $allowed_ext = ['jpg', 'jpeg', 'png'];
+
+            if (in_array($file_ext, $allowed_ext)) {
+                $upload_dir = '../uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                $new_file_name = uniqid() . '.' . $file_ext;
+                $upload_path = $upload_dir . $new_file_name;
+
+                if (move_uploaded_file($file_tmp, $upload_path)) {
+                    // Insert into deposits table
+                    $created_at = date('Y-m-d H:i:s');
+                    $updated_at = $created_at;
+                    $amount = mysqli_real_escape_string($con, $_POST['amount']);
+                    $name = mysqli_real_escape_string($con, $user_name);
+                    $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
+                                     VALUES ('$amount', '$upload_path', '$name', '$created_at', '$updated_at')";
+                    if (mysqli_query($con, $insert_query)) {
+                        $_SESSION['success'] = "Payment proof submitted successfully.";
+                        error_log("verify-complete.php - Payment proof uploaded and saved: $upload_path");
+                    } else {
+                        $_SESSION['error'] = "Failed to save payment proof to database.";
+                        error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
+                    }
+                } else {
+                    $_SESSION['error'] = "Failed to upload payment proof.";
+                    error_log("verify-complete.php - Failed to move uploaded file to $upload_path");
+                }
+            } else {
+                $_SESSION['error'] = "Invalid file type. Only JPG, JPEG, and PNG are allowed.";
+                error_log("verify-complete.php - Invalid file type: $file_ext");
+            }
+        } else {
+            $_SESSION['error'] = "No payment proof uploaded.";
+            error_log("verify-complete.php - No payment proof uploaded or upload error: " . ($_FILES['payment_proof']['error'] ?? 'N/A'));
+        }
+    }
 } else {
     $_SESSION['error'] = "Invalid request method.";
     error_log("verify-complete.php - Invalid request method, redirecting to verify.php");
@@ -76,46 +122,6 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
 } else {
     $_SESSION['error'] = "No package found matching your balance.";
     error_log("verify-complete.php - No package found for balance: $user_balance");
-}
-
-// Handle image upload and form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_payment'])) {
-    if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
-        $file_tmp = $_FILES['payment_proof']['tmp_name'];
-        $file_name = $_FILES['payment_proof']['name'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png'];
-
-        if (in_array($file_ext, $allowed_ext)) {
-            $upload_dir = '../uploads/';
-            $new_file_name = uniqid() . '.' . $file_ext;
-            $upload_path = $upload_dir . $new_file_name;
-
-            if (move_uploaded_file($file_tmp, $upload_path)) {
-                // Insert into deposits table
-                $created_at = date('Y-m-d H:i:s');
-                $updated_at = $created_at;
-                $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
-                                 VALUES ('$amount', '$upload_path', '$user_name', '$created_at', '$updated_at')";
-                if (mysqli_query($con, $insert_query)) {
-                    $_SESSION['success'] = "Payment proof submitted successfully.";
-                    error_log("verify-complete.php - Payment proof uploaded and saved: $upload_path");
-                } else {
-                    $_SESSION['error'] = "Failed to save payment proof.";
-                    error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
-                }
-            } else {
-                $_SESSION['error'] = "Failed to upload payment proof.";
-                error_log("verify-complete.php - Failed to move uploaded file to $upload_path");
-            }
-        } else {
-            $_SESSION['error'] = "Invalid file type. Only JPG, JPEG, and PNG are allowed.";
-            error_log("verify-complete.php - Invalid file type: $file_ext");
-        }
-    } else {
-        $_SESSION['error'] = "No payment proof uploaded.";
-        error_log("verify-complete.php - No payment proof uploaded or upload error: " . ($_FILES['payment_proof']['error'] ?? 'N/A'));
-    }
 }
 ?>
 
@@ -191,6 +197,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_payment'])) {
                                 </div>
                                 <div class="mt-3">
                                     <form action="" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="verification_method" value="<?= htmlspecialchars($verification_method) ?>">
+                                        <input type="hidden" name="amount" value="<?= htmlspecialchars($amount) ?>">
                                         <div class="mb-3">
                                             <label for="payment_proof" class="form-label">Upload Payment Proof (JPG, JPEG, PNG)</label>
                                             <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/jpeg,image/jpg,image/png" required>
