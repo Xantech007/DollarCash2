@@ -3,7 +3,7 @@
 
 <div class="d-flex align-items-center justify-content-between">
     <a href="index.html" class="logo d-flex align-items-center">  
-        <img src="../Uploads/logo/logodark.png" alt="">
+        <img src="../Uploads/logo/logodark.png" alt="Logo" class="logo-img">
     </a>
 </div><!-- End Logo -->
 
@@ -58,9 +58,14 @@
                         border-radius: 10px;
                         margin-right: 15px;
                     }
-                    .logo img {
-                        width: 2.5em; /* Scales the logo to 2.5x its original size */
-                        height: auto; /* Maintains aspect ratio */
+                    .logo-img {
+                        width: 100px; /* Original size assumption */
+                        height: auto; /* Maintain aspect ratio */
+                        transform: scale(2.5); /* Scales logo to 2.5x */
+                        display: block; /* Ensure image is visible */
+                    }
+                    .logo {
+                        overflow: visible; /* Prevent clipping */
                     }
                 </style>
                 <li>
@@ -77,5 +82,5 @@
 </nav><!-- End Icons Navigation -->
 
 </header><!-- End Header -->
-<div style="margin-top:60px;">
- </div>
+<div style="margin-top:80px;"> <!-- Adjusted margin to account for larger logo -->
+</div>
