@@ -5,8 +5,6 @@ include('inc/header.php');
 include('inc/navbar.php');
 ?>
 
-<!-- ======= Sidebar ======= -->
-
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -22,7 +20,7 @@ include('inc/navbar.php');
             $verify = $row['verify'] ?? 0; // Default to 0 if not set
         }
         ?>
-        <h1>Available Balance: $<?= $balance ?></h1>
+        <h1>Available Balance: $<?= htmlspecialchars($balance) ?></h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -133,9 +131,13 @@ include('inc/navbar.php');
             <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
 
             <!-- Basic Modal -->
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
-                Request Withdrawal
-            </button>
+            <?php if ($verify == 2): ?>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+                    Request Withdrawal
+                </button>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled>Request Withdrawal (Verify Account First)</button>
+            <?php endif; ?>
             <div class="modal fade" id="verticalycentered" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -148,7 +150,7 @@ include('inc/navbar.php');
                                 <form action="../codes/withdrawals.php" method="POST" class="F" id="form" enctype="multipart/form-data"> 
                                     <div class="error"></div>						               
                                     <div class="inputbox">
-                                        <input class="input" type="number" name="amount" autocomplete="off" required="required" />
+                                        <input class="input" type="number" name="amount" autocomplete="off" required="required" min="50" />
                                         <span>Amount In USD</span>
                                     </div>
                                     <div class="inputbox">
@@ -163,8 +165,9 @@ include('inc/navbar.php');
                                         <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
                                         <span>MOMO Number</span>
                                     </div>
-                                    <input type="hidden" value="<?= $_SESSION['email'] ?>" name="email">                                            
-                                    <input type="hidden" value="<?= $balance ?>" name="balance">                                            
+                                    <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">                                            
+                                    <input type="hidden" value="<?= htmlspecialchars($balance) ?>" name="balance">                                            
+                                    <input type="hidden" value="<?= htmlspecialchars($verify) ?>" name="verify_status">                                            
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -175,18 +178,6 @@ include('inc/navbar.php');
                     </div>
                 </form>
             </div><!-- End Basic Modal-->
-
-            <style>                 
-                #form { margin: auto; width: 80%; }
-                .form .inputbox { position: relative; width: 100%; margin-top: 20px; }
-                .form .inputbox input, .form .inputbox textarea { width: 100%; padding: 5px 0; font-size: 12px; border: none; outline: none; background: transparent; border-bottom: 2px solid #ccc; margin: 10px 0; }
-                .form .inputbox span { position: absolute; left: 0; padding: 5px 0; font-size: 12px; margin: 10px 0; }
-                .form .inputbox input:focus ~ span, .form .inputbox textarea:focus ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); transition: 0.4s ease-in-out; }
-                .form .inputbox input:valid ~ span, .form .inputbox textarea:valid ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); }
-                .B { color: #ccm; margin-top: 20px; background: transparent; padding12px; font-weight: 400; transition: 0.8s ease-in-out; letter-spacing: 1px; border: 2px solid #0d6efd; }
-                .B:hover { background #186; }
-                .error { margin-bottom: 10px; padding: 0px; background: #d3ad7f; text-align: center; font-size: 12px; transition: all 0.5s ease; color: white; border-radius: 3px; }
-            </style>
         </div>
     </div>
 
@@ -255,15 +246,18 @@ include('inc/navbar.php');
     let input = document.querySelector("#text");
     let inputbutton = document.querySelector("#button");
 
-    inputbutton.addEventListener('click', copytext);
+    if (inputbutton) {
+        inputbutton.addEventListener('click', copytext);
+    }
 
     function copytext() {
-        input.select();
-        document.execCommand('copy');
-        inputbutton.innerHTML = 'copied!';
+        if (input) {
+            input.select();
+            document.execCommand('copy');
+            inputbutton.innerHTML = 'copied!';
+        }
     }
 </script> 
 
 <?php include('inc/footer.php'); ?>
-
 </html>
