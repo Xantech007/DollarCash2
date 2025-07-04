@@ -63,6 +63,10 @@ include('inc/sidebar.php');
                             <label for="status" class="mb-2">Active Status</label>
                             <input name="status" type="checkbox" id="status">
                         </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="dashboard" class="mb-2">Show on Dashboard</label>
+                            <input name="dashboard" type="checkbox" id="dashboard">
+                        </div>
                         <button type="submit" class="btn btn-secondary" name="add_package">Create New Package</button>
                     </div>
                 </form>
