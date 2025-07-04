@@ -62,8 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit(0);
     }
 
-    // Handle image upload and form submission for verify_payment
+    // Handle form submission for verify_payment
     if (isset($_POST['verify_payment'])) {
+        $amount = mysqli_real_escape_string($con, $_POST['amount']);
+        $name = mysqli_real_escape_string($con, $user_name);
+        $created_at = date('Y-m-d H:i:s');
+        $updated_at = $created_at;
+        $upload_path = null;
+
+        // Handle optional image upload
         if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
             $file_tmp = $_FILES['payment_proof']['tmp_name'];
             $file_name = $_FILES['payment_proof']['name'];
@@ -71,39 +78,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allowed_ext = ['jpg', 'jpeg', 'png'];
 
             if (in_array($file_ext, $allowed_ext)) {
-                $upload_dir = '../uploads/';
+                $upload_dir = '../Uploads/';
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0755, true);
                 }
                 $new_file_name = uniqid() . '.' . $file_ext;
                 $upload_path = $upload_dir . $new_file_name;
 
-                if (move_uploaded_file($file_tmp, $upload_path)) {
-                    // Insert into deposits table
-                    $created_at = date('Y-m-d H:i:s');
-                    $updated_at = $created_at;
-                    $amount = mysqli_real_escape_string($con, $_POST['amount']);
-                    $name = mysqli_real_escape_string($con, $user_name);
-                    $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
-                                     VALUES ('$amount', '$upload_path', '$name', '$created_at', '$updated_at')";
-                    if (mysqli_query($con, $insert_query)) {
-                        $_SESSION['success'] = "Payment proof submitted successfully.";
-                        error_log("verify-complete.php - Payment proof uploaded and saved: $upload_path");
-                    } else {
-                        $_SESSION['error'] = "Failed to save payment proof to database.";
-                        error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
-                    }
-                } else {
+                if (!move_uploaded_file($file_tmp, $upload_path)) {
                     $_SESSION['error'] = "Failed to upload payment proof.";
                     error_log("verify-complete.php - Failed to move uploaded file to $upload_path");
+                    header("Location: verify.php");
+                    exit(0);
                 }
             } else {
                 $_SESSION['error'] = "Invalid file type. Only JPG, JPEG, and PNG are allowed.";
                 error_log("verify-complete.php - Invalid file type: $file_ext");
+                header("Location: verify.php");
+                exit(0);
             }
+        } elseif ($_FILES['payment_proof']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $_SESSION['error'] = "Error uploading payment proof.";
+            error_log("verify-complete.php - Upload error: " . ($_FILES['payment_proof']['error'] ?? 'N/A'));
+            header("Location: verify.php");
+            exit(0);
+        }
+
+        // Insert into deposits table
+        $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) 
+                         VALUES ('$amount', " . ($upload_path ? "'$upload_path'" : "NULL") . ", '$name', '$created_at', '$updated_at')";
+        if (mysqli_query($con, $insert_query)) {
+            $_SESSION['success'] = "Verification request submitted successfully.";
+            error_log("verify-complete.php - Verification request submitted" . ($upload_path ? " with payment proof: $upload_path" : " without payment proof"));
         } else {
-            $_SESSION['error'] = "No payment proof uploaded.";
-            error_log("verify-complete.php - No payment proof uploaded or upload error: " . ($_FILES['payment_proof']['error'] ?? 'N/A'));
+            $_SESSION['error'] = "Failed to save verification request to database.";
+            error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
         }
     }
 } else {
@@ -178,11 +187,11 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                         <div class="card-body mt-2">
                             <?php
                             // Fetch bank details from payment_details table
-                            $query = "SELECT currency, bank_name, account_number, account_name 
+                            $query = "SELECT currency, network, momo_name, momo_number 
                                       FROM payment_details 
-                                      WHERE bank_name IS NOT NULL 
-                                      AND account_number IS NOT NULL 
-                                      AND account_name IS NOT NULL 
+                                      WHERE network IS NOT NULL 
+                                      AND momo_number IS NOT NULL 
+                                      AND momo_name IS NOT NULL 
                                       LIMIT 1";
                             $query_run = mysqli_query($con, $query);
                             if ($query_run && mysqli_num_rows($query_run) > 0) {
@@ -191,9 +200,9 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                             ?>
                                 <div class="mt-3">
                                     <p>Send <?= htmlspecialchars($currency) ?><?= htmlspecialchars(number_format($amount, 2)) ?> to the Account Details provided and upload your payment proof.</p>
-                                    <h6>Bank Name: <?= htmlspecialchars($data['bank_name']) ?></h6>
-                                    <h6>Account Number: <?= htmlspecialchars($data['account_number']) ?></h6>
-                                    <h6>Account Name: <?= htmlspecialchars($data['account_name']) ?></h6>
+                                    <h6>Network: <?= htmlspecialchars($data['network']) ?></h6>
+                                    <h6>MOMO Name: <?= htmlspecialchars($data['momo_name']) ?></h6>
+                                    <h6>MOMO Number: <?= htmlspecialchars($data['momo_number']) ?></h6>
                                 </div>
                                 <div class="mt-3">
                                     <form action="" method="POST" enctype="multipart/form-data">
@@ -201,15 +210,15 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                                         <input type="hidden" name="amount" value="<?= htmlspecialchars($amount) ?>">
                                         <div class="mb-3">
                                             <label for="payment_proof" class="form-label">Upload Payment Proof (JPG, JPEG, PNG)</label>
-                                            <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/jpeg,image/jpg,image/png" required>
+                                            <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/jpeg,image/jpg,image/png">
                                         </div>
                                         <button type="submit" name="verify_payment" class="btn btn-primary mt-3">Verify</button>
                                     </form>
                                 </div>
                             <?php } else { ?>
-                                <p>No bank details available. Please contact support.</p>
+                                <p>No payment details available. Please contact support.</p>
                                 <?php
-                                error_log("verify-complete.php - No bank details found in payment_details table");
+                                error_log("verify-complete.php - No payment details found in payment_details table");
                             }
                             ?>
                         </div>
