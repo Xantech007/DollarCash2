@@ -81,29 +81,6 @@ include('inc/navbar.php');
             opacity: 0.85;
             border-radius: 10px;
         }
-        input {
-            border: none;
-            outline: none;
-        }
-        #button {
-            border: none;
-            outline: none;
-            color: #012970;
-            background: #f7f7f7;
-            border-radius: 5px;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        @media (max-width: 500px) {
-            .form {
-                width: 100%;
-                margin: auto;
-            }
-        }
-        /* Styles for Verify Account button */
         .action-buttons {
             display: flex;
             justify-content: space-between;
@@ -123,6 +100,51 @@ include('inc/navbar.php');
             text-decoration: none;
             color: white;
         }
+        /* Modal Form Styles */
+        .withdrawal-form .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .withdrawal-form input {
+            width: 100%;
+            padding: 8px 0;
+            font-size: 14px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            outline: none;
+            background: transparent;
+        }
+        .withdrawal-form label {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            font-size: 14px;
+            color: #666;
+            transition: 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        .withdrawal-form input:focus + label,
+        .withdrawal-form input:not(:placeholder-shown) + label {
+            top: -20px;
+            font-size: 12px;
+            color: #0d6efd;
+        }
+        .withdrawal-form .error {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        @media (max-width: 500px) {
+            .withdrawal-form {
+                width: 100%;
+            }
+        }
     </style>
 
     <div class="card" style="margin-top:20px">
@@ -130,54 +152,56 @@ include('inc/navbar.php');
             <h5 class="card-title">Withdrawal Request</h5>
             <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
 
-            <!-- Basic Modal -->
+            <!-- Withdrawal Modal -->
             <?php if ($verify == 2): ?>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#withdrawalModal">
                     Request Withdrawal
                 </button>
             <?php else: ?>
                 <button type="button" class="btn btn-secondary" disabled>Request Withdrawal (Verify Account First)</button>
             <?php endif; ?>
-            <div class="modal fade" id="verticalycentered" tabindex="-1">
+            <div class="modal fade" id="withdrawalModal" tabindex="-1" aria-labelledby="withdrawalModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Minimum withdrawal is set at $50</h5>
+                            <h5 class="modal-title" id="withdrawalModalLabel">Minimum withdrawal is set at $50</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="form" data-aos="fade-up">
-                                <form action="../codes/withdrawals.php" method="POST" class="F" id="form" enctype="multipart/form-data"> 
-                                    <div class="error"></div>						               
-                                    <div class="inputbox">
-                                        <input class="input" type="number" name="amount" autocomplete="off" required="required" min="50" />
-                                        <span>Amount In USD</span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="network" autocomplete="off" required="required" />
-                                        <span>Network</span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="momo_name" autocomplete="off" required="required" />
-                                        <span>MOMO Name</span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
-                                        <span>MOMO Number</span>
-                                    </div>
-                                    <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">                                            
-                                    <input type="hidden" value="<?= htmlspecialchars($balance) ?>" name="balance">                                            
-                                    <input type="hidden" value="<?= htmlspecialchars($verify) ?>" name="verify_status">                                            
+                            <form action="../codes/withdrawals.php" method="POST" class="withdrawal-form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <input type="number" name="amount" id="amount" required min="50" placeholder=" " />
+                                    <label for="amount">Amount In USD</label>
+                                    <div class="error"></div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-secondary" name="withdraw">Submit Request</button>
-                            </div>
+                                <div class="form-group">
+                                    <input type="text" name="network" id="network" required placeholder=" " />
+                                    <label for="network">Network</label>
+                                    <div class="error"></div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="momo_name" id="momo_name" required placeholder=" " />
+                                    <label for="momo_name">MOMO Name</label>
+                                    <div class="error"></div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="momo_number" id="momo_number" required placeholder=" " />
+                                    <label for="momo_number">MOMO Number</label>
+                                    <div class="error"></div>
+                                    <button type="button" id="copyMomoNumber" class="btn btn-light btn-sm mt-2">Copy</button>
+                                </div>
+                                <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">
+                                <input type="hidden" value="<?= htmlspecialchars($balance) ?>" name="balance">
+                                <input type="hidden" value="<?= htmlspecialchars($verify) ?>" name="verify_status">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-secondary" name="withdraw">Submit Request</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
-            </div><!-- End Basic Modal-->
+                </div>
+            </div><!-- End Withdrawal Modal-->
         </div>
     </div>
 
@@ -243,21 +267,28 @@ include('inc/navbar.php');
 </main><!-- End #main -->
 
 <script>
-    let input = document.querySelector("#text");
-    let inputbutton = document.querySelector("#button");
-
-    if (inputbutton) {
-        inputbutton.addEventListener('click', copytext);
-    }
-
-    function copytext() {
-        if (input) {
-            input.select();
+    // Copy MOMO Number
+    const copyButton = document.querySelector('#copyMomoNumber');
+    const momoNumberInput = document.querySelector('#momo_number');
+    if (copyButton && momoNumberInput) {
+        copyButton.addEventListener('click', () => {
+            momoNumberInput.select();
             document.execCommand('copy');
-            inputbutton.innerHTML = 'copied!';
-        }
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => { copyButton.textContent = 'Copy'; }, 2000);
+        });
     }
-</script> 
+
+    // Ensure Bootstrap modal works correctly
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.querySelector('#withdrawalModal');
+        if (modal) {
+            modal.addEventListener('shown.bs.modal', () => {
+                document.querySelector('#amount').focus();
+            });
+        }
+    });
+</script>
 
 <?php include('inc/footer.php'); ?>
 </html>
