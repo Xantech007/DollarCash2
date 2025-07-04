@@ -2,7 +2,6 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
-
 // Check if user is authenticated
 if (!isset($_SESSION['auth'])) {
     $_SESSION['error'] = "Login to access dashboard!";
@@ -11,26 +10,21 @@ if (!isset($_SESSION['auth'])) {
 }
 
 // Fetch the logged-in user's name and balance from the users table
-// Assuming $_SESSION['auth'] contains user_id or email; adjust based on your login system
+$email = $_SESSION['email'] ?? null; // Use email from session (seen in profile.php)
 $name = 'Guest'; // Default name
 $balance = 0.00; // Default balance
-if (isset($_SESSION['auth'])) {
-    // If $_SESSION['auth'] contains user_id or email, adjust query accordingly
-    // Example: Assuming $_SESSION['auth'] is user_id or $_SESSION['email'] is set
-    $email = $_SESSION['email'] ?? null; // Use email from session (seen in profile.php)
-    if ($email) {
-        $user_query = "SELECT name, balance FROM users WHERE email = ?";
-        $stmt = $con->prepare($user_query);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $user_result = $stmt->get_result();
-        if ($user_result && $user_result->num_rows > 0) {
-            $user_data = $user_result->fetch_assoc();
-            $name = $user_data['name'];
-            $balance = $user_data['balance'] ?? 0.00;
-        }
-        $stmt->close();
+if ($email) {
+    $user_query = "SELECT name, balance FROM users WHERE email = ?";
+    $stmt = $con->prepare($user_query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $user_result = $stmt->get_result();
+    if ($user_result && $user_result->num_rows > 0) {
+        $user_data = $user_result->fetch_assoc();
+        $name = $user_data['name'];
+        $balance = $user_data['balance'] ?? 0.00;
     }
+    $stmt->close();
 }
 
 // Fetch CashTags where dashboard is 'enabled'
@@ -122,6 +116,7 @@ $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : ''
 
         .btn-add { background: #007bff; color: white; }
         .btn-withdraw { background: #6c757d; color: white; }
+        .btn-used-cashtags { background: #28a745; color: white; } /* Green for Used CashTags */
         .verified { color: #28a745; font-size: 12px; }
         .progress {
             display: flex;
@@ -228,6 +223,11 @@ $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : ''
             <?php else: ?>
                 <div class="card-amount">No CashTags available</div>
             <?php endif; ?>
+        </div>
+
+        <!-- Used CashTags Button -->
+        <div class="action-buttons">
+            <a href="used-cashtag.php" class="btn btn-used-cashtags">View Used CashTags</a>
         </div>
 
         <!-- Explore Button -->
