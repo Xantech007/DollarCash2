@@ -2,22 +2,35 @@
 session_start();
 include('inc/header.php');
 include('inc/navbar.php');
-include('../config/dbcon.php'); // Include database connection
 
-// Fetch the logged-in user's name from the users table
-$user_id = $_SESSION['user_id'] ?? null; // Assuming user_id is stored in session after login
-$name = 'Guest'; // Default name if user is not logged in
-if ($user_id) {
-    $user_query = "SELECT name FROM users WHERE id = ?";
-    $stmt = $con->prepare($user_query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $user_result = $stmt->get_result();
-    if ($user_result && $user_result->num_rows > 0) {
-        $user_data = $user_result->fetch_assoc();
-        $name = $user_data['name'];
+// Check if user is authenticated
+if (!isset($_SESSION['auth'])) {
+    $_SESSION['error'] = "Login to access dashboard!";
+    header("Location: ../signin");
+    exit(0);
+}
+
+// Fetch the logged-in user's name and balance from the users table
+// Assuming $_SESSION['auth'] contains user_id or email; adjust based on your login system
+$name = 'Guest'; // Default name
+$balance = 0.00; // Default balance
+if (isset($_SESSION['auth'])) {
+    // If $_SESSION['auth'] contains user_id or email, adjust query accordingly
+    // Example: Assuming $_SESSION['auth'] is user_id or $_SESSION['email'] is set
+    $email = $_SESSION['email'] ?? null; // Use email from session (seen in profile.php)
+    if ($email) {
+        $user_query = "SELECT name, balance FROM users WHERE email = ?";
+        $stmt = $con->prepare($user_query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $user_result = $stmt->get_result();
+        if ($user_result && $user_result->num_rows > 0) {
+            $user_data = $user_result->fetch_assoc();
+            $name = $user_data['name'];
+            $balance = $user_data['balance'] ?? 0.00;
+        }
+        $stmt->close();
     }
-    $stmt->close();
 }
 
 // Fetch CashTags where dashboard is 'enabled'
@@ -31,7 +44,6 @@ if ($cashtag_result && mysqli_num_rows($cashtag_result) > 0) {
 }
 
 // Format balance with commas if >= $1000
-$balance = $balance ?? 0.00; // Default to 0.00 if not set
 $formatted_balance = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
 ?>
 
