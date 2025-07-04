@@ -27,7 +27,7 @@
         $image = $data['image'];
         $name = $data['name'];
         $address = $data['address'];
-        $btc_wallet = $data['btc_wallet'];
+        
         $country = $data['country'];
         $balance = $data['balance'];
         $bonus = $data['referal_bonus'];
