@@ -4,7 +4,7 @@
 <div class="d-flex align-items-center justify-content-between">
 <a href="index.html" class="logo d-flex align-items-center">  
  
- <img src="../uploads/logo/logo1.png" alt="">
+ <img src="../uploads/logo/logodark.png" alt="">
  
 
 </a>
