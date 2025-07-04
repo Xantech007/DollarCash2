@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($id)) {
             $_SESSION['error'] = "Invalid user ID.";
             error_log("users.php - Missing user ID for delete_user");
-            header("Location: ../manage-users");
+            header("Location: ../manage-users.php");
             exit(0);
         }
 
@@ -52,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $_SESSION['success'] = "Deleted successfully";
             error_log("users.php - User deleted: ID=$id");
-            header("Location: ../manage-users");
+            header("Location: ../manage-users.php");
             exit(0);
         } else {
             $_SESSION['error'] = "Failed to delete user.";
             error_log("users.php - Delete query error: " . mysqli_error($con));
-            header("Location: ../manage-users");
+            header("Location: ../manage-users.php");
             exit(0);
         }
     } elseif (isset($_POST['update_verify_status'])) {
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($user_id) || !in_array($verify_status, ['0', '1', '2'])) {
             $_SESSION['error'] = "Invalid user ID or verification status.";
             error_log("users.php - Invalid input for update_verify_status: User ID=$user_id, Verify Status=$verify_status");
-            header("Location: ../all-members.php");
+            header("Location: ../manage-users.php");
             exit(0);
         }
 
@@ -78,19 +78,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($query_run) {
             $_SESSION['success'] = "Verification status updated successfully.";
             error_log("users.php - Verification status updated: User ID=$user_id, Verify Status=$verify_status");
-            header("Location: ../all-members.php");
+            header("Location: ../manage-users.php");
             exit(0);
         } else {
             $_SESSION['error'] = "Failed to update verification status.";
             error_log("users.php - Update verify status query error: " . mysqli_error($con));
-            header("Location: ../all-members.php");
+            header("Location: ../manage-users.php");
             exit(0);
         }
     }
 } else {
     $_SESSION['error'] = "Invalid request.";
     error_log("users.php - Invalid request method");
-    header("Location: ../all-members.php");
+    header("Location: ../manage-users.php");
     exit(0);
 }
 ?>
