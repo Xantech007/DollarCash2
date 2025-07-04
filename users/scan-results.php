@@ -71,14 +71,13 @@ error_log("scan-results.php - Session: " . print_r($_SESSION, true));
                 <div class="card-header">
                   <?= htmlspecialchars($data['name']) ?>
                 </div>
-                <div class="card-body mt-2">
+                <div class="card BODY mt-2">
                   <div class="mt-3">
                     <h6>Amount: $<?= htmlspecialchars(number_format($data['max_a'], 2)) ?></h6>
                   </div>
                   <div class="mt-3">
                     <form action="../codes/balance.php" method="POST">
                       <input type="hidden" name="id" value="<?= $data['id'] ?>">
-                      <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>">
                       <button type="submit" name="add_balance" class="btn btn-outline-secondary mt-3">Add Balance</button>
                     </form>
                   </div>
