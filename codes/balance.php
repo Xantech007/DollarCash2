@@ -48,6 +48,6 @@ if (isset($_POST['add_balance']) && isset($_POST['package_id'])) {
 }
 
 // Redirect to index.php
-header("Location: ../index.php");
+header("Location: ../users/index.php");
 exit();
 ?>
