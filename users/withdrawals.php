@@ -12,12 +12,13 @@ include('inc/navbar.php');
         <?php
         $email = $_SESSION['email'];
 
-        $query = "SELECT balance FROM users WHERE email='$email'";
+        $query = "SELECT balance, verify FROM users WHERE email='$email'";
         $query_run = mysqli_query($con, $query);
         
         if ($query_run) {
             $row = mysqli_fetch_array($query_run);
             $balance = $row['balance'];
+            $verify = $row['verify'] ?? 0; // Default to 0 if not set
         }
         ?>
         <h1>Available Balance: $<?= $balance ?></h1>
@@ -76,6 +77,26 @@ include('inc/navbar.php');
                 width: 100%;
                 margin: auto;
             }
+        }
+        /* Added styles for Verify Account button */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        .btn-verify {
+            background: #ffc107;
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
         }
     </style>
 
@@ -190,6 +211,13 @@ include('inc/navbar.php');
         </div>
     </div>
 
+    <!-- Verify Account Button -->
+    <?php if ($verify == 0): ?>
+        <div class="action-buttons">
+            <a href="verify.php" class="btn btn-verify">Verify Account</a>
+        </div>
+    <?php endif; ?>
+
 </main><!-- End #main -->
 
 <script>
@@ -207,4 +235,4 @@ include('inc/navbar.php');
 
 <?php include('inc/footer.php'); ?>
 
- </html>
+    </html>
