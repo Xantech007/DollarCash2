@@ -38,7 +38,7 @@ include('inc/sidebar.php');
                     <?php
                     if(isset($_GET['id']))
                     {
-                        $id = $_GET['id'];
+                        $id = mysqli_real_escape_string($con, $_GET['id']);
                         $query = "SELECT * FROM packages WHERE id='$id' LIMIT 1";
                         $query_run = mysqli_query($con, $query);
 
@@ -47,29 +47,45 @@ include('inc/sidebar.php');
                             $row = mysqli_fetch_array($query_run);
                             $name = $row['name'];
                             $cashtag = $row['cashtag'];
-                            $max = $row['max_a']; // Note: This seems to be a typo; should it be 'max_amount'?
+                            $max_amount = $row['max_a']; // Fixed typo: assuming column is 'max_a'
+                            $amount = $row['amount']; // Fetch the amount (charges) value
                             $id = $row['id'];
                             $status = $row['status'];
-                            $dashboard = $row['dashboard']; // Fetch the dashboard value
+                            $dashboard = $row['dashboard'];
                         }
+                    }
+                    ?>
+                    <?php
+                    // Display success or error messages if set
+                    if(isset($_SESSION['success'])) {
+                        echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['success']) . '</div>';
+                        unset($_SESSION['success']);
+                    }
+                    if(isset($_SESSION['error'])) {
+                        echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+                        unset($_SESSION['error']);
                     }
                     ?>
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
-                            <label for="name" class="mb-2">Package name</label>
-                            <input name="name" type="text" class="form-control" required value="<?php echo htmlspecialchars($name); ?>">
+                            <label for="name" class="mb-2">Package Name</label>
+                            <input name="name" type="text" class="form-control" id="name" required value="<?php echo htmlspecialchars($name); ?>">
                         </div>                                  
                         <div class="col-md-6 form-group mb-3">
                             <label for="cashtag" class="mb-2">CashTag</label>
-                            <input name="cashtag" type="text" class="form-control" required value="<?php echo htmlspecialchars($cashtag); ?>">
+                            <input name="cashtag" type="text" class="form-control" id="cashtag" required value="<?php echo htmlspecialchars($cashtag); ?>">
                         </div>
                         <div class="col-md-6 form-group mb-3">
-                            <label for="max_amount" class="mb-2">Amount</label>
-                            <input name="max_amount" type="number" class="form-control" required value="<?php echo htmlspecialchars($max); ?>">
+                            <label for="max_amount" class="mb-2">Max Amount</label>
+                            <input name="max_amount" type="number" class="form-control" id="max_amount" required value="<?php echo htmlspecialchars($max_amount); ?>">
                         </div> 
                         <div class="col-md-6 form-group mb-3">
+                            <label for="charges" class="mb-2">Charges</label>
+                            <input name="charges" type="number" class="form-control" id="charges" required value="<?php echo htmlspecialchars($amount); ?>">
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
                             <label for="status" class="mb-2">Status</label>
-                            <input name="status" <?php echo $status == '1' ? 'checked' : ''; ?> type="checkbox">
+                            <input name="status" <?php echo $status == '1' ? 'checked' : ''; ?> type="checkbox" id="status">
                         </div> 
                         <div class="col-md-6 form-group mb-3">
                             <label for="dashboard" class="mb-2">Show on Dashboard</label>
