@@ -3,37 +3,6 @@ session_start();
 include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
-
-// Check if user is logged in
-if (!isset($_SESSION['auth'])) {
-    $_SESSION['error'] = "Please log in to access this page.";
-    header("Location: ../signin.php");
-    exit(0);
-}
-
-// Get user balance and verify status
-$email = $_SESSION['email'];
-$query = "SELECT balance, verify FROM users WHERE email = ?";
-$stmt = $con->prepare($query);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$query_run = $stmt->get_result();
-if ($query_run && $query_run->num_rows > 0) {
-    $row = $query_run->fetch_assoc();
-    $balance = $row['balance'];
-    $verify = $row['verify'] ?? 0;
-} else {
-    $_SESSION['error'] = "User not found.";
-    header("Location: ../signin.php");
-    exit(0);
-}
-$stmt->close();
-
-// Redirect to verify.php if verify is 0
-if ($verify == 0) {
-    header("Location: verify.php");
-    exit(0);
-}
 ?>
 
 <!-- ======= Sidebar ======= -->
@@ -41,7 +10,19 @@ if ($verify == 0) {
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Available Balance: $<?= htmlspecialchars($balance) ?></h1>
+        <?php
+        $email = $_SESSION['email'];
+
+        $query = "SELECT balance, verify FROM users WHERE email='$email'";
+        $query_run = mysqli_query($con, $query);
+        
+        if ($query_run) {
+            $row = mysqli_fetch_array($query_run);
+            $balance = $row['balance'];
+            $verify = $row['verify'] ?? 0; // Default to 0 if not set
+        }
+        ?>
+        <h1>Available Balance: $<?= $balance ?></h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -50,34 +31,17 @@ if ($verify == 0) {
             </ol>
         </nav>
     </div><!-- End Page Title -->   
-
-    <!-- Success/Error Messages -->
     <?php  
     if (isset($_SESSION['error'])) { ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <?= htmlspecialchars($_SESSION['error']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>               
-    <?php } 
-    unset($_SESSION['error']);
-    if (isset($_SESSION['success'])) { ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?= htmlspecialchars($_SESSION['success']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>               
-    <?php } 
-    unset($_SESSION['success']);
-    // Show verification under review message if verify is 1
-    if ($verify == 1) { ?>
-        <div class="modal fade show" id="verifyReviewModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+        <div class="modal fade show" id="errorModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Verification Status</h5>
+                        <h5 class="modal-title">Error</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Account Verification Under Review</p>
+                        <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
@@ -86,12 +50,33 @@ if ($verify == 0) {
             </div>
         </div>
         <div class="modal-backdrop fade show"></div>
-    <?php } ?>
-    
+    <?php } 
+    unset($_SESSION['error']);
+    if (isset($_SESSION['success'])) { ?>
+        <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <?= htmlspecialchars($_SESSION['success']) ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    <?php } 
+    unset($_SESSION['success']);
+    ?> 
     <style> 
         .form1 {
             padding: 10px 10px;
-            width滴        width: 300px;
+            width: 300px;
             background: white;
             display: flex;
             justify-content: space-between;
@@ -178,8 +163,8 @@ if ($verify == 0) {
                                         <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
                                         <span>MOMO Number</span>
                                     </div>
-                                    <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">                                            
-                                    <input type="hidden" value="<?= htmlspecialchars($balance) ?>" name="balance">                                            
+                                    <input type="hidden" value="<?= $_SESSION['email'] ?>" name="email">                                            
+                                    <input type="hidden" value="<?= $balance ?>" name="balance">                                            
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -227,13 +212,10 @@ if ($verify == 0) {
                     <tbody>
                         <?php
                         $email = $_SESSION['email'];
-                        $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email = ?";
-                        $stmt = $con->prepare($query);
-                        $stmt->bind_param("s", $email);
-                        $stmt->execute();
-                        $query_run = $stmt->get_result();
-                        if ($query_run->num_rows > 0) { 
-                            while ($data = $query_run->fetch_assoc()) { ?>
+                        $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email='$email'";
+                        $query_run = mysqli_query($con, $query);
+                        if (mysqli_num_rows($query_run) > 0) { 
+                            foreach ($query_run as $data) { ?>
                                 <tr>                                       
                                     <td>$<?= htmlspecialchars($data['amount']) ?></td>
                                     <td><?= htmlspecialchars($data['network']) ?></td>
@@ -252,7 +234,6 @@ if ($verify == 0) {
                                 </tr>
                             <?php }        
                         }
-                        $stmt->close();
                         ?>
                     </tbody>
                 </table>
@@ -262,11 +243,11 @@ if ($verify == 0) {
     </div>
 
     <!-- Verify Account Button -->
-    <?php if ($verify == 0) { ?>
+    <?php if ($verify == 0 || $verify == 1): ?>
         <div class="action-buttons">
             <a href="verify.php" class="btn btn-verify">Verify Account</a>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 
 </main><!-- End #main -->
 
@@ -285,4 +266,4 @@ if ($verify == 0) {
 
 <?php include('inc/footer.php'); ?>
 
-                </html>
+</html>
