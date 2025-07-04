@@ -54,7 +54,7 @@ include('inc/navbar.php');
                             </div>
                             <div class="mt-3">                          
                                 <form action="../codes/packages.php"method="POST">
-                                <a href="invest?I=<?=$data['id']?>" class="btn btn-outline-secondary mt-3">Invest</a>
+                                <a href="invest?I=<?=$data['id']?>" class="btn btn-outline-secondary mt-3">Add Balance</a>
                           
                                 </form>                               
                             </div>
