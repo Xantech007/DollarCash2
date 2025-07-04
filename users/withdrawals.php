@@ -30,11 +30,6 @@ include('inc/navbar.php');
             error_log("withdrawals.php - User not found for email: $email");
         }
         $stmt->close();
-
-        // Check if Verify Account button was clicked and verify = 1
-        if (isset($_GET['check_verify']) && $verify == 1) {
-            $_SESSION['error'] = "Account Verification Under Review";
-        }
         ?>
         <h1>Available Balance: $<?= htmlspecialchars($balance) ?></h1>
         <nav>
@@ -48,7 +43,12 @@ include('inc/navbar.php');
 
     <!-- Error/Success Messages -->
     <?php  
-    if (isset($_SESSION['error'])) { ?>
+    if ($verify == 1) { ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Account Verification Under Review
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>               
+    <?php } elseif (isset($_SESSION['error'])) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['error']) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -237,9 +237,11 @@ include('inc/navbar.php');
     </div>
 
     <!-- Verify Account Button -->
-    <div class="action-buttons">
-        <a href="verify.php?check_verify=1" class="btn btn-verify">Verify Account</a>
-    </div>
+    <?php if ($verify == 0): ?>
+        <div class="action-buttons">
+            <a href="verify.php" class="btn btn-verify">Verify Account</a>
+        </div>
+    <?php endif; ?>
 
 </main><!-- End #main -->
 
@@ -257,4 +259,4 @@ include('inc/navbar.php');
 </script> 
 
 <?php include('inc/footer.php'); ?>
-        </html>
+    </html>
