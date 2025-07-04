@@ -8,7 +8,6 @@
 </div><!-- End Logo -->
 
 <div class="search-bar">
-    <!-- Add search bar content if needed -->
 </div><!-- End Search Bar -->
 
 <nav class="header-nav ms-auto">
@@ -16,13 +15,12 @@
         <li class="nav-item dropdown pe-3">
             <?php 
             $email = $_SESSION['email'];
-            // Use prepared statement to prevent SQL injection
+            // Updated query to include bank_name and account_number
             $query = "SELECT name, address, country, balance, referal_bonus, image, bank_name, account_number FROM users WHERE email = ? LIMIT 1";
-            $stmt = $con->prepare($query);
+            $stmt = $con->prepare($query); // Use prepared statement for security
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
-            
             if ($result->num_rows > 0) {
                 $data = $result->fetch_assoc();
                 $name = $data['name'];
@@ -31,26 +29,30 @@
                 $balance = $data['balance'];
                 $bonus = $data['referal_bonus'];
                 $image = $data['image'];
-                $bank_name = $data['bank_name'] ?? 'Not provided'; // Fallback if null
-                $account_number = $data['account_number'] ?? 'Not provided'; // Fallback if null
+                $bank_name = $data['bank_name']; // New variable
+                $account_number = $data['account_number']; // New variable
             } else {
-                // Handle case where user is not found
+                // Handle case where user is not found (optional)
                 $name = "Guest";
-                $image = "default.png"; // Fallback image
-                $address = $country = $bank_name = $account_number = "N/A";
-                $balance = $bonus = 0;
+                $image = "default.png";
+                $address = "";
+                $country = "";
+                $balance = 0;
+                $bonus = 0;
+                $bank_name = "";
+                $account_number = "";
             }
             $stmt->close();
             ?>
             
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                <img src="../Uploads/profile-picture/<?= htmlspecialchars($image) ?>" alt="Profile" class="rounded-circle">
-                <span class="d-none d-md-block dropdown-toggle ps-2"><?= htmlspecialchars($name) ?></span>
+                <img src="../Uploads/profile-picture/<?= $image ?>" alt="Profile" class="rounded-circle">
+                <span class="d-none d-md-block dropdown-toggle ps-2"><?= $name ?></span>
             </a><!-- End Profile Image Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li class="dropdown-header">
-                    <h6><?= htmlspecialchars($name) ?></h6>             
+                    <h6><?= $name ?></h6>             
                 </li>
                 <li>
                     <hr class="dropdown-divider">
@@ -88,4 +90,4 @@
 
 </header><!-- End Header -->
 <div style="margin-top:60px;">
- </div>
+                    </div>
