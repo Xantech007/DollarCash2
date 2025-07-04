@@ -2,72 +2,69 @@
 session_start();
 include('../config/dbcon.php');
 
-if(isset($_POST['add_package']))
-{
-    $name = mysqli_real_escape_string($con, $_POST['name']);
-    $cashtag = mysqli_real_escape_string($con, $_POST['cashtag']);
-    $max = mysqli_real_escape_string($con, $_POST['max_amount']);
+if (isset($_POST['add_package'])) {
+    $name = $_POST['name'];
+    $cashtag = $_POST['cashtag'];
+    $max_amount = $_POST['max_amount'];
     $status = isset($_POST['status']) ? '1' : '0';
+    $dashboard = isset($_POST['dashboard']) ? 'enabled' : 'disabled'; // Map checkbox to 'enabled'/'disabled'
 
-    $query = "INSERT INTO packages (name, cashtag, max_a, status) VALUES ('$name', '$cashtag', '$max', '$status')";
-    $query_run = mysqli_query($con, $query);
+    // Use prepared statements for security
+    $stmt = $con->prepare("INSERT INTO packages (name, cashtag, max_a, status, dashboard) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssiss", $name, $cashtag, $max_amount, $status, $dashboard);
 
-    if($query_run)
-    {
+    if ($stmt->execute()) {
         $_SESSION['success'] = "New package created successfully";
         header("Location: ../admin/manage-packages");
         exit(0);
-    }
-    else
-    {
+    } else {
         $_SESSION['error'] = "Failed to create package";
         header("Location: ../admin/add-package");
         exit(0);
     }
+    $stmt->close();
 }
 
-if(isset($_POST['edit_package']))
-{
-    $id = mysqli_real_escape_string($con, $_POST['edit_package']);
-    $name = mysqli_real_escape_string($con, $_POST['name']);
-    $cashtag = mysqli_real_escape_string($con, $_POST['cashtag']);
-    $max = mysqli_real_escape_string($con, $_POST['max_amount']);
+if (isset($_POST['edit_package'])) {
+    $id = $_POST['edit_package'];
+    $name = $_POST['name'];
+    $cashtag = $_POST['cashtag'];
+    $max_amount = $_POST['max_amount'];
     $status = isset($_POST['status']) ? '1' : '0';
+    $dashboard = isset($_POST['dashboard']) ? 'enabled' : 'disabled'; // Map checkbox to 'enabled'/'disabled'
 
-    $query_u = "UPDATE packages SET name='$name', cashtag='$cashtag', max_a='$max', status='$status' WHERE id='$id'";
-    $query_u_run = mysqli_query($con, $query_u);
+    // Use prepared statements for security
+    $stmt = $con->prepare("UPDATE packages SET name = ?, cashtag = ?, max_a = ?, status = ?, dashboard = ? WHERE id = ?");
+    $stmt->bind_param("ssissi", $name, $cashtag, $max_amount, $status, $dashboard, $id);
 
-    if($query_u_run)
-    {
+    if ($stmt->execute()) {
         $_SESSION['success'] = "Package updated successfully";
-        header("Location: ../admin/manage-packages"); // Changed to return to manage-packages page
+        header("Location: ../admin/manage-packages");
         exit(0);
-    }
-    else
-    {
+    } else {
         $_SESSION['error'] = "Failed to update package";
-        header("Location: ../admin/edit-package?id=".$id);
+        header("Location: ../admin/edit-package?id=" . $id);
         exit(0);
     }
+    $stmt->close();
 }
 
-if(isset($_POST['delete']))
-{
-    $id = mysqli_real_escape_string($con, $_POST['delete']);
+if (isset($_POST['delete'])) {
+    $id = $_POST['delete'];
 
-    $delete_query = "DELETE FROM packages WHERE id='$id' LIMIT 1";
-    $delete_query_run = mysqli_query($con, $delete_query);
+    // Use prepared statements for security
+    $stmt = $con->prepare("DELETE FROM packages WHERE id = ? LIMIT 1");
+    $stmt->bind_param("i", $id);
 
-    if($delete_query_run)
-    {
+    if ($stmt->execute()) {
         $_SESSION['success'] = "Package deleted successfully";
         header("Location: ../admin/manage-packages");
         exit(0);
-    }
-    else
-    {
+    } else {
         $_SESSION['error'] = "Failed to delete package";
         header("Location: ../admin/manage-packages");
         exit(0);
     }
+    $stmt->close();
 }
+?>
