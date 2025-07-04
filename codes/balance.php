@@ -2,6 +2,11 @@
 session_start();
 include('../config/dbcon.php');
 
+// Debugging: Enable error display for development (remove in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Debugging: Log session data
 error_log("balance.php - Session: " . print_r($_SESSION, true));
 
@@ -19,7 +24,7 @@ if (isset($_POST['add_balance']) && isset($_POST['id'])) {
     $email = mysqli_real_escape_string($con, $_SESSION['email']);
 
     // Fetch user_id from email
-    $user_query = "SELECT id FROM users WHERE emailmodo = '$email' LIMIT 1";
+    $user_query = "SELECT id FROM users WHERE email = '$email' LIMIT 1"; // Fixed column name
     $user_query_run = mysqli_query($con, $user_query);
     if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
         $user_data = mysqli_fetch_assoc($user_query_run);
