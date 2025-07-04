@@ -34,7 +34,14 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
 }
 
 // Handle POST request with CashTag
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['scan_input']) && !empty(trim($_POST['scan_input']))) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['scan_input']) || empty(trim($_POST['scan_input']))) {
+        $_SESSION['error'] = "No CashTag provided.";
+        error_log("scan-results.php - No CashTag provided, redirecting to scan.php");
+        header("Location: scan.php");
+        exit(0);
+    }
+
     $cashtag = mysqli_real_escape_string($con, trim($_POST['scan_input']));
     
     // Validate CashTag
