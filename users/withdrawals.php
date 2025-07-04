@@ -259,4 +259,4 @@ include('inc/navbar.php');
 </script> 
 
 <?php include('inc/footer.php'); ?>
-    </html>
+</html>
