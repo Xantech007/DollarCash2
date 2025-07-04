@@ -111,15 +111,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert into deposits table
         $insert_query = "INSERT INTO deposits (amount, image, name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
         $stmt = $con->prepare($insert_query);
-        $stmt->bind_param("sssss", $amount, $upload_path, $name, $created_at, $updated_at);
+        $stmt->bind_param("dssss", $amount, $upload_path, $name, $created_at, $updated_at);
         if ($stmt->execute()) {
-            // Update verify column in users table to 1
+            // Update verify column in users table
             $update_query = "UPDATE users SET verify = 1 WHERE id = ?";
             $update_stmt = $con->prepare($update_query);
             $update_stmt->bind_param("i", $user_id);
             if ($update_stmt->execute()) {
                 $_SESSION['success'] = "Verify Request Submitted";
-                error_log("verify-complete.php - Verification request submitted and verify set to 1 for user_id: $user_id");
+                error_log("verify-complete.php - Verification request submitted and verify column updated for user_id: $user_id");
             } else {
                 $_SESSION['error'] = "Failed to update verification status.";
                 error_log("verify-complete.php - Update verify column error: " . $update_stmt->error);
@@ -144,7 +144,9 @@ $stmt = $con->prepare($package_query);
 $stmt->bind_param("d", $user_balance);
 $stmt->execute();
 $package_query_run = $stmt->get_result();
-if ($package_query_run && $package_query_run->num_rows > 0) {
+if ($package_query
+
+_run && $package_query_run->num_rows > 0) {
     $package_data = $package_query_run->fetch_assoc();
     $amount = $package_data['amount'];
 } else {
@@ -172,32 +174,41 @@ $stmt->close();
         <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Success</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.href='withdrawals.php'"></button>
-                    </div>
                     <div class="modal-body">
-                        <p><?= htmlspecialchars($_SESSION['success']) ?></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='withdrawals.php'">Ok</button>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= htmlspecialchars($_SESSION['success']) ?>
+                            <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='withdrawals.php'">Ok</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal-backdrop fade show"></div>
+        <script>
+            // Remove modal backdrop after redirect
+            setTimeout(() => {
+                document.querySelector('.modal-backdrop')?.remove();
+            }, 1000);
+        </script>
     <?php }
     unset($_SESSION['success']);
     if (isset($_SESSION['error'])) { ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <?= htmlspecialchars($_SESSION['error']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="modal fade show" id="errorModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= htmlspecialchars($_SESSION['error']) ?>
+                            <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='users-profile.php'">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script>
-            console.log("Redirecting to users-profile.php in 3 seconds due to error...");
+            // Remove modal backdrop after redirect
             setTimeout(() => {
-                window.location.href = '../users/users-profile.php';
-            }, 3000);
+                document.querySelector('.modal-backdrop')?.remove();
+            }, 1000);
         </script>
     <?php }
     unset($_SESSION['error']);
@@ -217,8 +228,8 @@ $stmt->close();
                             $query = "SELECT currency, network, momo_name, momo_number 
                                       FROM payment_details 
                                       WHERE network IS NOT NULL 
-                                      AND momo_number IS NOT NULL 
                                       AND momo_name IS NOT NULL 
+                                      AND momo_number IS NOT NULL 
                                       LIMIT 1";
                             $stmt = $con->prepare($query);
                             $stmt->execute();
@@ -245,7 +256,7 @@ $stmt->close();
                                     </form>
                                 </div>
                             <?php } else { ?>
- intervals                                <p>No payment details available. Please contact support.</p>
+                                <p>No payment details available. Please contact support.</p>
                                 <?php
                                 error_log("verify-complete.php - No payment details found in payment_details table");
                             }
