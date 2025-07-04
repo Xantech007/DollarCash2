@@ -156,7 +156,7 @@ include('inc/navbar.php');
         <div class="card">
             <div class="card-title">Cash balance</div>
             <div class="card-amount">$<?php echo htmlspecialchars($balance ?? '0.00'); ?></div>
-            <div class="card-detail">Account +$<?php echo htmlspecialchars($account_change ?? '430'); ?> Routing +<?php echo htmlspecialchars($routing ?? '329'); ?></div>
+            
         </div>
 
         <!-- Action Buttons -->
