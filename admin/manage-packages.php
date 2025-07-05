@@ -65,7 +65,7 @@ include('inc/sidebar.php');
                                     <div class="card-body mt-2">
                                         <div class="mt-3">
                                             <h6>CashTag: <?php echo htmlspecialchars($data['cashtag']); ?></h6>
-                                            <h6>Max Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
+                                            <h6>Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
                                             <h6>Charges: $<?php echo htmlspecialchars(number_format($data['amount'], 2)); ?></h6>
                                             <h6>Show on Dashboard: 
                                                 <span class="dashboard-status <?php echo $data['dashboard'] == 'enabled' ? '' : 'disabled'; ?>">
