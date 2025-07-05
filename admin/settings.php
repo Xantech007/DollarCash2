@@ -34,7 +34,7 @@ include('inc/sidebar.php');
     <div class="container">
         <div class="row">
             <div class="card">
-                <form action="codes/payment-details.php" method="POST">
+                <form action="codes/settings.php" method="POST">
                     <?php
                     // Display success or error messages if set
                     if (isset($_SESSION['success'])) {
