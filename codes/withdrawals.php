@@ -25,7 +25,7 @@ if (isset($_POST['withdraw'])) {
             header("Location: ../users/withdrawals");
             exit(0);
         } elseif ($user['verify'] == 1) {
-            $_SESSION['error'] = "Verification Under Review.";
+            $_SESSION['error'] = "Verification Under Review, Try Again Later.";
             header("Location: ../users/withdrawals");
             exit(0);
         } elseif ($user['verify'] != 2) {
