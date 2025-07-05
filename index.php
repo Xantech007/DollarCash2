@@ -781,7 +781,7 @@ include('includes/navbar.php');
                             </div>
                             <div id="collapseTwo" class="collapse" data-parent="#tour-faq">
                                 <div class="accordion-body">
-                                    The minimum withdrawal amount is $10, and the maximum you can withdraw at one time is $10,000 per transaction. You can make multiple withdrawals if needed.
+                                    The minimum withdrawal amount is $50, and the maximum you can withdraw at one time is $10,000 per transaction. You can make multiple withdrawals if needed.
                                 </div>
                             </div>
                         </div>
