@@ -44,7 +44,7 @@ include('inc/navbar.php');
                         <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.location.reload();">Ok</button>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@ include('inc/navbar.php');
                         <?= htmlspecialchars($_SESSION['success']) ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.location.reload();">Ok</button>
                     </div>
                 </div>
             </div>
