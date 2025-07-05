@@ -8,16 +8,24 @@ if (isset($_POST['update_payment_details'])) {
     $momo_name = mysqli_real_escape_string($con, $_POST['momo_name']);
     $momo_number = mysqli_real_escape_string($con, $_POST['momo_number']);
     $currency = mysqli_real_escape_string($con, $_POST['currency']);
+    $rate = mysqli_real_escape_string($con, $_POST['rate']); // Added rate
 
     // Basic validation
-    if (empty($network) || empty($momo_name) || empty($momo_number) || empty($currency)) {
+    if (empty($network) || empty($momo_name) || empty($momo_number) || empty($currency) || empty($rate)) {
         $_SESSION['error'] = "All fields are required.";
         header("Location: ../settings.php");
         exit(0);
     }
 
+    // Additional validation for rate (ensure it's a valid number)
+    if (!is_numeric($rate) || $rate < 0) {
+        $_SESSION['error'] = "Rate must be a valid positive number.";
+        header("Location: ../settings.php");
+        exit(0);
+    }
+
     // Use prepared statements for secure database update
-    $query = "UPDATE payment_details SET network = ?, momo_name = ?, momo_number = ?, currency = ? WHERE id = 1"; // Assuming single row with id=1
+    $query = "UPDATE payment_details SET network = ?, momo_name = ?, momo_number = ?, currency = ?, rate = ? WHERE id = 1"; // Added rate to query
     $stmt = $con->prepare($query);
     
     if ($stmt === false) {
@@ -26,7 +34,7 @@ if (isset($_POST['update_payment_details'])) {
         exit(0);
     }
 
-    $stmt->bind_param("ssss", $network, $momo_name, $momo_number, $currency);
+    $stmt->bind_param("ssssd", $network, $momo_name, $momo_number, $currency, $rate); // Changed to ssssd for rate (double)
     $query_run = $stmt->execute();
 
     if ($query_run) {
