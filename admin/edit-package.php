@@ -76,7 +76,7 @@ include('inc/sidebar.php');
                             <input name="cashtag" type="text" class="form-control" id="cashtag" required value="<?php echo htmlspecialchars($cashtag); ?>">
                         </div>
                         <div class="col-md-6 form-group mb-3">
-                            <label for="max_amount" class="mb-2">Max Amount</label>
+                            <label for="max_amount" class="mb-2">Amount</label>
                             <input name="max_amount" type="number" class="form-control" id="max_amount" required value="<?php echo htmlspecialchars($max_amount); ?>">
                         </div> 
                         <div class="col-md-6 form-group mb-3">
