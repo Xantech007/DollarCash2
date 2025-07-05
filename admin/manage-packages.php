@@ -31,6 +31,14 @@ include('inc/sidebar.php');
         .dashboard-status.disabled {
             color: #dc3545; /* Red for disabled */
         }
+        .status-valid {
+            font-size: 1.2em;
+            color: #28a745; /* Green for valid */
+        }
+        .status-invalid {
+            font-size: 1.2em;
+            color: #dc3545; /* Red for invalid */
+        }
     </style>
 
     <div class="add-btn">
@@ -39,6 +47,9 @@ include('inc/sidebar.php');
 
     <div class="container text-center">
         <?php
+        // Include database connection
+        include('../config/dbcon.php');
+
         // First, get distinct cashtags
         $cashtag_query = "SELECT DISTINCT cashtag FROM packages ORDER BY cashtag";
         $cashtag_result = mysqli_query($con, $cashtag_query);
@@ -50,8 +61,11 @@ include('inc/sidebar.php');
                 <h3 class="mt-4"><?php echo htmlspecialchars($current_cashtag); ?></h3>
                 <div class="row">
                     <?php
-                    // Query packages for current cashtag
-                    $query = "SELECT id, name, cashtag, max_a, amount, dashboard FROM packages WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' ORDER BY created_at DESC";
+                    // Query packages for current cashtag, including status
+                    $query = "SELECT id, name, cashtag, max_a, amount, dashboard, status 
+                              FROM packages 
+                              WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' 
+                              ORDER BY created_at DESC";
                     $query_run = mysqli_query($con, $query);
                     
                     if ($query_run && mysqli_num_rows($query_run) > 0) {
@@ -65,11 +79,16 @@ include('inc/sidebar.php');
                                     <div class="card-body mt-2">
                                         <div class="mt-3">
                                             <h6>CashTag: <?php echo htmlspecialchars($data['cashtag']); ?></h6>
-                                            <h6>Amount: $<?php echo htmlspecialchars($data['max_a']); ?></h6>
+                                            <h6>Amount: $<?php echo htmlspecialchars(number_format($data['max_a'], 2)); ?></h6>
                                             <h6>Charges: $<?php echo htmlspecialchars(number_format($data['amount'], 2)); ?></h6>
                                             <h6>Show on Dashboard: 
                                                 <span class="dashboard-status <?php echo $data['dashboard'] == 'enabled' ? '' : 'disabled'; ?>">
                                                     <?php echo $data['dashboard'] == 'enabled' ? '✔' : '✗'; ?>
+                                                </span>
+                                            </h6>
+                                            <h6>Status: 
+                                                <span class="<?php echo $data['status'] == '1' ? 'status-valid' : 'status-invalid'; ?>">
+                                                    <?php echo $data['status'] == '1' ? 'Valid' PRIVILEGED' : 'Invalid'; ?>
                                                 </span>
                                             </h6>
                                         </div>
@@ -99,4 +118,4 @@ include('inc/sidebar.php');
 </main>
 
 <?php include('inc/footer.php'); ?>
-    </html>
+</html>
