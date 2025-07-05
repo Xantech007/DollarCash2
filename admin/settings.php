@@ -54,6 +54,7 @@ include('inc/sidebar.php');
                     $momo_name = '';
                     $momo_number = '';
                     $currency = '';
+                    $rate = ''; // Added rate variable
 
                     if ($query_run && mysqli_num_rows($query_run) > 0) {
                         $row = mysqli_fetch_array($query_run);
@@ -61,6 +62,7 @@ include('inc/sidebar.php');
                         $momo_name = $row['momo_name'];
                         $momo_number = $row['momo_number'];
                         $currency = $row['currency'];
+                        $rate = $row['rate']; // Added rate fetch
                     }
                     ?>
                     <div class="row">
@@ -79,6 +81,10 @@ include('inc/sidebar.php');
                         <div class="col-md-6 form-group mb-3">
                             <label for="currency" class="mb-2">Currency</label>
                             <input name="currency" type="text" class="form-control" id="currency" value="<?= htmlspecialchars($currency) ?>" required>
+                        </div>  
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="rate" class="mb-2">Rate</label>
+                            <input name="rate" type="number" step="0.01" class="form-control" id="rate" value="<?= htmlspecialchars($rate) ?>" required>
                         </div>                          
                         <button type="submit" class="btn btn-secondary" name="update_payment_details">Save Changes</button>  
                     </div>  
