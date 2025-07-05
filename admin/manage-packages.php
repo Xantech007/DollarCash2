@@ -58,8 +58,8 @@ include('inc/sidebar.php');
                 <h3 class="mt-4"><?php echo htmlspecialchars($current_cashtag); ?></h3>
                 <div class="row">
                     <?php
-                    // Query packages for current cashtag, including status
-                    $query = "SELECT id, name, cashtag, max_a, amount, dashboard, status FROM packages WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' ORDER BY created_at DESC";
+                    // Query packages for current cashtag, ordered by max_a ASC
+                    $query = "SELECT id, name, cashtag, max_a, amount, dashboard, status FROM packages WHERE cashtag = '" . mysqli_real_escape_string($con, $current_cashtag) . "' ORDER BY max_a ASC";
                     $query_run = mysqli_query($con, $query);
                     
                     if ($query_run && mysqli_num_rows($query_run) > 0) {
