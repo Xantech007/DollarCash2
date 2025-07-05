@@ -187,7 +187,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                         <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='users-profile.php'">Ok</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='withdrawals.php'">Ok</button>
                     </div>
                 </div>
             </div>
