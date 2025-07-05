@@ -90,7 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="../users/index.php">Home</a></li>
-        <li class="breadcrumb-item">Scan</li>
+        <li class="breadcrumb.Swing">
+          <a href="../users/scan.php" class="text-decoration-none">Scan</a>
+        </li>
         <li class="breadcrumb-item active">Results</li>
       </ol>
     </nav>
@@ -130,8 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container text-center">
       <div class="row">
         <?php
-        // Fetch packages for the valid CashTag
-        $query = "SELECT * FROM packages WHERE cashtag = '$cashtag' AND status = '0' ORDER BY created_at DESC";
+        // Fetch packages for the valid CashTag, ordered by max_a ASC
+        $query = "SELECT * FROM packages WHERE cashtag = '$cashtag' AND status = '0' ORDER BY max_a ASC";
         $query_run = mysqli_query($con, $query);
         if ($query_run) {
           if (mysqli_num_rows($query_run) > 0) {
