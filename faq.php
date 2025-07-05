@@ -113,7 +113,7 @@ include('includes/navbar.php');
                             </div>
                             <div id="collapse5" class="collapse show" data-parent="#tour-faq3">
                                 <div class="accordion-body">
-                                    The minimum withdrawal amount is $10. You can withdraw any amount above this threshold, up to a maximum of $10,000 per transaction.
+                                    The minimum withdrawal amount is $50. You can withdraw any amount above this threshold, up to a maximum of $10,000 per transaction.
                                 </div>
                             </div>
                         </div>
