@@ -3,15 +3,6 @@ session_start();
 include('inc/header.php');
 include('inc/navbar.php');
 include('inc/sidebar.php');
-
-// Fetch currency from payment_details
-$currency_query = "SELECT currency FROM payment_details LIMIT 1";
-$currency_result = mysqli_query($con, $currency_query);
-$currency = '$'; // Default fallback
-if ($currency_result && mysqli_num_rows($currency_result) > 0) {
-    $row = mysqli_fetch_assoc($currency_result);
-    $currency = htmlspecialchars($row['currency']); // Sanitize for safety
-}
 ?>
 
 <main id="main" class="main">
@@ -34,9 +25,9 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                     <thead>
                         <tr>
                             <th scope="col">Amount</th>
-                            <th scope="col">Network</th>
-                            <th scope="col">MOMO Name</th>
-                            <th scope="col">MOMO Number</th>
+                            <th scope="col">Network</th> <!-- Renamed from Name -->
+                            <th scope="col">MOMO Name</th> <!-- Renamed from Bank Name -->
+                            <th scope="col">MOMO Number</th> <!-- Renamed from Account Number -->
                             <th scope="col">Status</th>
                             <th scope="col">Date</th>
                             <th scope="col">Complete Request</th>
@@ -44,20 +35,19 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                     </thead>
                     <tbody>
                         <?php
-                        // Join withdrawals and users tables to get network, momo_name, and momo_number
-                        $query = "SELECT w.id, w.amount, w.email, w.status, w.created_at, u.network, u.momo_name, u.momo_number 
-                                  FROM withdrawals w 
-                                  LEFT JOIN users u ON w.email = u.email 
-                                  WHERE w.status = '0'";
+                        // Query withdrawals table only
+                        $query = "SELECT id, amount, network, momo_name, momo_number, status, created_at 
+                                  FROM withdrawals 
+                                  WHERE status = '0'";
                         $query_run = mysqli_query($con, $query);
-                        if ($query_run && mysqli_num_rows($query_run) > 0) {
+                        if (mysqli_num_rows($query_run) > 0) {
                             foreach ($query_run as $data) {
                         ?>
                         <tr>
-                            <td><?= $currency ?> <?= number_format($data['amount'], 2) ?></td>
-                            <td><?= htmlspecialchars($data['network'] ?: 'N/A') ?></td>
-                            <td><?= htmlspecialchars($data['momo_name'] ?: 'N/A') ?></td>
-                            <td><?= htmlspecialchars($data['momo_number'] ?: 'N/A') ?></td>
+                            <td>$<?= number_format($data['amount'], 2) ?></td> <!-- Static $ symbol, formatted amount -->
+                            <td><?= htmlspecialchars($data['network']) ?: 'N/A' ?></td> <!-- Network -->
+                            <td><?= htmlspecialchars($data['momo_name']) ?: 'N/A' ?></td> <!-- MOMO Name -->
+                            <td><?= htmlspecialchars($data['momo_number']) ?: 'N/A' ?></td> <!-- MOMO Number -->
                             <?php if ($data['status'] == 0) { ?>
                                 <td><span class="badge bg-warning text-light">Pending</span></td>
                             <?php } else { ?>
@@ -66,19 +56,18 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                             <td><?= date('d-M-Y', strtotime($data['created_at'])) ?></td>
                             <td>
                                 <form action="codes/withdrawals.php" method="POST">
-                                    <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']) ?>">
-                                    <button class="btn btn-light" type="submit" name="complete">Complete</button>
+                                    <button class="btn btn-light" value="<?= htmlspecialchars($data['id']) ?>" name="complete">Complete</button>
                                 </form>
                             </td>
                         </tr>
                         <?php
                             }
                         } else {
-                            ?>
-                            <tr>
-                                <td colspan="7" class="text-center">No pending withdrawals found.</td>
-                            </tr>
-                            <?php
+                        ?>
+                        <tr>
+                            <td colspan="7" class="text-center">No pending withdrawals found.</td>
+                        </tr>
+                        <?php
                         }
                         ?>
                     </tbody>
