@@ -480,132 +480,132 @@ include('includes/navbar.php');
 										<tr>
 											<td>
 												<img src="assets/images/people/p1.png" alt="">
-												Tom Bass
+												Aisha
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
 												$4990
 											</td>
-											<td>Bitcoin</td>
+											<td>KES</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p2.png" alt="">
-												Tom Bass
+												Akosua
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$500
 											</td>
-											<td>Bitcoin</td>
+											<td>GHS</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p3.png" alt="">
-												Tom Bass
+												Sipho Ndiodu
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$3000
 											</td>
-											<td>Bitcoin</td>
+											<td>ZAR</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p4.png" alt="">
-												Tom Bass
+												Kwame Asare
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$29000
 											</td>
-											<td>Bitcoin</td>
+											<td>GHS</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p5.png" alt="">
-												Tom Bass
+												Abena
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$4000
 											</td>
-											<td>Bitcoin</td>
+											<td>GHS</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p6.png" alt="">
-												Tom Bass
+												Tsegaye Bekele
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$7000
 											</td>
-											<td>Bitcoin</td>
+											<td>ETB</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p1.png" alt="">
-												Tom Bass
+												Fatima
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$3050
 											</td>
-											<td>Bitcoin</td>
+											<td>MAD</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p2.png" alt="">
-												Tom Bass
+												Yaw Osei
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$3000
 											</td>
-											<td>Bitcoin</td>
+											<td>GHS</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p3.png" alt="">
-												Tom Bass
+												Chidi Okonkwo
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$9000
 											</td>
-											<td>Bitcoin</td>
+											<td>NGN</td>
 										</tr>
 										<tr>
 											<td>
 												<img src="assets/images/people/p4.png" alt="">
-												Tom Bass
+												Kofi Mensah
 											</td>
 											<td>
-												Feb 20, 2021
+												July, 2025
 											</td>
 											<td>
-												$4990
+												$5500
 											</td>
-											<td>Bitcoin</td>
+											<td>GHS</td>
 										</tr>
 									</tbody>
 								</table>
