@@ -557,7 +557,7 @@ include('includes/navbar.php');
 										</tr>
 										<tr>
 											<td>
-												<img src="assets/images/people/p1.png" alt="">
+												<img src="assets/images/people/p7.png" alt="">
 												Fatima
 											</td>
 											<td>
@@ -570,7 +570,7 @@ include('includes/navbar.php');
 										</tr>
 										<tr>
 											<td>
-												<img src="assets/images/people/p2.png" alt="">
+												<img src="assets/images/people/p8.png" alt="">
 												Yaw Osei
 											</td>
 											<td>
@@ -583,7 +583,7 @@ include('includes/navbar.php');
 										</tr>
 										<tr>
 											<td>
-												<img src="assets/images/people/p3.png" alt="">
+												<img src="assets/images/people/p9.png" alt="">
 												Chidi Okonkwo
 											</td>
 											<td>
@@ -596,7 +596,7 @@ include('includes/navbar.php');
 										</tr>
 										<tr>
 											<td>
-												<img src="assets/images/people/p4.png" alt="">
+												<img src="assets/images/people/p10.png" alt="">
 												Kofi Mensah
 											</td>
 											<td>
