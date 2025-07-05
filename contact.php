@@ -94,19 +94,19 @@ include('includes/navbar.php');
                                 </li>
                                 <li>
                                     <p>
-                                            <i class="fas fa-phone"></i> +77 0123456789
+                                            <i class="fas fa-phone"></i> +1 542-569-0317
                                     </p>
                                 </li>
                                 <li>
                                     <p>
                                             <i class="far fa-envelope"></i>
-                                           contact@lendbo.com
+                                           cashoutapp40@gmail.com
                                     </p>
                                 </li>
                                 <li>
                                     <p>
                                             <i class="fas fa-globe-americas"></i>
-                                            www.softio.com
+                                            www.pay-cashapp.rf.gd
                                     </p>
                                 </li>
                             </ul>
