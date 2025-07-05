@@ -59,7 +59,7 @@ if ($verify == 1) {
                         <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='withdrawals.php'">Ok</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='verify.php'">Ok</button>
                     </div>
                 </div>
             </div>
