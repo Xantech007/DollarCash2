@@ -647,7 +647,7 @@ include('includes/navbar.php');
 									</div>
 									<div class="content">
 										<p>
-										Believed attentive assisted picture sharpness to I to she waved the are and slide understand the that set task. The you due back
+										I was able to withdraw my funds quickly and easily from Cash App. The process was seamless!
 										</p>
 									</div>
 									<div class="reviewr">
@@ -659,7 +659,7 @@ include('includes/navbar.php');
 												Austin Bishop
 											</h4>
 											<p>
-												CEO at ABC
+												CEO at AB Oil & Gas
 											</p>
 										</div>
 									</div>
@@ -676,7 +676,7 @@ include('includes/navbar.php');
 									</div>
 									<div class="content">
 										<p>
-										Believed attentive assisted picture sharpness to I to she waved the are and slide understand the that set task. The you due back
+										I was impressed by how smoothly my withdrawal went through. No issues or delays whatsoever!
 										</p>
 									</div>
 									<div class="reviewr">
@@ -685,10 +685,10 @@ include('includes/navbar.php');
 										</div>
 										<div class="content">
 											<h4 class="name">
-												Alexander
+												Helena
 											</h4>
 											<p>
-												CEO at DER
+												Works at Dennie's Super Market
 											</p>
 										</div>
 									</div>
@@ -705,7 +705,7 @@ include('includes/navbar.php');
 									</div>
 									<div class="content">
 										<p>
-										Believed attentive assisted picture sharpness to I to she waved the are and slide understand the that set task. The you due back
+										I've made several withdrawals from Cash App, and every time it's been a hassle-free experience.
 										</p>
 									</div>
 									<div class="reviewr">
@@ -717,7 +717,7 @@ include('includes/navbar.php');
 												Sebastian
 											</h4>
 											<p>
-												CEO at ECS
+												Founder of DC Electronics
 											</p>
 										</div>
 									</div>
@@ -734,7 +734,7 @@ include('includes/navbar.php');
 									</div>
 									<div class="content">
 										<p>
-										Believed attentive assisted picture sharpness to I to she waved the are and slide understand the that set task. The you due back
+										I've had no issues with Cash App withdrawals. The platform is reliable and efficient.
 										</p>
 									</div>
 									<div class="reviewr">
@@ -746,7 +746,7 @@ include('includes/navbar.php');
 												Christopher
 											</h4>
 											<p>
-												CEO at XYZ
+												CEO at XYZ Automobiles
 											</p>
 										</div>
 									</div>
