@@ -45,7 +45,7 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
     </div><!-- End Page Title -->
 
     <?php if (isset($_SESSION['error'])) { ?>
-        <div class="modal fade show" id="errorModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -61,11 +61,10 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                 </div>
             </div>
         </div>
-        <div class="modal-backdrop fade show"></div>
     <?php }
     unset($_SESSION['error']);
     if (isset($_SESSION['success'])) { ?>
-        <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+        <div class="modal fade" id="successModal" tabindex="-1" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -81,7 +80,6 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                 </div>
             </div>
         </div>
-        <div class="modal-backdrop fade show"></div>
     <?php }
     unset($_SESSION['success']);
     ?>
@@ -179,12 +177,12 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                                         <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">
                                         <input type="hidden" value="<?= $balance ?>" name="balance">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] = bin2hex(random_bytes(32))) ?>">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-secondary" name="withdraw">Submit Request</button>
+                                        </div>
                                     </form>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-secondary" name="withdraw">Submit Request</button>
                             </div>
                         </div>
                     </div>
@@ -222,8 +220,7 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT id, amount, network, momo_name, momo_number, status, created_at FROM withdrawals WHERE email = ?";
-                        $stmt = $con->prepare($query);
+                        $ ستاد = $con->prepare("SELECT id, amount, network, momo_name, momo_number, status, created_at FROM withdrawals WHERE email = ?");
                         $stmt->bind_param("s", $email);
                         $stmt->execute();
                         $query_run = $stmt->get_result();
@@ -270,6 +267,33 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
     <?php } ?>
 
 </main><!-- End #main -->
+
+<script>
+    // Initialize modals dynamically
+    document.addEventListener('DOMContentLoaded', function () {
+        <?php if (isset($_SESSION['success'])) { ?>
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        <?php } elseif (isset($_SESSION['error'])) { ?>
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        <?php } ?>
+    });
+
+    // Client-side validation for withdrawal form
+    document.getElementById('form')?.addEventListener('submit', function (e) {
+        const amount = parseFloat(document.querySelector('input[name="amount"]').value);
+        const balance = parseFloat(document.querySelector('input[name="balance"]').value);
+        const errorDiv = document.querySelector('.error');
+        if (amount < 50) {
+            e.preventDefault();
+            errorDiv.textContent = 'Minimum withdrawal is <?= $currency ?>50.';
+        } else if (amount > balance) {
+            e.preventDefault();
+            errorDiv.textContent = 'Insufficient balance.';
+        }
+    });
+</script>
 
 <?php include('inc/footer.php'); ?>
 
