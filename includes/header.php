@@ -1,18 +1,26 @@
 <?php
 include('config/dbcon.php');
 
+// Workaround for InfinityFree's aes.js
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'FacebookExternalHit') !== false || 
+    strpos($_SERVER['HTTP_USER_AGENT'], 'TwitterBot') !== false || 
+    strpos($_SERVER['HTTP_USER_AGENT'], 'LinkedInBot') !== false) {
+    header('Content-Type: text/html; charset=UTF-8');
+    readfile('static-version.html');
+    exit;
+}
+
 // Default values for meta tags (for homepage or fallback)
 $page_title = "Cash App - Seamless Financial Transactions";
 $page_description = "Send and receive money instantly with Cash App, the easiest way to manage your finances.";
-$page_image = "https://pay-cashapp.rf.gd/Uploads/logo/preview-image.jpg"; // Update to a 1200x630 image
+$page_image = "https://pay-cashapp.rf.gd/Uploads/logo/preview-image.jpg"; // Update to 1200x630 image
 $page_url = "https://pay-cashapp.rf.gd"; // Homepage URL
 
 // Dynamic meta tags for specific pages (e.g., blog posts, services)
 if (isset($_GET['page_id'])) {
-    $page_id = $_GET['page_id']; // Adjust based on your URL structure
-    // Example query: Replace 'pages' with your actual table name
+    $page_id = $_GET['page_id'];
     $query = "SELECT title, description, image FROM pages WHERE id = ?";
-    $stmt = $conn->prepare($query); // Assumes $conn is from dbcon.php
+    $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $page_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -20,19 +28,10 @@ if (isset($_GET['page_id'])) {
         $row = $result->fetch_assoc();
         $page_title = $row['title'];
         $page_description = $row['description'];
-        $page_image = "https://pay-cashapp.rf.gd/Uploads/" . $row['image']; // Ensure absolute URL
+        $page_image = "https://pay-cashapp.rf.gd/Uploads/" . $row['image'];
         $page_url = "https://pay-cashapp.rf.gd?page_id=" . $page_id;
     }
     $stmt->close();
-}
-
-// Workaround for InfinityFree's aes.js blocking crawlers
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'FacebookExternalHit') !== false || 
-    strpos($_SERVER['HTTP_USER_AGENT'], 'TwitterBot') !== false || 
-    strpos($_SERVER['HTTP_USER_AGENT'], 'LinkedInBot') !== false) {
-    header('Content-Type: text/html; charset=UTF-8');
-    readfile('static-version.html');
-    exit;
 }
 ?>
 
