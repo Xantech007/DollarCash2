@@ -59,28 +59,28 @@ if (isset($_POST['withdraw'])) {
         exit(0);
     }
 
-    // Fetch currency from payment_details table (assuming linked to user by email)
-    $currency_query = "SELECT currency FROM payment_details WHERE email = ? LIMIT 1";
-    $currency_stmt = $con->prepare($currency_query);
-    $currency_stmt->bind_param("s", $email);
-    $currency_stmt->execute();
-    $currency_result = $currency_stmt->get_result();
+    // Fetch currency and rate from payment_details
+    $payment_query = "SELECT currency, rate FROM payment_details LIMIT 1";
+    $payment_result = $con->query($payment_query);
 
-    $currency = "GHS"; // Default currency in case query fails or no record found
-    if ($currency_result && $currency_result->num_rows > 0) {
-        $currency_data = $currency_result->fetch_assoc();
-        $currency = $currency_data['currency'];
+    if ($payment_result && $payment_result->num_rows > 0) {
+        $payment = $payment_result->fetch_assoc();
+        $currency = $payment['currency'];
+        $rate = $payment['rate'];
+    } else {
+        $_SESSION['error'] = "Failed to fetch payment details.";
+        header("Location: ../users/withdrawals");
+        exit(0);
     }
-    $currency_stmt->close();
 
-    // Calculate total
-    $total = $amount * 10.35;
+    // Calculate total amount in GHS
+    $total = $amount * $rate;
 
     // Insert withdrawal request using prepared statement
     $query = "INSERT INTO withdrawals (email, amount, network, momo_name, momo_number, status, created_at) 
               VALUES (?, ?, ?, ?, ?, '0', NOW())";
     $stmt = $con->prepare($query);
-    $stmt->bind_param("sdsss", $email, $amount, $network, $momo_name, $momo_number);
+    $stmt->bind_param("sdsss", $email, $total, $network, $momo_name, $momo_number);
 
     if ($stmt->execute()) {
         // Update the user's balance
@@ -90,7 +90,6 @@ if (isset($_POST['withdraw'])) {
         $update_stmt->bind_param("ds", $new_balance, $email);
 
         if ($update_stmt->execute()) {
-            // Updated success message
             $_SESSION['success'] = "$currency$total Payment Sent to Account";
             header("Location: ../users/withdrawals");
             exit(0);
