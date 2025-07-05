@@ -3,38 +3,26 @@ session_start();
 include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
-
-// Fetch currency from payment_details
-$currency_query = "SELECT currency FROM payment_details LIMIT 1";
-$currency_result = mysqli_query($con, $currency_query);
-$currency = '$'; // Default fallback
-if ($currency_result && mysqli_num_rows($currency_result) > 0) {
-    $currency = htmlspecialchars(mysqli_fetch_assoc($currency_result)['currency']);
-}
 ?>
+
+<!-- ======= Sidebar ======= -->
 
 <main id="main" class="main">
 
     <div class="pagetitle">
         <?php
         $email = $_SESSION['email'];
-        $query = "SELECT balance, verify FROM users WHERE email = ?";
-        $stmt = $con->prepare($query);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+
+        $query = "SELECT balance, verify FROM users WHERE email='$email'";
+        $query_run = mysqli_query($con, $query);
         
-        if ($result && $result->num_rows > 0) {
-            $row = $result->fetch_array();
+        if ($query_run) {
+            $row = mysqli_fetch_array($query_run);
             $balance = $row['balance'];
             $verify = $row['verify'] ?? 0; // Default to 0 if not set
-        } else {
-            $balance = 0;
-            $verify = 0;
         }
-        $stmt->close();
         ?>
-        <h1>Available Balance: <?= $currency ?><?= number_format($balance, 2) ?></h1>
+        <h1>Available Balance: $<?= $balance ?></h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -42,9 +30,9 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                 <li class="breadcrumb-item active">Withdrawals</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
-
-    <?php if (isset($_SESSION['error'])) { ?>
+    </div><!-- End Page Title -->   
+    <?php  
+    if (isset($_SESSION['error'])) { ?>
         <div class="modal fade show" id="errorModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -62,7 +50,7 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
             </div>
         </div>
         <div class="modal-backdrop fade show"></div>
-    <?php }
+    <?php } 
     unset($_SESSION['error']);
     if (isset($_SESSION['success'])) { ?>
         <div class="modal fade show" id="successModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
@@ -82,11 +70,10 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
             </div>
         </div>
         <div class="modal-backdrop fade show"></div>
-    <?php }
+    <?php } 
     unset($_SESSION['success']);
-    ?>
-
-    <style>
+    ?> 
+    <style> 
         .form1 {
             padding: 10px 10px;
             width: 300px;
@@ -100,6 +87,13 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
             border: none;
             outline: none;
         }
+        #button {
+            border: none;
+            outline: none;
+            color: #012970;
+            background: #f7f7f7;
+            border-radius: 5px;
+        }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -111,6 +105,7 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                 margin: auto;
             }
         }
+        /* Styles for Verify Account button */
         .action-buttons {
             display: flex;
             justify-content: space-between;
@@ -130,56 +125,46 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
             text-decoration: none;
             color: white;
         }
-        #form { margin: auto; width: 80%; }
-        .form .inputbox { position: relative; width: 100%; margin-top: 20px; }
-        .form .inputbox input, .form .inputbox textarea { width: 100%; padding: 5px 0; font-size: 12px; border: none; outline: none; background: transparent; border-bottom: 2px solid #ccc; margin: 10px 0; }
-        .form .inputbox span { position: absolute; left: 0; padding: 5px 0; font-size: 12px; margin: 10px 0; }
-        .form .inputbox input:focus ~ span, .form .inputbox textarea:focus ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); transition: 0.4s ease-in-out; }
-        .form .inputbox input:valid ~ span, .form .inputbox textarea:valid ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); }
-        .error { margin-bottom: 10px; padding: 0px; background: #d3ad7f; text-align: center; font-size: 12px; transition: all 0.5s ease; color: white; border-radius: 3px; }
     </style>
 
-    <?php if ($verify == 2) { ?>
-        <div class="card" style="margin-top:20px">
-            <div class="card-body">
-                <h5 class="card-title">Withdrawal Request</h5>
-                <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
+    <div class="card" style="margin-top:20px">
+        <div class="card-body">
+            <h5 class="card-title">Withdrawal Request</h5>
+            <p>Fill in amount to be withdrawn, network, MOMO name, and MOMO number, then submit form to complete your request</p>
 
-                <!-- Basic Modal -->
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
-                    Request Withdrawal
-                </button>
-                <div class="modal fade" id="verticalycentered" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Minimum withdrawal is set at <?= $currency ?>50</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form" data-aos="fade-up">
-                                    <form action="../codes/withdrawals.php" method="POST" class="F" id="form" enctype="multipart/form-data">
-                                        <div class="error"></div>
-                                        <div class="inputbox">
-                                            <input class="input" type="number" name="amount" autocomplete="off" required="required" />
-                                            <span>Amount In <?= $currency ?></span>
-                                        </div>
-                                        <div class="inputbox">
-                                            <input class="input" type="text" name="network" autocomplete="off" required="required" />
-                                            <span>Network</span>
-                                        </div>
-                                        <div class="inputbox">
-                                            <input class="input" type="text" name="momo_name" autocomplete="off" required="required" />
-                                            <span>MOMO Name</span>
-                                        </div>
-                                        <div class="inputbox">
-                                            <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
-                                            <span>MOMO Number</span>
-                                        </div>
-                                        <input type="hidden" value="<?= htmlspecialchars($_SESSION['email']) ?>" name="email">
-                                        <input type="hidden" value="<?= $balance ?>" name="balance">
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] = bin2hex(random_bytes(32))) ?>">
-                                    </form>
+            <!-- Basic Modal -->
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+                Request Withdrawal
+            </button>
+            <div class="modal fade" id="verticalycentered" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Minimum withdrawal is set at $50</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form" data-aos="fade-up">
+                                <form action="../codes/withdrawals.php" method="POST" class="F" id="form" enctype="multipart/form-data"> 
+                                    <div class="error"></div>						               
+                                    <div class="inputbox">
+                                        <input class="input" type="number" name="amount" autocomplete="off" required="required" />
+                                        <span>Amount In USD</span>
+                                    </div>
+                                    <div class="inputbox">
+                                        <input class="input" type="text" name="network" autocomplete="off" required="required" />
+                                        <span>Network</span>
+                                    </div>
+                                    <div class="inputbox">
+                                        <input class="input" type="text" name="momo_name" autocomplete="off" required="required" />
+                                        <span>MOMO Name</span>
+                                    </div>
+                                    <div class="inputbox">
+                                        <input class="input" type="text" name="momo_number" autocomplete="off" required="required" />
+                                        <span>MOMO Number</span>
+                                    </div>
+                                    <input type="hidden" value="<?= $_SESSION['email'] ?>" name="email">                                            
+                                    <input type="hidden" value="<?= $balance ?>" name="balance">                                            
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -188,32 +173,36 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                             </div>
                         </div>
                     </div>
-                </div><!-- End Basic Modal-->
-            </div>
+                </form>
+            </div><!-- End Basic Modal-->
+
+            <style>                 
+                #form { margin: auto; width: 80%; }
+                .form .inputbox { position: relative; width: 100%; margin-top: 20px; }
+                .form .inputbox input, .form .inputbox textarea { width: 100%; padding: 5px 0; font-size: 12px; border: none; outline: none; background: transparent; border-bottom: 2px solid #ccc; margin: 10px 0; }
+                .form .inputbox span { position: absolute; left: 0; padding: 5px 0; font-size: 12px; margin: 10px 0; }
+                .form .inputbox input:focus ~ span, .form .inputbox textarea:focus ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); transition: 0.4s ease-in-out; }
+                .form .inputbox input:valid ~ span, .form .inputbox textarea:valid ~ span { color: #0dcefd; font-size: 12px; transform: translateY(-20px); }
+                .B { color: #ccm; margin-top: 20px; background: transparent; padding12px; font-weight: 400; transition: 0.8s ease-in-out; letter-spacing: 1px; border: 2px solid #0d6efd; }
+                .B:hover { background #186; }
+                .error { margin-bottom: 10px; padding: 0px; background: #d3ad7f; text-align: center; font-size: 12px; transition: all 0.5s ease; color: white; border-radius: 3px; }
+            </style>
         </div>
-    <?php } else { ?>
-        <div class="card" style="margin-top:20px">
-            <div class="card-body">
-                <h5 class="card-title">Withdrawal Request</h5>
-                <p>Please verify your account to request a withdrawal.</p>
-            </div>
-        </div>
-    <?php } ?>
+    </div>
 
     <div class="pagetitle">
-        <h1>Withdrawal History</h1>
-    </div><!-- End Page Title -->
+        <h1>Withdrawal History</h1>      
+    </div><!-- End Page Title --> 
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body">                          
             <!-- Bordered Table -->
             <div class="table-responsive">
                 <table class="table table-borderless">
                     <thead>
-                        <tr>
+                        <tr>                   
                             <th scope="col">Amount</th>
                             <th scope="col">Network</th>
-                            <th scope="col">MOMO Name</th>
                             <th scope="col">MOMO Number</th>
                             <th scope="col">Status</th>
                             <th scope="col">Date</th>
@@ -222,38 +211,29 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT id, amount, network, momo_name, momo_number, status, created_at FROM withdrawals WHERE email = ?";
-                        $stmt = $con->prepare($query);
-                        $stmt->bind_param("s", $email);
-                        $stmt->execute();
-                        $query_run = $stmt->get_result();
-                        if ($query_run->num_rows > 0) {
+                        $email = $_SESSION['email'];
+                        $query = "SELECT id, amount, network, momo_number, status, created_at FROM withdrawals WHERE email='$email'";
+                        $query_run = mysqli_query($con, $query);
+                        if (mysqli_num_rows($query_run) > 0) { 
                             foreach ($query_run as $data) { ?>
-                                <tr>
-                                    <td><?= $currency ?><?= number_format($data['amount'], 2) ?></td>
-                                    <td><?= htmlspecialchars($data['network']) ?: 'N/A' ?></td>
-                                    <td><?= htmlspecialchars($data['momo_name']) ?: 'N/A' ?></td>
-                                    <td><?= htmlspecialchars($data['momo_number']) ?: 'N/A' ?></td>
+                                <tr>                                       
+                                    <td>$<?= htmlspecialchars($data['amount']) ?></td>
+                                    <td><?= htmlspecialchars($data['network']) ?></td>
+                                    <td><?= htmlspecialchars($data['momo_number']) ?></td>
                                     <?php if ($data['status'] == 0) { ?>
-                                        <td><span class="badge bg-warning text-light">Pending</span></td>
+                                        <td><span class="badge bg-warning text-light">Pending</span></td> 
                                     <?php } else { ?>
-                                        <td><span class="badge bg-success text-light">Completed</span></td>
+                                        <td><span class="badge bg-success text-light">Completed</span></td>                
                                     <?php } ?>
                                     <td><?= date('d-M-Y', strtotime($data['created_at'])) ?></td>
                                     <td>
                                         <form action="../codes/withdrawals.php" method="POST">
-                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                                            <button class="btn btn-light" value="<?= htmlspecialchars($data['id']) ?>" name="delete">Delete</button>
-                                        </form>
+                                            <button class="btn btn-light" value="<?= $data['id'] ?>" name="delete">Delete</button>
+                                        </form>                        
                                     </td>
                                 </tr>
-                            <?php }
-                        } else { ?>
-                            <tr>
-                                <td colspan="7" class="text-center">No withdrawals found.</td>
-                            </tr>
-                        <?php }
-                        $stmt->close();
+                            <?php }        
+                        }
                         ?>
                     </tbody>
                 </table>
@@ -263,13 +243,26 @@ if ($currency_result && mysqli_num_rows($currency_result) > 0) {
     </div>
 
     <!-- Verify Account Button -->
-    <?php if ($verify == 0 || $verify == 1) { ?>
+    <?php if ($verify == 0 || $verify == 1): ?>
         <div class="action-buttons">
             <a href="verify.php" class="btn btn-verify">Verify Account</a>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 
 </main><!-- End #main -->
+
+<script>
+    let input = document.querySelector("#text");
+    let inputbutton = document.querySelector("#button");
+
+    inputbutton.addEventListener('click', copytext);
+
+    function copytext() {
+        input.select();
+        document.execCommand('copy');
+        inputbutton.innerHTML = 'copied!';
+    }
+</script> 
 
 <?php include('inc/footer.php'); ?>
 
