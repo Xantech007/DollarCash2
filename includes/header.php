@@ -4,7 +4,7 @@ include('config/dbcon.php');
 // Default values for meta tags (for homepage or fallback)
 $page_title = "Cash App - Seamless Financial Transactions";
 $page_description = "Send and receive money instantly with Cash App, the easiest way to manage your finances.";
-$page_image = "https://pay-cashapp.rf.gd/Uploads/logo/logo1.png"; // Use your logo or a custom image
+$page_image = "https://pay-cashapp.rf.gd/Uploads/logo/preview-image.jpg"; // Update to a 1200x630 image
 $page_url = "https://pay-cashapp.rf.gd"; // Homepage URL
 
 // Dynamic meta tags for specific pages (e.g., blog posts, services)
@@ -25,6 +25,15 @@ if (isset($_GET['page_id'])) {
     }
     $stmt->close();
 }
+
+// Workaround for InfinityFree's aes.js blocking crawlers
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'FacebookExternalHit') !== false || 
+    strpos($_SERVER['HTTP_USER_AGENT'], 'TwitterBot') !== false || 
+    strpos($_SERVER['HTTP_USER_AGENT'], 'LinkedInBot') !== false) {
+    header('Content-Type: text/html; charset=UTF-8');
+    readfile('static-version.html');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -44,6 +53,10 @@ if (isset($_GET['page_id'])) {
     <meta property="og:title" content="<?php echo htmlspecialchars($page_title); ?>" />
     <meta property="og:description" content="<?php echo htmlspecialchars($page_description); ?>" />
     <meta property="og:image" content="<?php echo htmlspecialchars($page_image); ?>" />
+    <meta property="og:image:secure_url" content="<?php echo htmlspecialchars($page_image); ?>" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cash App preview image" />
     <meta property="og:url" content="<?php echo htmlspecialchars($page_url); ?>" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Cash App" />
@@ -53,7 +66,7 @@ if (isset($_GET['page_id'])) {
     <meta name="twitter:title" content="<?php echo htmlspecialchars($page_title); ?>" />
     <meta name="twitter:description" content="<?php echo htmlspecialchars($page_description); ?>" />
     <meta name="twitter:image" content="<?php echo htmlspecialchars($page_image); ?>" />
-    <meta name="twitter:site" content="@YourCashAppHandle" /> <!-- Replace with your Twitter/X handle -->
+    <meta name="twitter:site" content="@YourCashAppHandle" /> <!-- Replace or remove -->
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
