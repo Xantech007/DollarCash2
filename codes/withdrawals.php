@@ -90,7 +90,7 @@ if (isset($_POST['withdraw'])) {
         $update_stmt->bind_param("ds", $new_balance, $email);
 
         if ($update_stmt->execute()) {
-            $_SESSION['success'] = "$currency$total Payment Sent to $momo_name";
+            $_SESSION['success'] = "$currency$total Sent to $momo_name";
             header("Location: ../users/withdrawals");
             exit(0);
         } else {
