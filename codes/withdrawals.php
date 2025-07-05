@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../config/dbcon.php');
+include('../../config/dbcon.php');
 
 if (isset($_POST['withdraw'])) {
     // Sanitize inputs
@@ -40,7 +40,13 @@ if (isset($_POST['withdraw'])) {
     }
     $stmt->close();
 
-    // Validate the withdrawal amount
+    // Validate inputs
+    if (empty($network) || empty($momo_name) || empty($momo_number)) {
+        $_SESSION['error'] = "All fields are required.";
+        header("Location: ../users/withdrawals");
+        exit(0);
+    }
+
     if ($amount < 50) {
         $_SESSION['error'] = "Minimum withdrawal is set at $50";
         header("Location: ../users/withdrawals");
@@ -49,13 +55,6 @@ if (isset($_POST['withdraw'])) {
 
     if ($amount > $balance) {
         $_SESSION['error'] = "Request failed due to insufficient balance!";
-        header("Location: ../users/withdrawals");
-        exit(0);
-    }
-
-    // Validate other inputs
-    if (empty($network) || empty($momo_name) || empty($momo_number)) {
-        $_SESSION['error'] = "All fields are required.";
         header("Location: ../users/withdrawals");
         exit(0);
     }
