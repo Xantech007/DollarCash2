@@ -38,9 +38,9 @@ if (isset($_POST['register'])) {
 
     // Set default values for other fields
     $balance = 0; // Default balance
-    $image = ''; // Default image (or handle file upload if added later)
+    $image = ''; // Default image
     $address = ''; // Default address
-    $btc_wallet = ''; // Default btc_wallet (from your ALTER TABLE)
+    $btc_wallet = ''; // Default btc_wallet
 
     // Insert user data into the database
     $insert_query = "INSERT INTO users (name, email, password, ref, balance, image, address, btc_wallet) 
@@ -75,8 +75,11 @@ if (isset($_POST['register'])) {
             $_SESSION['image'] = $image;
             $_SESSION['ref'] = $ref;
 
-            // Redirect to the user dashboard
-            header("Location: ../users/index");
+            // Set success message
+            $_SESSION['success'] = "Registration successful! Welcome, $user_name!";
+
+            // Redirect to index.php
+            header("Location: ../index");
             exit(0);
         } else {
             $_SESSION['error'] = "Error retrieving user data after registration.";
