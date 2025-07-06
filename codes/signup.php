@@ -2,18 +2,28 @@
 session_start();
 include('../config/dbcon.php');
 
-if (isset($_POST['signup'])) {
+if (isset($_POST['register'])) {
     // Sanitize and validate input data
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
-    // You can add more fields like address, btc_wallet, etc., as needed
-    $address = isset($_POST['address']) ? mysqli_real_escape_string($con, $_POST['address']) : '';
-    $btc_wallet = isset($_POST['btc_wallet']) ? mysqli_real_escape_string($con, $_POST['btc_wallet']) : '';
-    $balance = 0; // Default balance for new users
-    $image = ''; // Default image or handle file upload separately
+    $ref = isset($_POST['ref']) ? mysqli_real_escape_string($con, $_POST['ref']) : '';
 
-    // Optional: Add validation (e.g., check if email already exists)
+    // Validate inputs
+    if (empty($name) || empty($email) || empty($password)) {
+        $_SESSION['error'] = "All required fields must be filled.";
+        header("Location: ../signup");
+        exit(0);
+    }
+
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = "Invalid email format.";
+        header("Location: ../signup");
+        exit(0);
+    }
+
+    // Check if email already exists
     $check_email_query = "SELECT email FROM users WHERE email = '$email' LIMIT 1";
     $check_email_run = mysqli_query($con, $check_email_query);
 
@@ -23,16 +33,22 @@ if (isset($_POST['signup'])) {
         exit(0);
     }
 
-    // Hash the password for security (recommended)
+    // Hash the password for security
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+    // Set default values for other fields
+    $balance = 0; // Default balance
+    $image = ''; // Default image (or handle file upload if added later)
+    $address = ''; // Default address
+    $btc_wallet = ''; // Default btc_wallet (from your ALTER TABLE)
+
     // Insert user data into the database
-    $insert_query = "INSERT INTO users (name, email, password, address, btc_wallet, balance, image) 
-                     VALUES ('$name', '$email', '$hashed_password', '$address', '$btc_wallet', '$balance', '$image')";
+    $insert_query = "INSERT INTO users (name, email, password, ref, balance, image, address, btc_wallet) 
+                     VALUES ('$name', '$email', '$hashed_password', '$ref', '$balance', '$image', '$address', '$btc_wallet')";
     $insert_query_run = mysqli_query($con, $insert_query);
 
     if ($insert_query_run) {
-        // Get the newly created user's data
+        // Get the newly created user's data for login
         $user_query = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
         $user_query_run = mysqli_query($con, $user_query);
 
@@ -45,18 +61,19 @@ if (isset($_POST['signup'])) {
                 $image = $data['image'];
                 $address = $data['address'];
                 $btc_wallet = $data['btc_wallet'];
+                $ref = $data['ref'];
             }
 
             // Set session variables for login
             $_SESSION['auth'] = true;
             $_SESSION['email'] = $email;
-            // Add more session variables if needed
             $_SESSION['user_id'] = $user_id;
             $_SESSION['name'] = $user_name;
             $_SESSION['balance'] = $balance;
             $_SESSION['address'] = $address;
             $_SESSION['btc_wallet'] = $btc_wallet;
             $_SESSION['image'] = $image;
+            $_SESSION['ref'] = $ref;
 
             // Redirect to the user dashboard
             header("Location: ../users/index");
@@ -71,5 +88,9 @@ if (isset($_POST['signup'])) {
         header("Location: ../signup");
         exit(0);
     }
+} else {
+    $_SESSION['error'] = "Invalid form submission.";
+    header("Location: ../signup");
+    exit(0);
 }
 ?>
