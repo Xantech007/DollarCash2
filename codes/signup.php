@@ -76,7 +76,7 @@ if (isset($_POST['register'])) {
             $_SESSION['ref'] = $ref;
 
             // Set success message for users/index.php
-            $_SESSION['success'] = "Registration successful! Welcome, $user_name!";
+            $_SESSION['success'] = "Registration successful!";
 
             // Redirect to the user dashboard
             header("Location: ../users/index");
