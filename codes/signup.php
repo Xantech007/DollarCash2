@@ -75,11 +75,11 @@ if (isset($_POST['register'])) {
             $_SESSION['image'] = $image;
             $_SESSION['ref'] = $ref;
 
-            // Set success message
+            // Set success message for users/index.php
             $_SESSION['success'] = "Registration successful! Welcome, $user_name!";
 
-            // Redirect to index.php
-            header("Location: ../index");
+            // Redirect to the user dashboard
+            header("Location: ../users/index");
             exit(0);
         } else {
             $_SESSION['error'] = "Error retrieving user data after registration.";
