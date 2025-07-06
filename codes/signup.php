@@ -15,11 +15,23 @@ if (isset($_POST['register'])) {
     if (!mysqli_num_rows($checkemail_run) > 0) {
         $password_length = strlen($password);
         if ($password_length >= 4) {
-            $query = "INSERT INTO users (name, email, password, refered_by, verify_token) VALUES ('$name', '$email', '$password', '$referal', '$token')";
+            // Hash the password for security
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $query = "INSERT INTO users (name, email, password, refered_by, verify_token) VALUES ('$name', '$email', '$hashed_password', '$referal', '$token')";
             $query_run = mysqli_query($con, $query);
             if ($query_run) {
+                // Fetch the newly registered user's ID
+                $user_id = mysqli_insert_id($con);
+
+                // Set session variables for auto-login
+                $_SESSION['auth'] = true;
+                $_SESSION['user_id'] = $user_id;
+                $_SESSION['user_name'] = $name;
+                $_SESSION['user_email'] = $email;
                 $_SESSION['success'] = "Registered successfully";
-                header("Location: ../signin");
+
+                // Redirect to the dashboard or desired page
+                header("Location: ../users/index");
                 exit(0);
             } else {
                 $_SESSION['error'] = "Oops something went wrong!";
