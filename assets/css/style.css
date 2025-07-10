@@ -389,7 +389,7 @@ select:focus {
 
 .loader-1 .loader-outter {
   position: absolute;
-  border: 4px solid #00cae0;
+  border: 4px solid #008ee0;
   border-left-color: transparent;
   border-bottom: 0;
   width: 100%;
