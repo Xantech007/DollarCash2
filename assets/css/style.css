@@ -454,7 +454,7 @@ select:focus {
   padding: 185px 0px 185px;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(rgba(247, 148, 29, 0.7), rgba(247, 107, 28, 0.7)), url(../images/bitcoin1.jpg);
+  background-image: linear-gradient(rgba(0, 202, 224, 0.7), rgba(0, 180, 200, 0.7)), url(../images/bitcoin1.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
