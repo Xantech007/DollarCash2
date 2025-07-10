@@ -230,7 +230,7 @@ select:focus {
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in;
-  background: #fff9ed;
+  background: #d2f6f7;
   border: 1px solid #fff;
 }
 
@@ -389,7 +389,7 @@ select:focus {
 
 .loader-1 .loader-outter {
   position: absolute;
-  border: 4px solid var(--primary-color);
+  border: 4px solid #00cae0;
   border-left-color: transparent;
   border-bottom: 0;
   width: 100%;
