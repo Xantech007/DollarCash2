@@ -76,7 +76,7 @@ if (isset($_SESSION['auth'])) {
 
                             .reg-text a:hover,
                             .reg-text a:focus {
-                                color: #cc6f0e;
+                                color: #ffffff;
                             }
                         </style>
                         <p class="subtitle">Sign in to continue</p>
