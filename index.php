@@ -407,7 +407,7 @@ include('includes/navbar.php');
 <!-- Why Choose Us End -->
 
 <!-- Get Start Area Start -->
-<section class="ger-start-secrion" style="background:#fff9ed">
+<section class="ger-start-secrion" style="background:#ffffff">
     <div class="container">
         <div class="row">
             <div class="col-lg-5">
@@ -757,7 +757,7 @@ include('includes/navbar.php');
 <!-- Testimonial End -->
 
 <!-- Faq Area Start -->
-<section class="faq-area" style="background:#fff9ed">
+<section class="faq-area" style="background:#ffffff">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 d-flex align-self-center">
@@ -885,24 +885,24 @@ include('includes/navbar.php');
                     <ul class="address-list">
                         <li>
                             <p>
-                                <i class="fas fa-map-marker-alt"></i> 456 Lexington Building, 23rd Street, Brooklyn Heights, Brooklyn, NYC, USA
+                                <i class="fas fa-map-marker-alt"></i> 28 Green Tower, Street Name New York City, USA
                             </p>
                         </li>
                         <li>
                             <p>
-                                <i class="fas fa-phone"></i> +1 601-463-7494
+                                <i class="fas fa-phone"></i> +1 542-569-0317
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="far fa-envelope"></i>
-                                dollarcashsuppotusa@gmail.com
+                                cashoutapp40@gmail.com
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="fas fa-globe-americas"></i>
-                                www.dollarpay.pro
+                                www.pay-cashapp.rf.gd
                             </p>
                         </li>
                     </ul>
