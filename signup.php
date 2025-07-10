@@ -53,7 +53,7 @@ include('includes/navbar.php');
                             text-align: center;
                             padding: 7px 0;
                             margin-bottom: 5px;
-                            background: linear-gradient(to bottom, #f7941d, #f76b1c);
+                            background: linear-gradient(to bottom, #00cae0, #008ee0);
                         }
 
                         /* Custom styling for "LogIn" link */
