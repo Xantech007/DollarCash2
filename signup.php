@@ -64,7 +64,7 @@ include('includes/navbar.php');
 
                         .reg-text a:hover,
                         .reg-text a:focus {
-                            color: #cc6f0e;
+                            color: #008ee0;
                         }
                     </style>
                     <form class="form-group mb-0" action="codes/signup" method="POST" enctype="multipart/form-data">
