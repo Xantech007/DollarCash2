@@ -236,7 +236,7 @@ select:focus {
 
 .base-btn2:hover {
   background: none;
-  color: #000;
+  color: #fff;
   border-color: var(--primary-color);
 }
 
@@ -465,7 +465,7 @@ select:focus {
   line-height: 50px;
   font-weight: 600;
   margin-bottom: 11px;
-  color: #000;
+  color: #fff;
 }
 
 .breadcrumb-area .title.extra-padding {
@@ -478,13 +478,13 @@ select:focus {
 
 .breadcrumb-area .breadcrumb-list li span {
   margin: 0px 7px;
-  color: #000;
+  color: #fff;
 }
 
 .breadcrumb-area .breadcrumb-list li a {
   font-size: 16px;
   transition: all 0.3s ease-in;
-  color: #000;
+  color: #fff;
 }
 
 .breadcrumb-area .breadcrumb-list li a:hover {
@@ -679,7 +679,7 @@ select:focus {
 }
 
 .footer .about-widget .about-content p {
-  color: #000;
+  color: #fff;
 }
 
 .footer .about-widget .subscribe-form {
@@ -697,11 +697,10 @@ select:focus {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
   border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 0px 60px 0px 20px;
-  color: #000;
+  color: #fff;
 }
 
-.footer .about-widget .subscribe-form input::placeholder {
-  color: #000;
+.footer .about-widget .subscribe-form input::placeholderabout-content;
 }
 
 .footer .about-widget .subscribe-form .submit-btn {
@@ -710,7 +709,7 @@ select:focus {
   right: 5px;
   height: 40px;
   width: 40px;
-  color: #000;
+  color: #fff;
   border: 0px;
   border-radius: 50px;
   background: var(--gradient);
@@ -745,7 +744,7 @@ select:focus {
   font-size: 16px;
   line-height: 35px;
   font-weight: 400;
-  color: #000;
+  color: #fff;
 }
 
 .footer .info-link-widget ul li a:hover {
@@ -768,7 +767,7 @@ select:focus {
   font-size: 16px;
   line-height: 26px;
   margin-bottom: 0px;
-  color: #000;
+  color: #fff;
 }
 
 .footer .copy-bg .left-area a {
@@ -776,11 +775,11 @@ select:focus {
   line-height: 26px;
   margin-bottom: 0px;
   transition: all 0.3s ease-in;
-  color: #000;
+  color: #fff;
 }
 
 .footer .copy-bg .left-area a:hover {
-  color: #000;
+  color: #fff;
 }
 
 .footer .copy-bg .social-links {
@@ -799,12 +798,12 @@ select:focus {
 .footer .copy-bg .social-links li a {
   font-size: 14px;
   border-radius: 50%;
-  color: #000;
+  color: #fff;
   transition: all 0.3s ease-in;
 }
 
 .footer .copy-bg .social-links li a:hover {
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box {
@@ -840,7 +839,7 @@ select:focus {
   font-weight: 700;
   margin-bottom: 50px;
   text-transform: uppercase;
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .icon {
@@ -863,23 +862,23 @@ select:focus {
   border: 0px;
   border-bottom: 1px solid #b4b8d1;
   border-radius: 0px;
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .form-area input::-webkit-input-placeholder {
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .form-area input:-moz-placeholder {
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .form-area input::-moz-placeholder {
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .form-area input:-ms-input-placeholder {
-  color: #000;
+  color: #fff;
 }
 
 .footer .subscribe-box .button-area {
@@ -930,14 +929,14 @@ select:focus {
   font-weight: 600;
   line-height: 60px;
   margin-bottom: 19px;
-  color: #000;
+  color: #fff;
 }
 
 .hero-area .left-content .content .text {
   font-size: 18px;
   line-height: 28px;
   margin-bottom: 40px;
-  color: #000;
+  color: #fff;
 }
 
 .hero-area .left-content .content .subscribe-area {
@@ -970,7 +969,7 @@ select:focus {
   padding: 0px 30px;
   background: var(--gradient);
   background-size: 100% 200%;
-  color: #000;
+  color: #fff;
   border: 0px;
   border-radius: 50px;
   transition: all 0.3s ease-in;
