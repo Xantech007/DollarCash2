@@ -1,4 +1,4 @@
-<div class="mainmenu-area"style="background:linear-gradient(to bottom,#008ee0,#F5F5F5);border-bottom:none">
+<div class="mainmenu-area"style="background:linear-gradient(to bottom,#008ee0,#00cae0);border-bottom:none">
 		<div class="container">
 			<div class="row">
 				
