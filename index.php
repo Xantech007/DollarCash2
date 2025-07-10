@@ -20,15 +20,15 @@ include('includes/navbar.php');
                         <?php
                         if(isset($_SESSION['admin']))
                         { ?>
-                            <a href="admin/signin" class="base-btn1">Admin</a>
+                            <a href="admin/signin" class="base-btn2">Admin</a>
                         <?php }
                         else if(isset($_SESSION['auth']))
                         { ?>
-                            <a href="signup" class="base-btn1">Dashboard</a>
+                            <a href="signup" class="base-btn2">Dashboard</a>
                         <?php }
                         else
                         { ?>
-                            <a href="signup" class="base-btn1">Get Started</a>                            
+                            <a href="signup" class="base-btn2">Get Started</a>                            
                         <?php }
                         ?>
                     </div>
@@ -407,7 +407,7 @@ include('includes/navbar.php');
 <!-- Why Choose Us End -->
 
 <!-- Get Start Area Start -->
-<section class="ger-start-secrion" style="background:#001232">
+<section class="ger-start-secrion" style="background:#fff9ed">
     <div class="container">
         <div class="row">
             <div class="col-lg-5">
@@ -427,7 +427,7 @@ include('includes/navbar.php');
             </div>
             <div class="col-lg-7 d-flex align-self-center">
                 <div class="right-links">
-                    <a href="signup" class="base-btn2">
+                    <a href="signup" class="base-btn1">
                         Get Started
                     </a>
                 </div>
@@ -444,8 +444,11 @@ include('includes/navbar.php');
             <div class="col-lg-8 col-md-10">
                 <div class="section-heading">
                     <h2 class="title">
-                        Recent Withdrawals
+                        Supporting Our Elderly & Handicapped Community
                     </h2>
+                    <p class="text">
+                        We are proud to support elderly and handicapped individuals across the USA by providing accessible financial services through our CashTag platform.
+                    </p>
                 </div>
             </div>
         </div>
@@ -458,141 +461,151 @@ include('includes/navbar.php');
                                 <thead>
                                     <tr>
                                         <th scope="col">USER</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">AMOUNT</th>
-                                        <th scope="col">Currency</th>
+                                        <th scope="col">NAME</th>
+                                        <th scope="col">RECEIVED AMOUNT</th>
+                                        <th scope="col">COUNTRY</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p1.png" alt="">
-                                            Aisha
+                                            <img src="assets/images/people/p1.png" alt="Margaret Johnson" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Margaret Johnson
                                         </td>
                                         <td>
-                                            $4990
+                                            $14,750
                                         </td>
-                                        <td>KES</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p2.png" alt="">
-                                            Akosua
+                                            <img src="assets/images/people/p2.png" alt="James Carter" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            James Carter
                                         </td>
                                         <td>
-                                            $500
+                                            $22,300
                                         </td>
-                                        <td>GHS</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p3.png" alt="">
-                                            Sipho Ndiodu
+                                            <img src="assets/images/people/p3.png" alt="Patricia Davis" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Patricia Davis
                                         </td>
                                         <td>
-                                            $3000
+                                            $18,900
                                         </td>
-                                        <td>ZAR</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p4.png" alt="">
-                                            Kwame Asare
+                                            <img src="assets/images/people/p4.png" alt="Robert Wilson" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Robert Wilson
                                         </td>
                                         <td>
-                                            $29000
+                                            $29,100
                                         </td>
-                                        <td>GHS</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p5.png" alt="">
-                                            Abena
+                                            <img src="assets/images/people/p5.png" alt="Susan Thompson" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Susan Thompson
                                         </td>
                                         <td>
-                                            $4000
+                                            $11,600
                                         </td>
-                                        <td>GHS</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p6.png" alt="">
-                                            Tsegaye Bekele
+                                            <img src="assets/images/people/p6.png" alt="Thomas Anderson" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Thomas Anderson
                                         </td>
                                         <td>
-                                            $7000
+                                            $26,400
                                         </td>
-                                        <td>ETB</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p7.png" alt="">
-                                            Fatima
+                                            <img src="assets/images/people/p7.png" alt="Linda Brown" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Linda Brown
                                         </td>
                                         <td>
-                                            $3050
+                                            $17,800
                                         </td>
-                                        <td>MAD</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p8.png" alt="">
-                                            Yaw Osei
+                                            <img src="assets/images/people/p8.png" alt="Michael Harris" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Michael Harris
                                         </td>
                                         <td>
-                                            $3000
+                                            $24,500
                                         </td>
-                                        <td>GHS</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p9.png" alt="">
-                                            Chidi Okonkwo
+                                            <img src="assets/images/people/p9.png" alt="Barbara Clark" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            Barbara Clark
                                         </td>
                                         <td>
-                                            $9000
+                                            $13,200
                                         </td>
-                                        <td>NGN</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="assets/images/people/p10.png" alt="">
-                                            Kofi Mensah
+                                            <img src="assets/images/people/p10.png" alt="William Lewis" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td>
-                                            July, 2025
+                                            William Lewis
                                         </td>
                                         <td>
-                                            $5500
+                                            $27,900
                                         </td>
-                                        <td>GHS</td>
+                                        <td>
+                                            USA <img src="assets/images/flags/usa.png" alt="USA" style="width:24px; height:16px;">
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -606,7 +619,7 @@ include('includes/navbar.php');
 <!-- Start invest Area End -->
 
 <!-- Testimonial Start -->
-<section class="testimonial" style="background:#001232">
+<section class="testimonial" style="background:#ffffff">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10">
@@ -744,7 +757,7 @@ include('includes/navbar.php');
 <!-- Testimonial End -->
 
 <!-- Faq Area Start -->
-<section class="faq-area" style="background:#001232">
+<section class="faq-area" style="background:#fff9ed">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 d-flex align-self-center">
@@ -872,24 +885,24 @@ include('includes/navbar.php');
                     <ul class="address-list">
                         <li>
                             <p>
-                                <i class="fas fa-map-marker-alt"></i> 28 Green Tower, Street Name New York City, USA
+                                <i class="fas fa-map-marker-alt"></i> 456 Lexington Building, 23rd Street, Brooklyn Heights, Brooklyn, NYC, USA
                             </p>
                         </li>
                         <li>
                             <p>
-                                <i class="fas fa-phone"></i> +1 542-569-0317
+                                <i class="fas fa-phone"></i> +1 601-463-7494
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="far fa-envelope"></i>
-                                cashoutapp40@gmail.com
+                                dollarcashsuppotusa@gmail.com
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="fas fa-globe-americas"></i>
-                                www.pay-cashapp.rf.gd
+                                www.dollarpay.pro
                             </p>
                         </li>
                     </ul>
