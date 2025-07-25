@@ -4,31 +4,33 @@ include('../../config/dbcon.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_user'])) {
-        $id = mysqli_real_escape_string($con, $_POST['update_user']);
+        $id = mysqli_real_escape_string($con, $_POST['user_id']); // Use user_id from hidden input
         $email = mysqli_real_escape_string($con, $_POST['email']);
         $bonus = mysqli_real_escape_string($con, $_POST['referal_bonus']);
         $balance = mysqli_real_escape_string($con, $_POST['balance']);
+        $message = mysqli_real_escape_string($con, $_POST['message'] ?? ''); // Default to empty string if not set
 
         // Validate inputs
         if (empty($id) || empty($email) || !is_numeric($bonus) || !is_numeric($balance)) {
-            $_SESSION['error'] = "All fields are required and must be valid.";
-            error_log("users.php - Invalid input for update_user: ID=$id, Email=$email, Bonus=$bonus, Balance=$balance");
-            header("Location: ../edit-user?id=" . urlencode($id));
+            $_SESSION['error'] = "All required fields must be valid.";
+            error_log("users.php - Invalid input for update_user: ID=$id, Email=$email, Bonus=$bonus, Balance=$balance, Message=$message");
+            header("Location: ../edit-user.php?id=" . urlencode($id));
             exit(0);
         }
 
-        $query = "UPDATE users SET balance='$balance', referal_bonus='$bonus', email='$email' WHERE id='$id' LIMIT 1";
+        // Allow empty message (optional field)
+        $query = "UPDATE users SET balance='$balance', referal_bonus='$bonus', email='$email', message='$message' WHERE id='$id' LIMIT 1";
         $query_run = mysqli_query($con, $query);
 
         if ($query_run) {
             $_SESSION['success'] = "Updated successfully";
-            error_log("users.php - User updated: ID=$id, Email=$email, Bonus=$bonus, Balance=$balance");
-            header("Location: ../edit-user?id=" . urlencode($id));
+            error_log("users.php - User updated: ID=$id, Email=$email, Bonus=$bonus, Balance=$balance, Message=$message");
+            header("Location: ../edit-user.php?id=" . urlencode($id));
             exit(0);
         } else {
             $_SESSION['error'] = "Failed to update user.";
             error_log("users.php - Update query error: " . mysqli_error($con));
-            header("Location: ../edit-user?id=" . urlencode($id));
+            header("Location: ../edit-user.php?id=" . urlencode($id));
             exit(0);
         }
     } elseif (isset($_POST['delete_user'])) {
