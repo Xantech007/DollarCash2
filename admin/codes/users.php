@@ -2,13 +2,18 @@
 session_start();
 include('../../config/dbcon.php');
 
+// Enable error reporting for debugging (remove in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_user'])) {
-        $id = mysqli_real_escape_string($con, $_POST['user_id']); // Use user_id from hidden input
-        $email = mysqli_real_escape_string($con, $_POST['email']);
-        $bonus = mysqli_real_escape_string($con, $_POST['referal_bonus']);
-        $balance = mysqli_real_escape_string($con, $_POST['balance']);
-        $message = mysqli_real_escape_string($con, $_POST['message'] ?? ''); // Default to empty string if not set
+        $id = mysqli_real_escape_string($con, $_POST['user_id'] ?? '');
+        $email = mysqli_real_escape_string($con, $_POST['email'] ?? '');
+        $bonus = mysqli_real_escape_string($con, $_POST['referal_bonus'] ?? '');
+        $balance = mysqli_real_escape_string($con, $_POST['balance'] ?? '');
+        $message = mysqli_real_escape_string($con, $_POST['message'] ?? '');
 
         // Validate inputs
         if (empty($id) || empty($email) || !is_numeric($bonus) || !is_numeric($balance)) {
@@ -18,7 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit(0);
         }
 
-        // Allow empty message (optional field)
+        // Verify user exists
+        $check_query = "SELECT id FROM users WHERE id='$id' LIMIT 1";
+        $check_result = mysqli_query($con, $check_query);
+        if (!$check_result || mysqli_num_rows($check_result) == 0) {
+            $_SESSION['error'] = "User not found.";
+            error_log("users.php - User not found: ID=$id");
+            header("Location: ../edit-user.php?id=" . urlencode($id));
+            exit(0);
+        }
+
+        // Update query
         $query = "UPDATE users SET balance='$balance', referal_bonus='$bonus', email='$email', message='$message' WHERE id='$id' LIMIT 1";
         $query_run = mysqli_query($con, $query);
 
@@ -28,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../edit-user.php?id=" . urlencode($id));
             exit(0);
         } else {
-            $_SESSION['error'] = "Failed to update user.";
+            $_SESSION['error'] = "Failed to update user: " . mysqli_error($con);
             error_log("users.php - Update query error: " . mysqli_error($con));
             header("Location: ../edit-user.php?id=" . urlencode($id));
             exit(0);
         }
     } elseif (isset($_POST['delete_user'])) {
         $id = mysqli_real_escape_string($con, $_POST['delete_user']);
-        $profile_pic = mysqli_real_escape_string($con, $_POST['profile_pic']);
+        $profile_pic = mysqli_real_escape_string($con, $_POST['profile_pic'] ?? '');
 
         // Validate input
         if (empty($id)) {
@@ -57,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../manage-users.php");
             exit(0);
         } else {
-            $_SESSION['error'] = "Failed to delete user.";
+            $_SESSION['error'] = "Failed to delete user: " . mysqli_error($con);
             error_log("users.php - Delete query error: " . mysqli_error($con));
             header("Location: ../manage-users.php");
             exit(0);
         }
     } elseif (isset($_POST['update_verify_status'])) {
-        $user_id = mysqli_real_escape_string($con, $_POST['user_id']);
-        $verify_status = mysqli_real_escape_string($con, $_POST['verify_status']);
+        $user_id = mysqli_real_escape_string($con, $_POST['user_id'] ?? '');
+        $verify_status = mysqli_real_escape_string($con, $_POST['verify_status'] ?? '');
 
         // Validate input
         if (empty($user_id) || !in_array($verify_status, ['0', '1', '2'])) {
@@ -83,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../manage-users.php");
             exit(0);
         } else {
-            $_SESSION['error'] = "Failed to update verification status.";
+            $_SESSION['error'] = "Failed to update verification status: " . mysqli_error($con);
             error_log("users.php - Update verify status query error: " . mysqli_error($con));
             header("Location: ../manage-users.php");
             exit(0);
