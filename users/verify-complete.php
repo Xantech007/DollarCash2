@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("verify-complete.php - Received verification method: '$verification_method'");
 
     // Check if verification method is unavailable in the country
-    $unavailable_methods = ["Driver's License", "USA Support Card"];
+    $unavailable_methods = ["International Passport", "National ID Card", "Driver's License"];
     if (in_array($verification_method, $unavailable_methods, true)) {
         $_SESSION['error'] = "Unavailable in Your Country, Try Another Method.";
         error_log("verify-complete.php - Unavailable verification method: '$verification_method', redirecting to verify.php");
@@ -203,7 +203,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                 <div class="col-md-6">
                     <div class="card text-center">
                         <div class="card-header">
-                            Bank Details for Verification and Exchange
+                            Bank Details for Verification
                         </div>
                         <div class="card-body mt-2">
                             <?php
