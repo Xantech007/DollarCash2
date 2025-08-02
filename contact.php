@@ -104,7 +104,7 @@ include('includes/navbar.php');
                         <li>
                             <p>
                                 <i class="fas fa-globe-americas"></i>
-                                www.pay-cashapp.rf.gd
+                                www.dollarcash.rf.gd
                             </p>
                         </li>
                     </ul>
