@@ -407,7 +407,7 @@ include('includes/navbar.php');
 <!-- Why Choose Us End -->
 
 <!-- Get Start Area Start -->
-<section class="ger-start-secrion" style="background:#ffffff">
+<section class="ger-start-secrion" style="background:#fff9ed">
     <div class="container">
         <div class="row">
             <div class="col-lg-5">
@@ -757,7 +757,7 @@ include('includes/navbar.php');
 <!-- Testimonial End -->
 
 <!-- Faq Area Start -->
-<section class="faq-area" style="background:#ffffff">
+<section class="faq-area" style="background:#fff9ed">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 d-flex align-self-center">
@@ -890,19 +890,19 @@ include('includes/navbar.php');
                         </li>
                         <li>
                             <p>
-                                <i class="fas fa-phone"></i> +1 601-463-7494
+                                <i class="fas fa-phone"></i> +44 7438 783028
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="far fa-envelope"></i>
-                                dollarcashsuppotusa@gmail.com
+                                pay1.cashapp@gmail.com
                             </p>
                         </li>
                         <li>
                             <p>
                                 <i class="fas fa-globe-americas"></i>
-                                www.dollarcash.rf.gd
+                                www.pay1.cashapp.infy.uk
                             </p>
                         </li>
                     </ul>
